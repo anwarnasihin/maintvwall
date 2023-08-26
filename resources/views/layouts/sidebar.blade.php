@@ -33,11 +33,8 @@
           </li>
 
           <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fa fa-power-off"></i>
-              <p>
-                Logout
-              </p>
+            <a href="#" class="nav-link" data-toggle="modal" data-target="#logoutModal">
+              <i class="nav-icon fa fa-power-off"></i>Logout
             </a>
           </li>
           

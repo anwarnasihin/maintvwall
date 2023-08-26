@@ -18,16 +18,23 @@ use App\Http\Controllers\HomeController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
+});
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('/layouts/master');})->name('dashboard');
+
+    Route::get('/tvwall', function () {
+        $data = source::get();
+        //return $data;
+        return view('vidgam', ['data' => $data]);
+    });
 });
 
 
 
-Route::get('/tvwall', function () {
-    $data = source::get();
-    //return $data;
-    return view('vidgam', ['data' => $data]);
-});
-
-// Route::get('/vidgam', [HomeController::class, 'vidgam'])->name('vidgam');
 
