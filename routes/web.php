@@ -4,7 +4,7 @@ use App\Models\source;
 use GuzzleHttp\RetryMiddleware;
 use Illuminate\Support\Facades\Route;
 use PhpParser\Node\Stmt\Return_;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UploadfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +33,10 @@ Route::middleware([
         //return $data;
         return view('vidgam', ['data' => $data]);
     });
+
 });
+
+Route::get('/datafile', [UploadfileController::class, 'index'])->name('datafile');
 
 
 

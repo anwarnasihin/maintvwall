@@ -14,7 +14,7 @@
           <img src="{{asset ('assets/dist/img/jajang.jpg')}}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Binusian</a>
+          <a href="{{ route('dashboard')}}" class="d-block">Binusian</a>
         </div>
       </div>
 
@@ -33,7 +33,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href=" {{ route('datafile') }} " class="nav-link">
               <i class="nav-icon fas fa-rocket"></i>
               <p>
                 Upload
