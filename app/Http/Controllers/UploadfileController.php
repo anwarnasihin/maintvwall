@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\source;
+use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
 
 class UploadfileController extends Controller
@@ -11,7 +13,8 @@ class UploadfileController extends Controller
      */
     public function index()
     {
-        return view('Uploadfile.Datafile');
+        $dataFile = Source::latest()->get(); // Menggunakan metode get()
+        return view('Uploadfile.Datafile',compact('dataFile'));
     }
 
     /**

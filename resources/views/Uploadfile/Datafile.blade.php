@@ -8,12 +8,11 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Bordered Table</h3>
-
+                    <a href="#" class="btn btn-success">Tambah Data <i class="fas fa-plus-square"></i></a>
+                    
                   <div class="card-tools">
                     <div class="input-group input-group-sm" style="width: 150px;">
                       <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-  
                       <div class="input-group-append">
                         <button type="submit" class="btn btn-default">
                           <i class="fas fa-search"></i>
@@ -34,40 +33,21 @@
                         <th>Duration</th>
                         <th>Aksi</th>
                       </tr>
+
+                      @foreach ($dataFile as $item)
+                          
                     </thead>
                     <tbody>
                       <tr>
-                        <td>1.</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td>2.</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $item->group}}</td>
+                        <td>{{ $item->typeFile }}</td>
+                        <td>{{ $item->direktori }}</td>
+                        <td>{{ $item->duration }}</td>
                         <td></td>
                       </tr>
-                      <tr>
-                        <td>3.</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td>4.</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
+                      
+                      @endforeach
                       
                     </tbody>
                   </table>
