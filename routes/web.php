@@ -37,6 +37,8 @@ Route::middleware([
 });
 
 Route::get('/datafile', [UploadfileController::class, 'index'])->name('datafile');
+Route::get('/createfile', [UploadfileController::class, 'create'])->name('createfile');
+Route::post('/simpanfile', [UploadfileController::class, 'store'])->name('simpanfile');
 
 
 

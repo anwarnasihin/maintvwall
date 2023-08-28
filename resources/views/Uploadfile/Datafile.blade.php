@@ -8,7 +8,7 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                    <a href="#" class="btn btn-success">Tambah Data <i class="fas fa-plus-square"></i></a>
+                    <a href="{{ route('createfile') }}" class="btn btn-success">Tambah Data <i class="fas fa-plus-square"></i></a>
                     
                   <div class="card-tools">
                     <div class="input-group input-group-sm" style="width: 150px;">

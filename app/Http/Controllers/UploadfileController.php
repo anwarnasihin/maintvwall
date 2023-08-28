@@ -22,7 +22,7 @@ class UploadfileController extends Controller
      */
     public function create()
     {
-        //
+        return view('Uploadfile.Createfile');
     }
 
     /**
@@ -30,7 +30,17 @@ class UploadfileController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        // dd($request->all());
+        Source::create([
+            'group' => $request->group,
+            'typeFile' => $request->typeFile,
+            'direktori' => $request->direktori,
+            'duration' => $request->duration,
+        ]);
+
+        return redirect('datafile');
+
     }
 
     /**
