@@ -39,6 +39,9 @@ Route::middleware([
 Route::get('/datafile', [UploadfileController::class, 'index'])->name('datafile');
 Route::get('/createfile', [UploadfileController::class, 'create'])->name('createfile');
 Route::post('/simpanfile', [UploadfileController::class, 'store'])->name('simpanfile');
+Route::get('/editfile/{id}', [UploadfileController::class, 'edit'])->name('editfile');
+Route::post('/updatefile/{id}', [UploadfileController::class, 'update'])->name('updatefile');
+Route::get('/deletefile/{id}', [UploadfileController::class, 'destroy'])->name('deletefile');
 
 
 

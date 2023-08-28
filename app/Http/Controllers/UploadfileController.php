@@ -6,6 +6,7 @@ use App\Models\source;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
 
+
 class UploadfileController extends Controller
 {
     /**
@@ -39,7 +40,7 @@ class UploadfileController extends Controller
             'duration' => $request->duration,
         ]);
 
-        return redirect('datafile');
+        return redirect('datafile')->with('toast_success', 'Data berhasil di simpan!');
 
     }
 
@@ -54,9 +55,10 @@ class UploadfileController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $dt = Source::findorfail($id);
+        return view('Uploadfile.Editfile', compact('dt'));
     }
 
     /**
@@ -64,7 +66,10 @@ class UploadfileController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $dt = Source::findorfail($id);
+        $dt->update($request->all());
+
+        return redirect('datafile')->with('toast_success', 'Data berhasil di update!');
     }
 
     /**
@@ -72,6 +77,9 @@ class UploadfileController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $dt = Source::withTrashed()->findOrFail($id); // Untuk mengambil data yang sudah dihapus
+        $dt->forceDelete(); // Untuk menghapus secara permanen
+
+        return back()->with('toast_success', 'Data berhasil di hapus!');
     }
 }

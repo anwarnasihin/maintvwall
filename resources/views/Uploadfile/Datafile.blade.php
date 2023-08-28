@@ -44,7 +44,11 @@
                         <td>{{ $item->typeFile }}</td>
                         <td>{{ $item->direktori }}</td>
                         <td>{{ $item->duration }}</td>
-                        <td></td>
+                        <td>
+                            <a href="{{ url('editfile',$item->id) }}"><i class="fas fa-edit"></i></a>
+                            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                            <a href="{{ url('deletefile',$item->id) }}"><i class="fas fa-trash-alt" style="color: crimson"></i></a>
+                        </td>
                       </tr>
                       
                       @endforeach
@@ -71,4 +75,5 @@
         </div><!-- /.container-fluid -->
       </section>
 @endsection
+@include('sweetalert::alert')
 
