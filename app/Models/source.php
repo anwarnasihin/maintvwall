@@ -15,4 +15,9 @@ class source extends Model
         'direktori',
         'duration'
     ];
+
+    public function groups()
+    {
+        return $this->belongsTo(group::class, 'group', 'id');
+    }
 }

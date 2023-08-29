@@ -24,25 +24,22 @@ Route::get('/', function () {
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-    'verified',])->group(function () {
+    'verified',
+])->group(function () {
     Route::get('/dashboard', function () {
-        return view('/layouts/master');})->name('dashboard');
+        return view('/layouts/master');
+    })->name('dashboard');
 
     Route::get('/tvwall', function () {
         $data = source::get();
         //return $data;
         return view('vidgam', ['data' => $data]);
     });
-
 });
 
-Route::get('/datafile', [UploadfileController::class, 'index'])->name('datafile');
-Route::get('/createfile', [UploadfileController::class, 'create'])->name('createfile');
-Route::post('/simpanfile', [UploadfileController::class, 'store'])->name('simpanfile');
-Route::get('/editfile/{id}', [UploadfileController::class, 'edit'])->name('editfile');
-Route::post('/updatefile/{id}', [UploadfileController::class, 'update'])->name('updatefile');
-Route::get('/deletefile/{id}', [UploadfileController::class, 'destroy'])->name('deletefile');
-
-
-
-
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/datafile', [UploadfileController::class, 'index'])->name('datafile');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/createfile', [UploadfileController::class, 'create'])->name('createfile');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/simpanfile', [UploadfileController::class, 'store'])->name('simpanfile');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/editfile/{id}', [UploadfileController::class, 'edit'])->name('editfile');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/updatefile/{id}', [UploadfileController::class, 'update'])->name('updatefile');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/deletefile/{id}', [UploadfileController::class, 'destroy'])->name('deletefile');

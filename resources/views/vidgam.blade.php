@@ -151,7 +151,7 @@
 
                         mediaPlayer.play(); // Play video after metadata is loaded
                     });
-                } else if (media.typeFile === "image") {
+                } else if (media.typeFile === "images") {
                     mediaPlayer = createImagePlayer(media.direktori);
                     player.innerHTML = "";
                     player.appendChild(mediaPlayer);

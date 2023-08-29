@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\group;
 use App\Models\source;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
@@ -14,8 +15,8 @@ class UploadfileController extends Controller
      */
     public function index()
     {
-        $dataFile = Source::latest()->get(); // Menggunakan metode get()
-        return view('Uploadfile.Datafile',compact('dataFile'));
+        $dataFile = Source::with('groups')->latest()->get(); // Menggunakan metode get()
+        return view('Uploadfile.Datafile', compact('dataFile'), ['judul' => 'Data Source']);
     }
 
     /**
@@ -23,7 +24,8 @@ class UploadfileController extends Controller
      */
     public function create()
     {
-        return view('Uploadfile.Createfile');
+        $group = group::get();
+        return view('Uploadfile.Createfile', ['group' => $group]);
     }
 
     /**
@@ -31,17 +33,26 @@ class UploadfileController extends Controller
      */
     public function store(Request $request)
     {
-
+        if ($request->typeFile != "youtube") {
+            $file = $request->file('file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $fileInput = 'assets/' . $request->typeFile . '/' . $filename;
+        } else {
+            $fileInput = $request->file;
+        }
         // dd($request->all());
-        Source::create([
-            'group' => $request->group,
-            'typeFile' => $request->typeFile,
-            'direktori' => $request->direktori,
-            'duration' => $request->duration,
-        ]);
+        $postt = new source();
+        $postt->group = $request->group;
+        $postt->typeFile = $request->typeFile;
+        $postt->direktori = $fileInput;
+        $postt->duration = $request->duration != null ? $request->duration : 0;
+        $postt->save();
+
+        if ($postt->id) {
+            $file->move(public_path('assets/' . $request->typeFile . '/'), $filename);
+        }
 
         return redirect('datafile')->with('toast_success', 'Data berhasil di simpan!');
-
     }
 
     /**
@@ -77,8 +88,8 @@ class UploadfileController extends Controller
      */
     public function destroy(string $id)
     {
-        $dt = Source::withTrashed()->findOrFail($id); // Untuk mengambil data yang sudah dihapus
-        $dt->forceDelete(); // Untuk menghapus secara permanen
+        $dt = Source::find($id); // Untuk mengambil data yang sudah dihapus
+        $dt->delete(); // Untuk menghapus secara permanen
 
         return back()->with('toast_success', 'Data berhasil di hapus!');
     }
