@@ -35,7 +35,7 @@
                             <div class="form-group">
                                 <label>File Upload</label>
                                 <input type="file" id="file" name="file" class="form-control">
-                                <input type="linkYoutube" id="linkYoutube" name="file" class="form-control">
+                                <input type="text" id="linkYoutube" name="linkYoutube" class="form-control">
                             </div>
                             <div class="form-group">
                                 <input type="text" id="duration" name="duration" class="form-control" placeholder="Millisecond">
@@ -82,3 +82,4 @@
     </script>
 </section>
 @endsection
+

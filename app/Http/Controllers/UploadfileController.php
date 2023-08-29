@@ -37,8 +37,9 @@ class UploadfileController extends Controller
             $file = $request->file('file');
             $filename = time() . '_' . $file->getClientOriginalName();
             $fileInput = 'assets/' . $request->typeFile . '/' . $filename;
+            
         } else {
-            $fileInput = $request->file;
+            $fileInput = $request->linkYoutube;
         }
         // dd($request->all());
         $postt = new source();
@@ -47,6 +48,8 @@ class UploadfileController extends Controller
         $postt->direktori = $fileInput;
         $postt->duration = $request->duration != null ? $request->duration : 0;
         $postt->save();
+
+        if($postt->id && $request->typeFile != "youtube")
 
         if ($postt->id) {
             $file->move(public_path('assets/' . $request->typeFile . '/'), $filename);
