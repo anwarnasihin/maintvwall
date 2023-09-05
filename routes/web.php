@@ -30,12 +30,11 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('/layouts/master');
     })->name('dashboard');
-
-    Route::get('/tvwall', function () {
-        $data = source::get();
-        //return $data;
-        return view('vidgam', ['data' => $data]);
-    });
+});
+Route::get('/tvwall', function () {
+    $data = source::get();
+    //return $data;
+    return view('vidgam', ['data' => $data]);
 });
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/datafile', [UploadfileController::class, 'index'])->name('datafile');
