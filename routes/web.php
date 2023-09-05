@@ -5,6 +5,7 @@ use GuzzleHttp\RetryMiddleware;
 use Illuminate\Support\Facades\Route;
 use PhpParser\Node\Stmt\Return_;
 use App\Http\Controllers\UploadfileController;
+use App\Http\Controllers\UploadgroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,3 +44,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/editfile/{id}', [UploadfileController::class, 'edit'])->name('editfile');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/updatefile/{id}', [UploadfileController::class, 'update'])->name('updatefile');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/deletefile/{id}', [UploadfileController::class, 'destroy'])->name('deletefile');
+
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/datagroup', [UploadgroupController::class, 'index'])->name('datagroup');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/creategroup', [UploadgroupController::class, 'create'])->name('creategroup');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/simpangroup', [UploadgroupController::class, 'store'])->name('simpangroup');

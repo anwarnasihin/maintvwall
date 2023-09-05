@@ -31,15 +31,31 @@
             </p>
           </a>
         </li>
-
+        
         <li class="nav-item">
-          <a href=" {{ route('datafile') }} " class="nav-link">
+          <a href="" class="nav-link">
             <i class="nav-icon fas fa-rocket"></i>
             <p>
               Upload
+              <i class="right fas fa-angle-left"></i>
             </p>
           </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href=" {{ route('datafile') }} " class="nav-link">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-folder-plus"></i>
+                &nbsp;<p>Add Data</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href=" {{ route('datagroup') }} " class="nav-link">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-object-group"></i>
+                &nbsp;<p>Add Group</p>
+              </a>
+            </li>
+          </ul>
         </li>
+      
 
         <li class="nav-item">
           <a href="" class="nav-link" data-toggle="modal" data-target="#logoutModal">
