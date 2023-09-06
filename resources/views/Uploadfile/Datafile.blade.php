@@ -42,7 +42,7 @@
                   <th>Type File</th>
                   <th>Direktori</th>
                   <th>Duration</th>
-                  <th>Aksi</th>
+                  <th class="text-center">Aksi</th>
                 </tr>
 
                 @foreach ($dataFile as $item)
@@ -55,8 +55,10 @@
                   <td>{{ $item->typeFile }}</td>
                   <td>{{ $item->direktori }}</td>
                   <td>{{ $item->duration }}</td>
-                  <td>
-                    <a href=""><i class="fas fa-regular fa-stopwatch" style="color: #fdf512;margin-right:3px"></i></a>
+                  <td class="text-center">
+                    @if ($item->typeFile == "images")
+                    <a href="#" id="edit" data-id="{{$item->id}}"><i class="fas fa-regular fa-stopwatch" style="color: #fdf512;margin-right:3px"></i></a>
+                    @endif
 
                     <a href="{{ url('deletefile',$item->id) }}"><i class="fas fa-trash-alt" style="color: crimson"></i></a>
                   </td>
@@ -81,9 +83,45 @@
         </div>
         <!-- /.card -->
       </div>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalCenterTitle">Duration Image</h5>
+              <button type="button" onclick="$('#formDuration').trigger('reset')" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form id="formDuration" method="post" action="/editDuration">
+              @csrf
+              <input type="text" id="id" name="id" hidden>
+              <div class="modal-body">
+                <div class="form-group">
+                  <input type="text" id="duration" name="duration" class="form-control" placeholder="Millisecond">
+                </div>
+              </div>
+            </form>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" onclick="$('#formDuration').trigger('reset')" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="document.getElementById('formDuration').submit()">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- /.row -->
   </div><!-- /.container-fluid -->
 </section>
+<script src="assets/plugins/jquery/jquery.min.js"></script>
+<script>
+  $(document).on('click', '#edit', function(e) {
+    e.preventDefault();
+    var uid = $(this).data('id');
+
+    $('#id').val(uid);
+    $('#exampleModalCenter').modal('show');
+  })
+</script>
 @endsection
 @include('sweetalert::alert')

@@ -85,6 +85,15 @@ class UploadfileController extends Controller
         return redirect('datafile')->with('toast_success', 'Data berhasil di update!');
     }
 
+    public function updateDuration(Request $request)
+    {
+        $dt = Source::findorfail($request->id);
+        $dt->duration = $request->duration;
+        $dt->save();
+
+        return redirect()->back();
+    }
+
     /**
      * Remove the specified resource from storage.
      */
