@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\group;
+use App\Models\source;
 use Illuminate\Http\Request;
 
 class UploadgroupController extends Controller
@@ -29,13 +30,22 @@ class UploadgroupController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
-        group::create([
-            'name' => $request->nama,
-            'keterangan' => $request->keterangan,
+        $validatedData = $request->validate([
+            'nama' => 'required|string',
+            'keterangan' => 'required|string',
         ]);
-
+    
+        // Menghapus spasi dari input 'nama' dan 'keterangan'
+        $nama = str_replace(' ', '', $request->input('nama'));
+    
+        // Simpan data yang telah dihapus spasi
+        Group::create([
+            'name' => $nama,
+            'keterangan' => $request->input('keterangan'),
+        ]);
+    
         return redirect('datagroup');
+    
     }
 
     /**

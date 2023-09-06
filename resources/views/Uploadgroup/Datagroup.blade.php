@@ -37,10 +37,10 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th style="width: 10px">No</th>
-                  <th>Name</th>
-                  <th>Keterangan</th>
-                  <th>Aksi</th>
+                  <th class="text-center" style="width: 10px">No</th>
+                  <th class="text-center">Name</th>
+                  <th class="text-center">Keterangan</th>
+                  <th class="text-center">Aksi</th>
                 </tr>
 
                 @foreach ($dtGroup as $item)
@@ -48,7 +48,7 @@
                   <td>{{ $loop->iteration }}</td>
                   <td>{{ $item->name}}</td>
                   <td>{{ $item->keterangan}}</td>
-                  <td>
+                  <td class="text-center">
                     <a href="{{ url('editgroup',$item->id) }}"><i class="fas fa-edit" style="color: #fdf512"></i></a>
                     |
                     <a href="{{ url('deletegroup',$item->id) }}"><i class="fas fa-trash-alt" style="color: crimson"></i></a>

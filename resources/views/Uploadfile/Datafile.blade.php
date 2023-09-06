@@ -51,7 +51,7 @@
               <tbody>
                 <tr>
                   <td class="text-center">{{ $loop->iteration }}</td>
-                  <td>{{ $item->groups->name}}</td>
+                  <td>{{ $item->groups ? $item->groups->name : ' ' }}</td>
                   <td>{{ $item->typeFile }}</td>
                   <td>{{ $item->direktori }}</td>
                   <td>{{ $item->duration }}</td>
