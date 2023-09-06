@@ -37,11 +37,11 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th style="width: 10px">No</th>
-                  <th>Group</th>
-                  <th>Type File</th>
-                  <th>Direktori</th>
-                  <th>Duration</th>
+                  <th class="text-center" style="width: 10px">No</th>
+                  <th class="text-center">Group</th>
+                  <th class="text-center">Type File</th>
+                  <th class="text-center">Direktori</th>
+                  <th class="text-center">Duration</th>
                   <th class="text-center">Aksi</th>
                 </tr>
 
@@ -50,7 +50,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>{{ $loop->iteration }}</td>
+                  <td class="text-center">{{ $loop->iteration }}</td>
                   <td>{{ $item->groups->name}}</td>
                   <td>{{ $item->typeFile }}</td>
                   <td>{{ $item->direktori }}</td>
