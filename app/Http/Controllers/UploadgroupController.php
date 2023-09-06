@@ -49,9 +49,10 @@ class UploadgroupController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $gro = Group::findorfail($id);
+        return view('Uploadgroup.Editgroup',compact('gro'));
     }
 
     /**
@@ -59,7 +60,9 @@ class UploadgroupController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $gro = Group::findorfail($id);
+        $gro->update($request->all());
+        return redirect('datagroup')->with('toast_success', 'Data berhasil di update');
     }
 
     /**
@@ -67,6 +70,8 @@ class UploadgroupController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $gro = Group::findOrFail($id); 
+        $gro->forceDelete();
+        return back()->with('toast_success', 'Data berhasil di hapus!');
     }
 }
