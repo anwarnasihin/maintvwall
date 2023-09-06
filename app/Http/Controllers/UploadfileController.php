@@ -37,7 +37,6 @@ class UploadfileController extends Controller
             $file = $request->file('file');
             $filename = time() . '_' . $file->getClientOriginalName();
             $fileInput = 'assets/' . $request->typeFile . '/' . $filename;
-            
         } else {
             $fileInput = $request->linkYoutube;
         }
@@ -49,11 +48,11 @@ class UploadfileController extends Controller
         $postt->duration = $request->duration != null ? $request->duration : 0;
         $postt->save();
 
-        if($postt->id && $request->typeFile != "youtube")
+        if ($postt->id && $request->typeFile != "youtube")
 
-        if ($postt->id) {
-            $file->move(public_path('assets/' . $request->typeFile . '/'), $filename);
-        }
+            if ($postt->id) {
+                $file->move(public_path('assets/' . $request->typeFile . '/'), $filename);
+            }
 
         return redirect('datafile')->with('toast_success', 'Data berhasil di simpan!');
     }
@@ -93,6 +92,10 @@ class UploadfileController extends Controller
     {
         $dt = Source::find($id); // Untuk mengambil data yang sudah dihapus
         $dt->delete(); // Untuk menghapus secara permanen
+
+        if (file_exists(public_path($dt->direktori))) {
+            unlink(public_path($dt->direktori));
+        }
 
         return back()->with('toast_success', 'Data berhasil di hapus!');
     }
