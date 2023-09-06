@@ -88,6 +88,22 @@
             letter-spacing: 3px;
             font-weight: bold;
         }
+
+        /* Mengatur tinggi gambar berdasarkan lebar layar */
+        @media screen and (max-width: 768px) {
+            #player img {
+                height: 100vh;
+                width: auto;
+            }
+        }
+
+        @media screen and (min-width: 769px) {
+            #player img {
+                max-height: 100%;
+                /* height: auto; */
+                height: 100%;
+            }
+        }
     </style>
 </head>
 
