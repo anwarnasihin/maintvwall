@@ -4,30 +4,50 @@
 <head>
     <title>TV Wall BINUS@BEKASI</title>
     <style>
-        .player {
-            display: none;
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-size: 100% auto;
+            /* Lebar gambar mengisi seluruh lebar, tinggi mengikuti lebar gambar */
+            background-repeat: no-repeat;
+            /* Agar gambar tidak diulang */
+            background-image: url('/logo/backVidGram.jpg');
         }
 
         #container {
-            position: fixed;
-            top: 0;
-            left: 0;
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+
+        #player {
             width: 100%;
             height: 100%;
-            background-color: #000;
-            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #player img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+        }
+
+        #player video {
+            width: 100%;
+            height: auto;
         }
 
         #youtube-player {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        #videoPlayer,
-        #imagePlayer {
             width: 100%;
             height: 100%;
         }

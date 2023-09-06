@@ -56,6 +56,8 @@
                   <td>{{ $item->direktori }}</td>
                   <td>{{ $item->duration }}</td>
                   <td>
+                    <a href=""><i class="fas fa-regular fa-stopwatch" style="color: #fdf512;margin-right:3px"></i></a>
+
                     <a href="{{ url('deletefile',$item->id) }}"><i class="fas fa-trash-alt" style="color: crimson"></i></a>
                   </td>
                 </tr>
