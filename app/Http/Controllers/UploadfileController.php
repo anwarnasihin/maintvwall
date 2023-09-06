@@ -100,7 +100,7 @@ class UploadfileController extends Controller
     public function destroy(string $id)
     {
         $dt = Source::find($id); // Untuk mengambil data yang sudah dihapus
-        $dt->delete(); // Untuk menghapus secara permanen
+        $dt->forceDelete(); // Untuk menghapus secara permanen
 
         if (file_exists(public_path($dt->direktori))) {
             unlink(public_path($dt->direktori));

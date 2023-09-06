@@ -50,7 +50,7 @@
                   <td>{{ $item->keterangan}}</td>
                   <td class="text-center">
                     <a href="{{ url('editgroup',$item->id) }}"><i class="fas fa-edit" style="color: #fdf512"></i></a>
-                    |
+                    &nbsp;
                     <a href="{{ url('deletegroup',$item->id) }}"><i class="fas fa-trash-alt" style="color: crimson"></i></a>
                   </td>
                 </tr>
