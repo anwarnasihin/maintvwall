@@ -143,9 +143,7 @@
             return imagePlayer;
         }
 
-
         function startSlideshow() {
-
             // stopSlideshow();
 
             var container = document.getElementById("container");

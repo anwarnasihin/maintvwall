@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use PhpParser\Node\Stmt\Return_;
 use App\Http\Controllers\UploadfileController;
 use App\Http\Controllers\UploadgroupController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +46,11 @@ Route::get('/tvwall', function () {
     //return $data;
     return view('vidgam', ['data' => $data]);
 });
+
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->post('/download', function (Request $request) {
+    $filePath = public_path($request->konten);
+    return response()->download($filePath);
+})->name('download');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/datafile', [UploadfileController::class, 'index'])->name('datafile');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/createfile', [UploadfileController::class, 'create'])->name('createfile');

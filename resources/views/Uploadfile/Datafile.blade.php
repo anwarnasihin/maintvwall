@@ -64,6 +64,13 @@
                   <td>{{ $item->str_date }}</td>
                   <td>{{ $item->ed_date }}</td>
                   <td class="text-center">
+                    @if ($item->typeFile != "youtube")
+                    <form id="form{{ $loop->iteration }}" action="/download" method="post">
+                      @csrf
+                      <input type="hidden" name="konten" value="{{ $item->direktori }}">
+                      <a onclick="document.getElementById('form{{ $loop->iteration }}').submit();" type="submit"><i class="fas fa-solid fa-download" style="color: #00f5e4;"></i></a>
+                    </form>
+                    @endif
                     <a href="#" id="edit" data-id="{{$item->id}}" data-direktori="{{ $item->typeFile }}" data-duration="{{ $item->duration }}"><i class="far fa-edit" style="color: #e7ea2e;"></i></a>
                     <a href="{{ url('deletefile',$item->id) }}"><i class="fas fa-trash-alt" style="color: crimson"></i></a>
                   </td>
