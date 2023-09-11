@@ -171,8 +171,7 @@
               <div id="player"></div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="player.innerHTML = '';">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="player.innerHTML = '';">Close</button>
             </div>
           </div>
         </div>
