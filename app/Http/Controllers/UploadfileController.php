@@ -90,7 +90,13 @@ class UploadfileController extends Controller
     public function updateDuration(Request $request)
     {
         $dt = Source::findorfail($request->id);
-        $dt->duration = $request->duration;
+        $dt->duration = $request->duration > 0 ? $request->duration : 0;
+        if ($request->str_date != null) {
+            $dt->str_date = date("Y-m-d", strtotime(str_replace('/', '-', $request->str_date)));
+        }
+        if ($request->ed_date != null) {
+            $dt->ed_date = date("Y-m-d", strtotime(str_replace('/', '-', $request->ed_date)));
+        }
         $dt->save();
 
         return redirect()->back();
