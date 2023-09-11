@@ -40,7 +40,9 @@
                     <button class="btn btn-primary mr-2"><a href="/show/{{ $item->name}}" target="_blank" style="color: white;">Display</a></button>
                     <a href="{{ url('editgroup',$item->id) }}"><i class="fas fa-edit" style="color: #fdf512"></i></a>
                     &nbsp;
-                    <a href="{{ url('deletegroup',$item->id) }}"><i class="fas fa-trash-alt" style="color: crimson"></i></a>
+                    <a href="#" data-toggle="modal" data-target="#confirmDeleteModal">
+                      <i class="fas fa-trash-alt" style="color: crimson"></i>
+                    </a>
                   </td>
                 </tr>
                 @endforeach
@@ -54,6 +56,27 @@
     </div>
     <!-- /.row -->
   </div><!-- /.container-fluid -->
+
+  <!-- Modal Konfirmasi Penghapusan -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Penghapusan</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              Apakah Anda yakin ingin menghapus data ini?
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+              <a href="{{ url('deletegroup', $item->id) }}" class="btn btn-danger">Hapus</a>
+          </div>
+      </div>
+  </div>
+</div>
 
   <!-- jQuery -->
   <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>

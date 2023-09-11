@@ -50,11 +50,11 @@ class UploadfileController extends Controller
         $postt->ed_date = date("Y-m-d", strtotime(str_replace('/', '-', $request->ed_date)));
         $postt->save();
 
-        if ($postt->id && $request->typeFile != "youtube")
-
+        if ($postt->id && $request->typeFile != "youtube"){
             if ($postt->id) {
                 $file->move(public_path('assets/' . $request->typeFile . '/'), $filename);
             }
+        } 
 
         return redirect('datafile')->with('toast_success', 'Data berhasil di simpan!');
     }
@@ -99,7 +99,7 @@ class UploadfileController extends Controller
         }
         $dt->save();
 
-        return redirect()->back();
+        return redirect('datafile')->with('toast_success', 'Data berhasil di update!');
     }
 
     /**

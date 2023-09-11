@@ -72,7 +72,9 @@
                     </form>
                     @endif
                     <a href="#" id="edit" data-id="{{$item->id}}" data-direktori="{{ $item->typeFile }}" data-duration="{{ $item->duration }}"><i class="far fa-edit" style="color: #e7ea2e;"></i></a>
-                    <a href="{{ url('deletefile',$item->id) }}"><i class="fas fa-trash-alt" style="color: crimson"></i></a>
+                    <a href="#" data-toggle="modal" data-target="#confirmDeleteModal">
+                      <i class="fas fa-trash-alt" style="color: crimson"></i>
+                    </a>
                   </td>
                 </tr>
                 @endforeach
@@ -133,6 +135,27 @@
           </div>
         </div>
       </div>
+
+      <!-- Modal Konfirmasi Penghapusan -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Penghapusan</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              Apakah Anda yakin ingin menghapus data ini?
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+              <a href="{{ url('deletefile', $item->id) }}" class="btn btn-danger">Hapus</a>
+          </div>
+      </div>
+  </div>
+</div>
 
       <!-- Modal -->
       <div class="modal fade" id="modalShowKonten" tabindex="-1" role="dialog" aria-labelledby="modalShowKontenTitle" aria-hidden="true">
@@ -290,5 +313,5 @@
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
   });
 </script>
-@endsection
 @include('sweetalert::alert')
+@endsection
