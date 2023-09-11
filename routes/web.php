@@ -32,7 +32,15 @@ Route::middleware([
     })->name('dashboard');
 });
 Route::get('/tvwall', function () {
-    $data = source::get();
+    $dataa = source::where(function ($query) {
+        $today = date("Y-m-d");
+        $query->where('str_date', '>=', $today)
+            ->orWhere(function ($query) use ($today) {
+                $query->where('str_date', '<', $today)
+                    ->where('ed_date', '>=', $today);
+            });
+    });
+    $data = $dataa->get();
     //return $data;
     return view('vidgam', ['data' => $data]);
 });

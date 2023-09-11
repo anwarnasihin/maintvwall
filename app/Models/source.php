@@ -13,7 +13,9 @@ class source extends Model
         'group',
         'typeFile',
         'direktori',
-        'duration'
+        'duration',
+        'str_date',
+        'ed_date'
     ];
 
     public function groups()

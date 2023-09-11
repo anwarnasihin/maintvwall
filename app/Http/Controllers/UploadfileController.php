@@ -46,6 +46,8 @@ class UploadfileController extends Controller
         $postt->typeFile = $request->typeFile;
         $postt->direktori = $fileInput;
         $postt->duration = $request->duration != null ? $request->duration : 0;
+        $postt->str_date = date("Y-m-d", strtotime(str_replace('/', '-', $request->str_date)));
+        $postt->ed_date = date("Y-m-d", strtotime(str_replace('/', '-', $request->ed_date)));
         $postt->save();
 
         if ($postt->id && $request->typeFile != "youtube")

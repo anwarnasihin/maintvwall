@@ -28,9 +28,11 @@
                   <th class="text-center">Type File</th>
                   <th class="text-center">Direktori</th>
                   <th class="text-center">Duration</th>
+                  <th class="text-center">Start Date</th>
+                  <th class="text-center">End Date</th>
                   <th class="text-center">Aksi</th>
                 </tr>
-                
+
               </thead>
               <tbody>
                 @foreach ($dataFile as $item)
@@ -40,6 +42,8 @@
                   <td>{{ $item->typeFile }}</td>
                   <td>{{ $item->direktori }}</td>
                   <td>{{ $item->duration }}</td>
+                  <td>{{ $item->str_date }}</td>
+                  <td>{{ $item->ed_date }}</td>
                   <td class="text-center">
                     @if ($item->typeFile == "images")
                     <a href="#" id="edit" data-id="{{$item->id}}"><i class="fas fa-regular fa-stopwatch" style="color: #fdf512;margin-right:3px"></i></a>
@@ -55,7 +59,7 @@
           </div>
           <!-- /.card -->
           <!-- /.card-body -->
-          
+
         </div>
         <!-- /.card -->
       </div>
@@ -102,20 +106,28 @@
 
 <!-- jQuery -->
 <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
-  <script>
-    $(function () {
-      $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": [{
-            text: 'Tambah Data <i class="fas fa-plus-square"></i>',
-            action: function (e, dt, node, config) {
-              // Mengarahkan ke rute Laravel menggunakan tautan Blade
-              window.location.href = "{{ route('createfile') }}";
-            },
-            className: 'btn-success' // Menambahkan kelas CSS untuk warna hijau
-          }]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    });
-  </script>
+<script>
+  $(function() {
+    $("#example1").DataTable({
+      "responsive": true,
+      "lengthChange": false,
+      "autoWidth": false,
+      "buttons": [{
+        text: 'Tambah Data <i class="fas fa-plus-square"></i>',
+        action: function(e, dt, node, config) {
+          // Mengarahkan ke rute Laravel menggunakan tautan Blade
+          window.location.href = "{{ route('createfile') }}";
+        },
+        className: 'btn-success' // Menambahkan kelas CSS untuk warna hijau
+      }],
+      "columnDefs": [{
+        targets: [5, 6],
+        render: function(oTable) {
+          return moment(oTable).format('DD-MM-YYYY');
+        }
+      }, ],
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+  });
+</script>
 @endsection
 @include('sweetalert::alert')
