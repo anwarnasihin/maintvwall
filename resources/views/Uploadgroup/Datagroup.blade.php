@@ -28,7 +28,7 @@
                   <th class="text-center">Keterangan</th>
                   <th class="text-center">Aksi</th>
                 </tr>
-                            
+
               </thead>
               <tbody>
                 @foreach ($dtGroup as $item)
@@ -36,7 +36,8 @@
                   <td>{{ $loop->iteration }}</td>
                   <td>{{ $item->name}}</td>
                   <td>{{ $item->keterangan}}</td>
-                  <td class="text-center">
+                  <td>
+                    <button class="btn btn-primary mr-2"><a href="/show/{{ $item->name}}" target="_blank" style="color: white;">Display</a></button>
                     <a href="{{ url('editgroup',$item->id) }}"><i class="fas fa-edit" style="color: #fdf512"></i></a>
                     &nbsp;
                     <a href="{{ url('deletegroup',$item->id) }}"><i class="fas fa-trash-alt" style="color: crimson"></i></a>
@@ -55,19 +56,25 @@
   </div><!-- /.container-fluid -->
 
   <!-- jQuery -->
-<script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
+  <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
   <script>
-    $(function () {
+    $(function() {
       $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "columnDefs": [{
+          "className": "text-center",
+          "targets": [0, 1, 2, 3], // table ke 1
+        }, ],
         "buttons": [{
-            text: 'Tambah Data <i class="fas fa-plus-square"></i>',
-            action: function (e, dt, node, config) {
-              // Mengarahkan ke rute Laravel menggunakan tautan Blade
-              window.location.href = "{{ route('creategroup') }}";
-            },
-            className: 'btn-success' // Menambahkan kelas CSS untuk warna hijau
-          }]
+          text: 'Tambah Data <i class="fas fa-plus-square"></i>',
+          action: function(e, dt, node, config) {
+            // Mengarahkan ke rute Laravel menggunakan tautan Blade
+            window.location.href = "{{ route('creategroup') }}";
+          },
+          className: 'btn-success' // Menambahkan kelas CSS untuk warna hijau
+        }]
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     });
   </script>

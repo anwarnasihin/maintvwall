@@ -24,15 +24,15 @@
         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
         <li class="nav-item">
-          <a href="/tvwall" target="_blank" class="nav-link">
-            <i class="nav-icon fa fa-desktop"></i>
+          <a href="/dashboard" class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
-              Display
+              Dashboard
             </p>
           </a>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item {{ request()->is('datafile','datagroup') ? 'menu-open' : '' }}">
           <a href="" class="nav-link">
             <i class="nav-icon fas fa-rocket"></i>
             <p>
@@ -42,13 +42,13 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href=" {{ route('datagroup') }} " class="nav-link">
+              <a href=" {{ route('datagroup') }} " class="nav-link {{ request()->is('datagroup') ? 'active' : '' }}">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-object-group"></i>
                 &nbsp;<p>Add Group</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href=" {{ route('datafile') }} " class="nav-link">
+              <a href=" {{ route('datafile') }} " class="nav-link {{ request()->is('datafile') ? 'active' : '' }}">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-folder-plus"></i>
                 &nbsp;<p>Add Data</p>
               </a>

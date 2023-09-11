@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use PhpParser\Node\Stmt\Return_;
 use App\Http\Controllers\UploadfileController;
 use App\Http\Controllers\UploadgroupController;
+use App\Models\group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -30,13 +31,15 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return view('/layouts/master');
+        return view('/dashboard');
     })->name('dashboard');
 });
-Route::get('/tvwall', function () {
-    $dataa = source::where(function ($query) {
+Route::get('/show/{group}', function ($group) {
+    $idGroup = group::where('name', $group)->first();
+    $dataa = source::where(function ($query) use ($idGroup) {
         $today = date("Y-m-d");
-        $query->where('str_date', '>=', $today)
+        $query->where('group', $idGroup->id)
+            ->where('str_date', '>=', $today)
             ->orWhere(function ($query) use ($today) {
                 $query->where('str_date', '<', $today)
                     ->where('ed_date', '>=', $today);

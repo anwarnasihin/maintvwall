@@ -129,7 +129,7 @@
         function createVideoPlayer(src) {
             var videoPlayer = document.createElement("video");
             videoPlayer.id = "videoPlayer";
-            videoPlayer.src = src;
+            videoPlayer.src = '/' + src;
             // videoPlayer.controls = true;
             videoPlayer.muted = true;
             return videoPlayer;
@@ -138,7 +138,7 @@
         function createImagePlayer(src) {
             var imagePlayer = document.createElement("img");
             imagePlayer.id = "imagePlayer";
-            imagePlayer.src = src;
+            imagePlayer.src = '/' + src;
             imagePlayer.alt = "Slideshow Image";
             return imagePlayer;
         }
