@@ -185,7 +185,8 @@
 
                         mediaPlayer.play(); // Play video after metadata is loaded
                     });
-                } else if (media.typeFile === "images") {
+                }
+                if (media.typeFile === "images") {
                     mediaPlayer = createImagePlayer(media.direktori);
                     player.innerHTML = "";
                     player.appendChild(mediaPlayer);
@@ -194,7 +195,9 @@
                         currentData++;
                         playVideoAndImage();
                     }, media.duration);
-                } else if (media.typeFile === "youtube") {
+                }
+                if (media.typeFile === "youtube") {
+
                     // URL video YouTube
                     var youtubeUrl = media.direktori;
 
@@ -208,20 +211,21 @@
                     var youtubePlayerDiv = document.createElement('div');
                     youtubePlayerDiv.id = 'youtube-player'; // Use a different ID to avoid conflicts
                     player.appendChild(youtubePlayerDiv);
-
-                    var youtubePlayerDiv = new YT.Player('youtube-player', {
-                        height: '100%', // Set height to 100%
-                        width: '100%',
-                        videoId: videoCode,
-                        playerVars: {
-                            'controls': 0, // Kontrol video (0 untuk dihilangkan)
-                            'autoplay': 1, // Autoplay video (1 untuk ya)
-                            // ... tambahkan opsi lain sesuai kebutuhan
-                        },
-                        events: {
-                            'onStateChange': onPlayerStateChange
-                        }
-                    });
+                    setTimeout(function() {
+                        var youtubePlayerDiv = new YT.Player('youtube-player', {
+                            height: '100%', // Set height to 100%
+                            width: '100%',
+                            videoId: videoCode,
+                            playerVars: {
+                                'controls': 0, // Kontrol video (0 untuk dihilangkan)
+                                'autoplay': 1, // Autoplay video (1 untuk ya)
+                                // ... tambahkan opsi lain sesuai kebutuhan
+                            },
+                            events: {
+                                'onStateChange': onPlayerStateChange
+                            }
+                        });
+                    }, 100)
 
                     function onPlayerStateChange(event) {
                         if (event.data === YT.PlayerState.ENDED) {
