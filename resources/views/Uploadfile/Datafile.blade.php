@@ -72,11 +72,36 @@
                     </form>
                     @endif
                     <a href="#" id="edit" data-id="{{$item->id}}" data-direktori="{{ $item->typeFile }}" data-duration="{{ $item->duration }}"><i class="far fa-edit" style="color: #e7ea2e;"></i></a>
-                    <a href="#" data-toggle="modal" data-target="#confirmDeleteModal">
-                      <i class="fas fa-trash-alt" style="color: crimson"></i>
-                    </a>
+                    <a data-toggle="modal" data-target="#modal-hapus{{$item->id}}"><i class="fas fa-trash-alt" style="color: crimson"></i></a>
                   </td>
                 </tr>
+                
+                <div class="modal fade" id="modal-hapus{{$item->id}}">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title">Konfirmasi Hapus Data</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Apakah kamu yakin ingin menghapus data <b>{{ $item->groups ? $item->groups->name : ' '  }}</b> </p>
+                      </div>
+                      <div class="modal-footer justify-content-between">
+                        <form action="{{ route('deletefile',['id' => $item->id]) }}" method="POST">
+                          @csrf
+                          @method('DELETE')
+                          <button type="button" class="btn btn-primary ml-auto" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+                        </form>
+                      </div>
+                    </div>
+                    <!-- /.modal-content -->
+                  </div>
+                  <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
                 @endforeach
 
               </tbody>
@@ -136,26 +161,7 @@
         </div>
       </div>
 
-      <!-- Modal Konfirmasi Penghapusan -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Penghapusan</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-              Apakah Anda yakin ingin menghapus data ini?
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-              <a href="{{ url('deletefile', $item->id) }}" class="btn btn-danger">Hapus</a>
-          </div>
-      </div>
-  </div>
-</div>
+      
 
       <!-- Modal -->
       <div class="modal fade" id="modalShowKonten" tabindex="-1" role="dialog" aria-labelledby="modalShowKontenTitle" aria-hidden="true">

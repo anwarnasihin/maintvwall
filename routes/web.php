@@ -61,11 +61,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/editfile/{id}', [UploadfileController::class, 'edit'])->name('editfile');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/updatefile/{id}', [UploadfileController::class, 'update'])->name('updatefile');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/editDuration', [UploadfileController::class, 'updateDuration'])->name('editDuration');
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/deletefile/{id}', [UploadfileController::class, 'destroy'])->name('deletefile');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->delete('/deletefile/{id}', [UploadfileController::class, 'destroy'])->name('deletefile');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/datagroup', [UploadgroupController::class, 'index'])->name('datagroup');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/creategroup', [UploadgroupController::class, 'create'])->name('creategroup');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/simpangroup', [UploadgroupController::class, 'store'])->name('simpangroup');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/editgroup/{id}', [UploadgroupController::class, 'edit'])->name('editgroup');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/updategroup/{id}', [UploadgroupController::class, 'update'])->name('updategroup');
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/deletegroup/{id}', [UploadgroupController::class, 'destroy'])->name('deletegroup');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->delete('/deletegroup/{id}', [UploadgroupController::class, 'destroy'])->name('deletegroup');

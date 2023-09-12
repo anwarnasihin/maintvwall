@@ -81,7 +81,7 @@ class UploadgroupController extends Controller
     public function destroy(string $id)
     {
         $gro = Group::findOrFail($id); 
-        $gro->Delete();
+        $gro->forceDelete();
         return back()->with('toast_success', 'Data berhasil di hapus!');
     }
 }
