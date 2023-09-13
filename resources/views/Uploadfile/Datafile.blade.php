@@ -71,37 +71,14 @@
                       <a onclick="document.getElementById('form{{ $loop->iteration }}').submit();" type="submit"><i class="fas fa-solid fa-download" style="color: #00f5e4;"></i></a>
                     </form>
                     @endif
-                    <a href="#" id="edit" data-id="{{$item->id}}" data-direktori="{{ $item->typeFile }}" data-duration="{{ $item->duration }}"><i class="far fa-edit" style="color: #e7ea2e;"></i></a>
-                    <a data-toggle="modal" data-target="#modal-hapus{{$item->id}}"><i class="fas fa-trash-alt" style="color: crimson"></i></a>
+                    <a href="#" id="edit" data-id="{{$item->id}}" data-direktori="{{ $item->typeFile }}" data-duration="{{ $item->duration }}">
+                      <i class="far fa-edit" style="color: #e7ea2e;"></i>
+                    </a>
+                    <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}">
+                      <i class="fas fa-trash-alt"></i>
+                    </a>
                   </td>
                 </tr>
-                
-                <div class="modal fade" id="modal-hapus{{$item->id}}">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h4 class="modal-title">Konfirmasi Hapus Data</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <p>Apakah kamu yakin ingin menghapus data <b>{{ $item->groups ? $item->groups->name : ' '  }}</b> </p>
-                      </div>
-                      <div class="modal-footer justify-content-between">
-                        <form action="{{ route('deletefile',['id' => $item->id]) }}" method="POST">
-                          @csrf
-                          @method('DELETE')
-                          <button type="button" class="btn btn-primary ml-auto" data-dismiss="modal">Close</button>
-                          <button type="submit" class="btn btn-danger">Ya, Hapus</button>
-                        </form>
-                      </div>
-                    </div>
-                    <!-- /.modal-content -->
-                  </div>
-                  <!-- /.modal-dialog -->
-                </div>
-                <!-- /.modal -->
                 @endforeach
 
               </tbody>
@@ -113,7 +90,9 @@
         </div>
         <!-- /.card -->
       </div>
-      <!-- Modal -->
+
+
+      <!-- Modal edit -->
       <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
@@ -318,5 +297,35 @@
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
   });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      // Tangkap acara klik tautan hapus
+      document.querySelectorAll('.delete-item').forEach(function (link) {
+          link.addEventListener('click', function (e) {
+              e.preventDefault();
+              
+              var itemId = this.dataset.id;
+              
+              // Tampilkan SweetAlert untuk konfirmasi hapus
+              Swal.fire({
+                  title: 'Apakah Anda yakin?',
+                  text: 'Anda tidak akan dapat mengembalikan data ini!',
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonText: 'Ya, Hapus',
+                  cancelButtonText: 'Batal'
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      // Redirect atau lakukan penghapusan di sini
+                      window.location.href = 'deletefile/' + itemId;
+                  }
+              });
+          });
+      });
+  });
+</script>
+
 @include('sweetalert::alert')
 @endsection

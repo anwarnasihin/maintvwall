@@ -40,7 +40,9 @@
                     <button class="btn btn-primary mr-2"><a href="/show/{{ $item->name}}" target="_blank" style="color: white;">Display</a></button>
                     <a href="{{ url('editgroup',$item->id) }}"><i class="fas fa-edit" style="color: #fdf512"></i></a>
                     &nbsp;
-                    <a data-toggle="modal" data-target="#modal-hapus{{$item->id}}"><i class="fas fa-trash-alt" style="color: crimson"></i></a>
+                    <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}">
+                      <i class="fas fa-trash-alt"></i>
+                    </a>
                   </td>
                 </tr>
 
@@ -106,6 +108,35 @@
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     });
   </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      // Tangkap acara klik tautan hapus
+      document.querySelectorAll('.delete-item').forEach(function (link) {
+          link.addEventListener('click', function (e) {
+              e.preventDefault();
+              
+              var itemId = this.dataset.id;
+              
+              // Tampilkan SweetAlert untuk konfirmasi hapus
+              Swal.fire({
+                  title: 'Apakah Anda yakin?',
+                  text: 'Anda tidak akan dapat mengembalikan data ini!',
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonText: 'Ya, Hapus',
+                  cancelButtonText: 'Batal'
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      // Redirect atau lakukan penghapusan di sini
+                      window.location.href = 'deletegroup/' + itemId;
+                  }
+              });
+          });
+      });
+  });
+</script>
 
   @include('sweetalert::alert')
 </section>
