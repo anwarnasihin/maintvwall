@@ -30,6 +30,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: width 0.5s, height 0.5s, background-color 0.5s;
+        }
+
+        #player.transition {
+            width: 100%;
+            height: 100%;
+            background-color: white;
         }
 
         #player img {
@@ -172,29 +179,52 @@
 
                 if (media.typeFile === "video") {
                     mediaPlayer = createVideoPlayer(media.direktori);
+
+                    // Menambahkan kelas untuk transisi
+                    player.classList.add('transition');
+
                     player.innerHTML = "";
-                    player.appendChild(mediaPlayer);
+                    // Menunggu durasi transisi selesai
+                    setTimeout(function() {
+                        // Menghapus kelas transisi
+                        player.classList.remove('transition');
 
-                    mediaPlayer.addEventListener('loadedmetadata', function() {
-                        var videoDuration = Math.floor(mediaPlayer.duration * 1000);
+                        player.appendChild(mediaPlayer);
 
-                        setTimeout(function() {
-                            currentData++;
-                            playVideoAndImage();
-                        }, videoDuration);
+                        mediaPlayer.addEventListener('loadedmetadata', function() {
+                            var videoDuration = Math.floor(mediaPlayer.duration * 1000);
 
-                        mediaPlayer.play(); // Play video after metadata is loaded
-                    });
+                            setTimeout(function() {
+                                currentData++;
+                                playVideoAndImage();
+                            }, videoDuration);
+
+                            mediaPlayer.play(); // Play video after metadata is loaded
+                        });
+                    }, 1000); // Ganti 500 dengan durasi transisi Anda (dalam milidetik)
                 }
                 if (media.typeFile === "images") {
                     mediaPlayer = createImagePlayer(media.direktori);
-                    player.innerHTML = "";
-                    player.appendChild(mediaPlayer);
 
+                    // Menambahkan kelas untuk transisi
+                    player.classList.add('transition');
+
+                    player.innerHTML = "";
+
+                    // Menunggu durasi transisi selesai
                     setTimeout(function() {
-                        currentData++;
-                        playVideoAndImage();
-                    }, media.duration);
+                        // Menghapus kelas transisi
+                        player.classList.remove('transition');
+
+                        // Menambahkan media player setelah transisi selesai
+                        player.appendChild(mediaPlayer);
+
+                        // Menambahkan timeout untuk melanjutkan setelah durasi media
+                        setTimeout(function() {
+                            currentData++;
+                            playVideoAndImage();
+                        }, media.duration);
+                    }, 1000); // Ganti 500 dengan durasi transisi Anda (dalam milidetik)
                 }
                 if (media.typeFile === "youtube") {
 
@@ -207,25 +237,37 @@
                     // Mengambil kode video dari URL
                     var videoCode = youtubeUrl.substring(startPos);
 
+                    // Menambahkan kelas untuk transisi
+                    player.classList.add('transition');
+
                     player.innerHTML = "";
-                    var youtubePlayerDiv = document.createElement('div');
-                    youtubePlayerDiv.id = 'youtube-player'; // Use a different ID to avoid conflicts
-                    player.appendChild(youtubePlayerDiv);
+
+                    // Menunggu durasi transisi selesai
                     setTimeout(function() {
-                        var youtubePlayerDiv = new YT.Player('youtube-player', {
-                            height: '100%', // Set height to 100%
-                            width: '100%',
-                            videoId: videoCode,
-                            playerVars: {
-                                'controls': 0, // Kontrol video (0 untuk dihilangkan)
-                                'autoplay': 1, // Autoplay video (1 untuk ya)
-                                // ... tambahkan opsi lain sesuai kebutuhan
-                            },
-                            events: {
-                                'onStateChange': onPlayerStateChange
-                            }
-                        });
-                    }, 100)
+                        // Menghapus kelas transisi
+                        player.classList.remove('transition');
+
+                        var youtubePlayerDiv = document.createElement('div');
+                        youtubePlayerDiv.id = 'youtube-player'; // Use a different ID to avoid conflicts
+                        player.classList.add('transition');
+                        player.appendChild(youtubePlayerDiv);
+                        player.classList.remove('transition');
+                        setTimeout(function() {
+                            var youtubePlayerDiv = new YT.Player('youtube-player', {
+                                height: '100%', // Set height to 100%
+                                width: '100%',
+                                videoId: videoCode,
+                                playerVars: {
+                                    'controls': 0, // Kontrol video (0 untuk dihilangkan)
+                                    'autoplay': 1, // Autoplay video (1 untuk ya)
+                                    // ... tambahkan opsi lain sesuai kebutuhan
+                                },
+                                events: {
+                                    'onStateChange': onPlayerStateChange
+                                }
+                            });
+                        }, 100)
+                    }, 1000); // Ganti 500 dengan durasi transisi Anda (dalam milidetik)
 
                     function onPlayerStateChange(event) {
                         if (event.data === YT.PlayerState.ENDED) {
