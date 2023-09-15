@@ -45,7 +45,6 @@
         }
 
         #youtube-player {
-            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -116,8 +115,9 @@
         <div id="player"></div>
     </div>
     <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
     <script>
-        var data = <?php echo json_encode($data); ?>
+        var data;
 
         var currentData = 0;
         var player = document.getElementById("player");
@@ -166,7 +166,7 @@
         }
 
         function playVideoAndImage() {
-            if (currentData < data.length) {
+            if (data && currentData < data.length) {
                 var media = data[currentData];
                 var mediaPlayer;
 
@@ -239,7 +239,24 @@
 
             } else {
                 currentData = 0;
-                playVideoAndImage();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/getContent',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        group: '{{$group}}',
+                    },
+                    success: function(dataa) {
+                        data = dataa;
+                        playVideoAndImage();
+                    },
+                    error: function(xhr, status, error) {
+                        // Tangani kesalahan di sini, contohnya:
+                        console.error(xhr.responseText);
+                    }
+                });
+
             }
         }
 

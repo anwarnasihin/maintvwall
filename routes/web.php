@@ -35,7 +35,10 @@ Route::middleware([
     })->name('dashboard');
 });
 Route::get('/show/{group}', function ($group) {
-    $idGroup = group::where('name', $group)->first();
+    return view('vidgam', ['group' => $group]);
+});
+Route::post('/getContent', function (Request $request) {
+    $idGroup = group::where('name', $request->group)->first();
     $dataa = source::where(function ($query) use ($idGroup) {
         $today = date("Y-m-d");
         $query->where('group', $idGroup->id)
@@ -47,7 +50,7 @@ Route::get('/show/{group}', function ($group) {
     });
     $data = $dataa->get();
     //return $data;
-    return view('vidgam', ['data' => $data]);
+    return response()->json($data);
 });
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->post('/download', function (Request $request) {
