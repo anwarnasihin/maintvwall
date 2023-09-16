@@ -138,7 +138,7 @@
             videoPlayer.id = "videoPlayer";
             videoPlayer.src = '/' + src;
             // videoPlayer.controls = true;
-            videoPlayer.muted = true;
+            // videoPlayer.muted = true;
             return videoPlayer;
         }
 
@@ -191,17 +191,16 @@
 
                         player.appendChild(mediaPlayer);
 
-                        mediaPlayer.addEventListener('loadedmetadata', function() {
-                            var videoDuration = Math.floor(mediaPlayer.duration * 1000);
-
-                            setTimeout(function() {
-                                currentData++;
-                                playVideoAndImage();
-                            }, videoDuration);
-
-                            mediaPlayer.play(); // Play video after metadata is loaded
-                        });
+                        mediaPlayer.setAttribute('autoplay', 'autoplay');
                     }, 1000); // Ganti 500 dengan durasi transisi Anda (dalam milidetik)
+                    mediaPlayer.addEventListener('loadedmetadata', function() {
+                        var videoDuration = Math.floor(mediaPlayer.duration * 1000);
+
+                        setTimeout(function() {
+                            currentData++;
+                            playVideoAndImage();
+                        }, videoDuration + 1000);
+                    });
                 }
                 if (media.typeFile === "images") {
                     mediaPlayer = createImagePlayer(media.direktori);
