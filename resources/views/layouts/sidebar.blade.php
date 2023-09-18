@@ -56,6 +56,12 @@
           </ul>
         </li>
 
+        <li class="nav-item">
+          <a href="{{ route('datausers') }}" class="nav-link {{ request()->is('datausers') ? 'active' : '' }}">
+            <i class="nav-icon fa fa-users"></i>
+            <p>Users</p>
+          </a>
+        </li>
 
         <li class="nav-item">
           <a href="" class="nav-link" data-toggle="modal" data-target="#logoutModal">

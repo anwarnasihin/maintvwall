@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use PhpParser\Node\Stmt\Return_;
 use App\Http\Controllers\UploadfileController;
 use App\Http\Controllers\UploadgroupController;
+use App\Http\Controllers\UsersController;
 use App\Models\group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -72,3 +73,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/editgroup/{id}', [UploadgroupController::class, 'edit'])->name('editgroup');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/updategroup/{id}', [UploadgroupController::class, 'update'])->name('updategroup');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/deletegroup/{id}', [UploadgroupController::class, 'destroy'])->name('deletegroup');
+
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/datausers', [UsersController::class, 'index'])->name('datausers');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/simpanuser', [UsersController::class, 'store'])->name('simpanuser');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/deleteuser/{id}', [UsersController::class, 'destroy'])->name('deleteuser');

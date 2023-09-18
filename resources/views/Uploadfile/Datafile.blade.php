@@ -140,8 +140,6 @@
         </div>
       </div>
 
-      
-
       <!-- Modal -->
       <div class="modal fade" id="modalShowKonten" tabindex="-1" role="dialog" aria-labelledby="modalShowKontenTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
