@@ -76,6 +76,5 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/datausers', [UsersController::class, 'index'])->name('datausers');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/simpanuser', [UsersController::class, 'store'])->name('simpanuser');
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/edituser/{id}', [UsersController::class, 'edit'])->name('edituser');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/updateuser/{id}', [UsersController::class, 'update'])->name('updateuser');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/deleteuser/{id}', [UsersController::class, 'destroy'])->name('deleteuser');
