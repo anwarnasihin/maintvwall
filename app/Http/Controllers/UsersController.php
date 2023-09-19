@@ -61,7 +61,8 @@ class UsersController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $usr = User::findorfail($id);
+        return view('Datauser', compact('usr'));
     }
 
     /**
@@ -69,7 +70,10 @@ class UsersController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $usr = User::findorfail($id);
+        $usr->update($request->all());
+
+        return back()->with('toast_success', 'Data berhasil di Update!');
     }
 
     /**

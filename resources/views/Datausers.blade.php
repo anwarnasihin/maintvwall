@@ -39,8 +39,9 @@
                   <td>{{ $item->email }}</td>
                   <td>Password Tidak Ditampilkan</td>
                   <td>
-                    
-                    <a href="#"><i class="fas fa-edit" style="color: #fdf512"></i></a>
+                    <a href="#" id="edit" class="edit-button" data-id="{{$item->id}}" data-name="{{ $item->name }}" data-email="{{ $item->email }}">
+                      <i class="far fa-edit" style="color: #e7ea2e;"></i>
+                  </a>
                     &nbsp;
                     <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}">
                       <i class="fas fa-trash-alt"></i>
@@ -85,7 +86,57 @@
     <!-- /.row -->
   </div><!-- /.container-fluid -->
 
-  
+
+      <!-- Modal Edit -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Data</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form id="editForm" action="{{ route('updateuser', ['id' => $item->id]) }}" method="POST">
+                  @csrf
+                  <input type="hidden" id="id" name="id">
+                  <div class="form-group">
+                      <label for="name">Name:</label>
+                      <input type="text" class="form-control" id="name" name="name">
+                  </div>
+                  <div class="form-group">
+                      <label for="email">Email:</label>
+                      <input type="text" class="form-control" id="email" name="email">
+                  </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" form="editForm" class="btn btn-primary">Save Changes</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  $(document).on('click', '#edit', function(e) {
+    e.preventDefault();
+    var uid = $(this).data('id');
+    var name = $(this).data('name');
+    var email = $(this).data('email');
+
+    $('#id').val(uid);
+    $('#name').val(name);
+    $('#email').val(email);
+
+    $('#editModal').modal('show');
+});
+</script>
 
   <!-- jQuery -->
   <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
@@ -158,7 +209,7 @@
     </div>
 </div>
 
-
+{{--javascript Hapus Data --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
 <script>
@@ -189,9 +240,8 @@
   });
 </script>
 
-<!-- Pastikan Anda telah memasang SweetAlert -->
+<!-- Java script menambah data -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
 <script>
   $(document).ready(function() {
       // Meng-handle klik tombol "Simpan"
