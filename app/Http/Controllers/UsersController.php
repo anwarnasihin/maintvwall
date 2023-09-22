@@ -28,25 +28,29 @@ class UsersController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        // Validasi data dari request
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
+{
 
-        // Simpan data pengguna ke database
+    // dd($request->all());
+    $request->validate([
+
+        'nama'=> 'required',
+        'email' => 'required|unique:users',
+        'password' => 'required',
+        
+    ]);
+
+    // Simpan data ke dalam tabel pengguna
         $user = new User;
         $user->name = $request->nama;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
-        $user->level = "";
-        $user->save();
+        $user->level = '';
+        $user->save();;
 
-        return response()->json(['message' => 'Data pengguna berhasil disimpan'], 200);
-        
-    }
+    // Alihkan pengguna setelah data disimpan
+    return response()->json($user);
+}
+
 
     /**
      * Display the specified resource.
@@ -59,21 +63,35 @@ class UsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request)
     {
-        $usr = User::findorfail($id);
-        return view('Datauser', compact('usr'));
+        $usr = User::find($request->id);
+        return response()->json($usr);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request,  $id)
     {
-        $usr = User::findorfail($id);
-        $usr->update($request->all());
+        $request->validate([
 
-        return back()->with('toast_success', 'Data berhasil di Update!');
+            'nama'=> 'required',
+            'email' => 'required',
+            
+        ]);
+
+        $user = User::find($id);
+        $user->name = $request->nama;
+        $user->email = $request->email;
+        if ($request->password != null) {
+            $user->password = bcrypt($request->password);
+        }
+        $user->level = '';
+        $user->save();;
+
+    // Alihkan pengguna setelah data disimpan
+    return response()->json($user);
     }
 
     /**
