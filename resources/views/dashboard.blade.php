@@ -27,11 +27,12 @@
                 </button>
             </div>
         </div>
-        <div class="card-body">
-            <img src="assets/dist/img/b1.png" alt="Description of the image" style="display: block; margin: 0 auto;" width="290" height="290">
-            <h2 class="card-body" style="text-align: center; font-size: 24px; font-weight: bold; color: #007BFF; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
+        <div class="card-body" style="background-image: url('assets/dist/img/Wallpaper-ZOOM.003.jpeg'); background-size: cover; background-repeat: no-repeat; height: 400px;">
+            <h2 class="card-body" style="text-align: center; font-size: 40px; font-weight: bold; color: #007BFF; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
                 Welcome to the <span style="color: #FF5733;">BINUS @Bekasi TV Wall</span> Application
             </h2>
+            {{-- <img src="#" alt="Description of the image" style="display: block; margin: 0 auto;" width="285" height="285"> --}}
+            
             
             
         </div>
