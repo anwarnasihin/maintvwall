@@ -28,10 +28,14 @@
             </div>
         </div>
         <div class="card-body">
-            <h2>
-                Welcome to the BINUS @Bekasi TV Wall application
+            <img src="assets/dist/img/b1.png" alt="Description of the image" style="display: block; margin: 0 auto;" width="290" height="290">
+            <h2 class="card-body" style="text-align: center; font-size: 24px; font-weight: bold; color: #007BFF; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
+                Welcome to the <span style="color: #FF5733;">BINUS @Bekasi TV Wall</span> Application
             </h2>
+            
+            
         </div>
+        
 
     </div>
 

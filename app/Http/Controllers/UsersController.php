@@ -28,18 +28,18 @@ class UsersController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
+    {
 
-    // dd($request->all());
-    $request->validate([
+        // dd($request->all());
+        $request->validate([
 
-        'nama'=> 'required',
-        'email' => 'required|unique:users',
-        'password' => 'required',
-        
-    ]);
+            'nama' => 'required',
+            'email' => 'required|unique:users',
+            'password' => 'required',
 
-    // Simpan data ke dalam tabel pengguna
+        ]);
+
+        // Simpan data ke dalam tabel pengguna
         $user = new User;
         $user->name = $request->nama;
         $user->email = $request->email;
@@ -47,9 +47,9 @@ class UsersController extends Controller
         $user->level = '';
         $user->save();;
 
-    // Alihkan pengguna setelah data disimpan
-    return response()->json($user);
-}
+        // Alihkan pengguna setelah data disimpan
+        return response()->json($user);
+    }
 
 
     /**
@@ -76,9 +76,9 @@ class UsersController extends Controller
     {
         $request->validate([
 
-            'nama'=> 'required',
+            'nama' => 'required',
             'email' => 'required',
-            
+
         ]);
 
         $user = User::find($id);
@@ -90,8 +90,8 @@ class UsersController extends Controller
         $user->level = '';
         $user->save();;
 
-    // Alihkan pengguna setelah data disimpan
-    return response()->json($user);
+        // Alihkan pengguna setelah data disimpan
+        return response()->json($user);
     }
 
     /**

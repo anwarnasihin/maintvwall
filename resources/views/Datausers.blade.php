@@ -85,7 +85,7 @@
                 </div><!-- /.container-fluid -->
 
 
-                <!-- Modals tambah data (masih diragukan)-->
+                <!-- Modals tambah data -->
                 <div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-labelledby="createGroupModalLabel" aria-hidden="true">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -119,12 +119,10 @@
                     </div>
                   </div>
                 </div>
-                <!-- End Modals tambah data (masih diragukan)-->
-
+                <!-- End Modals tambah data )-->
 
                 <!-- jQuery -->
                 <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
-
                 <script>
                   $(function() {
                     var createGroupModal = $("#createGroupModal");
@@ -162,8 +160,21 @@
                             contentType: false,
                             success: function(data) {
                                     $('#createGroupModal').modal('hide');
-                                    reset_from()
-                                    location.reload();
+                                    reset_from();
+
+                                    // Add SweetAlert notification for a successful update
+                                      Swal.fire({
+                                          icon: 'success',
+                                          title: 'Data Saved Successfully!',
+                                          text: 'Data berhasil di tambahkan.',
+                                          confirmButtonColor: '#3085d6',
+                                          confirmButtonText: 'OK'
+                                      }).then((result) => {
+                                          // You can add additional logic here if needed
+                                          if (result.isConfirmed) {
+                                              location.reload();
+                                          }
+                                      });
 
                                   },
                               });
@@ -199,25 +210,39 @@
                       },
                   });
                 })
+                    //end edit data
 
-              // update
-                $('.modal-footer').on('click', '.update', function() {
-                        var form = document.getElementById("formuser");
-                        var fd = new FormData(form);
-                        $.ajax({
-                            type: 'POST',
-                            url: 'updateuser/' + id,
-                            data: fd,
-                            processData: false,
-                            contentType: false,
-                            success: function(data) {
+                    // update
+                  $('.modal-footer').on('click', '.update', function() {
+                      var form = document.getElementById("formuser");
+                      var fd = new FormData(form);
+                      $.ajax({
+                          type: 'POST',
+                          url: 'updateuser/' + id,
+                          data: fd,
+                          processData: false,
+                          contentType: false,
+                          success: function(data) {
                               $('#createGroupModal').modal('hide');
-                              reset_from()
-                              location.reload();
-                            }
-                        });
-                    });
-                    //end update
+                              reset_from();
+                              
+                              // Add SweetAlert notification for a successful update
+                              Swal.fire({
+                                  icon: 'success',
+                                  title: 'Data Updated Successfully!',
+                                  text: 'Data berhasil di updated.',
+                                  confirmButtonColor: '#3085d6',
+                                  confirmButtonText: 'OK'
+                              }).then((result) => {
+                                  // You can add additional logic here if needed
+                                  if (result.isConfirmed) {
+                                      location.reload();
+                                  }
+                              });
+                          }
+                      });
+                  });
+                      //end update
 
                   });
                   function reset_from() {

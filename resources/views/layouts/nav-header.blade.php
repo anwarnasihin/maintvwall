@@ -5,9 +5,14 @@
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
+
+      {{-- Menampilkan nama sesuai user yg login --}}
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="{{ route('dashboard')}}" class="nav-link">Home</a>
+        <a href="{{ route('dashboard')}}" class="nav-link" style="font-size: 20px; font-weight: bold;">
+            {{ auth()->user()->name }}
+        </a>
       </li>
+    
     </ul>
 
     <!-- Right navbar links -->
