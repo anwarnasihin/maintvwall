@@ -49,6 +49,7 @@
                   <th class="text-center">Duration</th>
                   <th class="text-center">Start Date</th>
                   <th class="text-center">End Date</th>
+                  <th class="text-center">User Created</th>
                   <th class="text-center">Aksi</th>
                 </tr>
 
@@ -62,7 +63,8 @@
                   <td><a id="showKonten" href="#" data-type="{{ $item->typeFile }}" data-konten="{{ $item->direktori }}">{{ $item->direktori }}</a></td>
                   <td>{{ $item->duration }}</td>
                   <td>{{ $item->str_date }}</td>
-                  <td>{{ $item->ed_date }}</td>
+                  <td class="{{$item->ed_date <= date('Y-m-d')?'text-danger':''}}">{{ $item->ed_date }}</td>
+                  <td>{{$item->user->name}}</td>
                   <td class="text-center">
                     @if ($item->typeFile != "youtube")
                     <form id="form{{ $loop->iteration }}" action="/download" method="post">
@@ -298,30 +300,30 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-      // Tangkap acara klik tautan hapus
-      document.querySelectorAll('.delete-item').forEach(function (link) {
-          link.addEventListener('click', function (e) {
-              e.preventDefault();
-              
-              var itemId = this.dataset.id;
-              
-              // Tampilkan SweetAlert untuk konfirmasi hapus
-              Swal.fire({
-                  title: 'Apakah Anda yakin?',
-                  text: 'Anda tidak akan dapat mengembalikan data ini!',
-                  icon: 'warning',
-                  showCancelButton: true,
-                  confirmButtonText: 'Ya, Hapus',
-                  cancelButtonText: 'Batal'
-              }).then((result) => {
-                  if (result.isConfirmed) {
-                      // Redirect atau lakukan penghapusan di sini
-                      window.location.href = 'deletefile/' + itemId;
-                  }
-              });
-          });
+  document.addEventListener('DOMContentLoaded', function() {
+    // Tangkap acara klik tautan hapus
+    document.querySelectorAll('.delete-item').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        var itemId = this.dataset.id;
+
+        // Tampilkan SweetAlert untuk konfirmasi hapus
+        Swal.fire({
+          title: 'Apakah Anda yakin?',
+          text: 'Anda tidak akan dapat mengembalikan data ini!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Ya, Hapus',
+          cancelButtonText: 'Batal'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Redirect atau lakukan penghapusan di sini
+            window.location.href = 'deletefile/' + itemId;
+          }
+        });
       });
+    });
   });
 </script>
 

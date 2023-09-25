@@ -15,11 +15,16 @@ class source extends Model
         'direktori',
         'duration',
         'str_date',
-        'ed_date'
+        'ed_date',
+        'users'
     ];
 
     public function groups()
     {
         return $this->belongsTo(group::class, 'group', 'id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'users', 'id');
     }
 }

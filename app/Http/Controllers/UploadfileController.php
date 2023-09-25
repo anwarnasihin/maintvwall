@@ -6,7 +6,7 @@ use App\Models\group;
 use App\Models\source;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class UploadfileController extends Controller
 {
@@ -15,7 +15,7 @@ class UploadfileController extends Controller
      */
     public function index()
     {
-        $dataFile = Source::with('groups')->latest()->get(); // Menggunakan metode get()
+        $dataFile = Source::with('groups', 'user')->latest()->get(); // Menggunakan metode get()
         return view('Uploadfile.Datafile', compact('dataFile'), ['judul' => 'Data Source']);
     }
 
@@ -48,13 +48,14 @@ class UploadfileController extends Controller
         $postt->duration = $request->duration != null ? $request->duration : 0;
         $postt->str_date = date("Y-m-d", strtotime(str_replace('/', '-', $request->str_date)));
         $postt->ed_date = date("Y-m-d", strtotime(str_replace('/', '-', $request->ed_date)));
+        $postt->users = Auth::user()->id;
         $postt->save();
 
-        if ($postt->id && $request->typeFile != "youtube"){
+        if ($postt->id && $request->typeFile != "youtube") {
             if ($postt->id) {
                 $file->move(public_path('assets/' . $request->typeFile . '/'), $filename);
             }
-        } 
+        }
 
         return redirect('datafile')->with('toast_success', 'Data berhasil di simpan!');
     }
