@@ -100,6 +100,7 @@
                       <div class="modal-body">
                         <form id="formuser" method="post" role="form" enctype="multipart/form-data">
                           @csrf
+                          <span id="peringatan"></span>
                           <input type="hidden" id="id">
                             <div class="form-group">
                               <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama">
@@ -108,7 +109,7 @@
                               <input class="form-control" id="email" name="email" placeholder="Email">
                             </div>
                             <div class="form-group">
-                              <input class="form-control" id="password" name="password" placeholder="Password">
+                              <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                             </div>
                           </div>
                           <div class="modal-footer">
@@ -150,8 +151,56 @@
 
                     //add data
                     $('.modal-footer').on('click', '.add', function() {
+                      try {
                         var form = document.getElementById("formuser");
                         var fd = new FormData(form);
+
+                        // Ambil nilai nama, email, dan password dari form
+                            var nama = fd.get('nama');
+                            var email = fd.get('email');
+                            var password = fd.get('password');
+
+                            // Validasi Nama (hanya huruf)
+                            var namaRegex = /^[A-Za-z\s]+$/;
+                            if (!namaRegex.test(nama)) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Nama hanya boleh berisi huruf dan spasi atau tidak boleh kosong.',
+                                    confirmButtonColor: '#d33',
+                                    confirmButtonText: 'OK'
+                                });
+                                return;
+                            }
+
+                            // Validasi Email (unik)
+                            // Anda perlu mengirim email ke server untuk memeriksa keunikannya
+                            // Di sini, kita hanya memeriksa apakah email sudah diisi
+                            if (!email) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Email harus diisi.',
+                                    confirmButtonColor: '#d33',
+                                    confirmButtonText: 'OK'
+                                });
+                                return;
+                            }
+
+                            // Validasi Password (huruf dan angka)
+                            var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+                            if (!passwordRegex.test(password)) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Password harus terdiri dari minimal 8 karakter, termasuk huruf dan angka.',
+                                    confirmButtonColor: '#d33',
+                                    confirmButtonText: 'OK'
+                                });
+                                return;
+                            }
+
+
                         $.ajax({
                             type: 'POST',
                             url: '{{ url("simpanuser") }}',
@@ -159,6 +208,7 @@
                             processData: false,
                             contentType: false,
                             success: function(data) {
+
                                     $('#createGroupModal').modal('hide');
                                     reset_from();
 
@@ -174,11 +224,29 @@
                                           if (result.isConfirmed) {
                                               location.reload();
                                           }
+                                          
                                       });
-
+                                    
                                   },
+                                  error: function(xhr, status, error) {
+                                    // Tangani pengecualian di sini
+                                    // Anda dapat menampilkan pesan kesalahan atau melakukan tindakan lain sesuai kebutuhan
+                                    console.error(xhr.responseText);
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: 'Data sudah ada.',
+                                        confirmButtonColor: '#d33',
+                                        confirmButtonText: 'OK'
+                                    });
+                                } 
                               });
-                          });
+                          } catch (error) {
+                              // Tangani pengecualian JavaScript di sini jika terjadi selama eksekusi kode di atas
+                              console.error(error);
+                          }
+                        });
+                    //end add data
 
                     // edit data
                     $(document).on('click', '#edit', function(e) {
