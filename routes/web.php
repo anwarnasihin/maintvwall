@@ -44,9 +44,10 @@ Route::post('/getContent', function (Request $request) {
         $today = date("Y-m-d");
         $query->where('group', '=', $idGroup->id)
             ->where('str_date', '>=', $today)
-            ->orWhere(function ($query) use ($today) {
+            ->orWhere(function ($query) use ($today, $idGroup) {
                 $query->where('str_date', '<', $today)
-                    ->where('ed_date', '>=', $today);
+                    ->where('ed_date', '>=', $today)
+                    ->where('group', $idGroup->id);
             });
     });
     $data = $dataa->get();
