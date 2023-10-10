@@ -29,28 +29,31 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-
-        // dd($request->all());
-        $request->validate([
-
-            'nama' => 'required',
-            'email' => 'required|unique:users',
-            'password' => 'required',
-
-        ]);
-
-        // Simpan data ke dalam tabel pengguna
-        $user = new User;
-        $user->name = $request->nama;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        $user->level = '';
-        $user->save();;
-
-        // Alihkan pengguna setelah data disimpan
-        return response()->json($user);
+        try {
+            // Validasi input
+            $request->validate([
+                'nama' => 'required',
+                'email' => 'required|email|unique:users,email,NULL,id',
+                'password' => ['required', 'regex:/^(?=.*[a-zA-Z])(?=.*\d).{8,}$/'],
+            ]);
+    
+            // Simpan data ke dalam tabel pengguna
+            $user = new User;
+            $user->name = $request->nama;
+            $user->email = $request->email;
+            $user->password = bcrypt($request->password);
+            $user->level = '';
+            $user->save();
+    
+            // Alihkan pengguna setelah data disimpan
+            return response()->json($user);
+        } catch (\Exception $e) {
+            // Tangani pengecualian di sini
+            // Anda dapat melakukan hal-hal seperti mencatat pesan kesalahan, mengirim pesan kesalahan, atau mengembalikan respon kesalahan kepada pengguna
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
-
+    
 
     /**
      * Display the specified resource.
