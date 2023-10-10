@@ -42,7 +42,7 @@ Route::post('/getContent', function (Request $request) {
     $idGroup = group::where('name', $request->group)->first();
     $dataa = source::where(function ($query) use ($idGroup) {
         $today = date("Y-m-d");
-        $query->where('group', $idGroup->id)
+        $query->where('group', '=', $idGroup->id)
             ->where('str_date', '>=', $today)
             ->orWhere(function ($query) use ($today) {
                 $query->where('str_date', '<', $today)
