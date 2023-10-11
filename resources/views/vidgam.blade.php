@@ -22,16 +22,28 @@
             position: relative;
             width: 100%;
             height: 100vh;
+            overflow: hidden;
         }
 
         #player {
             width: 100%;
-            height: 100%;
+            height: calc(100% - 50px);
             display: flex;
             justify-content: center;
             align-items: center;
             transition: width 0.5s, height 0.5s, background-color 0.5s;
         }
+
+        #footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 50px; /* Sesuaikan tinggi footer sesuai kebutuhan Anda */
+    background-color: rgba(0, 0, 0, 0.8); /* Warna latar belakang footer */
+    color: #fff; /* Warna teks footer */
+    text-align: center; /* Pusatkan teks dalam footer */
+    line-height: 50px; /* Sesuaikan dengan tinggi footer untuk pusatkan vertikal teks */
+}
 
         #player.transition {
             width: 100%;
@@ -58,42 +70,7 @@
             height: 100%;
         }
 
-        #date {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: #fff;
-            font-size: 18px;
-            opacity: 0.5;
-            /* Tambahkan properti opacity */
-            font-family: "Segoe UI", Arial, sans-serif;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-            letter-spacing: 0.5px;
-        }
 
-        #day {
-            font-size: 24px;
-            font-weight: bold;
-            opacity: 1;
-            /* Tambahkan properti opacity */
-            font-family: "Segoe UI", Arial, sans-serif;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-            letter-spacing: 2px;
-        }
-
-        #clock {
-            position: absolute;
-            top: 50px;
-            left: 10px;
-            color: #fff;
-            font-size: 50px;
-            opacity: 0.5;
-            /* Tambahkan properti opacity */
-            font-family: "Segoe UI", Arial, sans-serif;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-            letter-spacing: 3px;
-            font-weight: bold;
-        }
 
         /* Mengatur tinggi gambar berdasarkan lebar layar */
         @media screen and (max-width: 768px) {
@@ -110,17 +87,62 @@
                 height: 100%;
             }
         }
+
+        #runningTextContainer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            font-size: 26px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-weight: bold;
+            background-color: rgba(0, 0, 0, 1);
+            color: #fff;
+            padding: 10px;
+            z-index: 9999;
+            white-space: nowrap; /* Mencegah teks wrap */
+        }
+
+        #datetime {
+            display: inline-block;
+            vertical-align: bottom; /* Mengatur vertikal ke bawah */
+        }
+
+        #datetime > div {
+            text-shadow: 2px 2px 4px rgba(185, 236, 0, 0.5); /* Tambahkan bayangan teks */
+            display: inline-block;
+            margin-right: 3px; /* Jarak antara elemen-elemen dalam datetime */
+        }
+
+        #runningText {
+            text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5); /* Tambahkan bayangan teks */
+        }
     </style>
 </head>
 
 <body>
+    <div id="runningTextContainer">
+        <!-- Elemen datetime -->
+        <div id="datetime">
+            <div id="day"><span id="dayValue"></span></div>
+            <div id="date"><span id="dateValue"></span></div>
+            <div id="clock"><span id="clockValue"></span></div>
+        </div>
+        <!-- Running text -->
+        <marquee id="runningText" behavior="scroll" direction="left">
+            Bina Nusantara @Bekasi, Striving for excellence, Perseverance, Integrity, Respect, Innovation, Teamwork
+        </marquee>
+    </div>
+
+
     <div id="container">
         <div id="date">
-            <span id="day"></span>, <span id="formattedDate"></span>
+            {{-- <span id="day"></span>, <span id="formattedDate"></span> --}}
         </div>
         <div id="clock"></div>
         <div id="player"></div>
     </div>
+
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
     <script>
@@ -301,9 +323,16 @@
             }
         }
 
+        document.addEventListener("DOMContentLoaded", function() {
+            startSlideshow();
+        });
 
+        function updateRunningText() {
+            // Ambil elemen-elemen jam, tanggal, dan hari
+            var clockValue = document.getElementById("clockValue");
+            var dateValue = document.getElementById("dateValue");
+            var dayValue = document.getElementById("dayValue");
 
-        function updateTime() {
             var currentDate = new Date();
             var hours = currentDate.getHours();
             var minutes = currentDate.getMinutes();
@@ -313,30 +342,33 @@
             var month = currentDate.getMonth();
             var year = currentDate.getFullYear();
 
-            // Mengatur format waktu dengan 2 digit
-            hours = (hours < 10) ? "0" + hours : hours;
-            minutes = (minutes < 10) ? "0" + minutes : minutes;
-            seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-            // Mengatur format tanggal dengan 2 digit
-            date = (date < 10) ? "0" + date : date;
-
             var dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
             var monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
             var dayName = dayNames[day];
             var monthName = monthNames[month];
 
-            dayElement.textContent = dayName;
-            formattedDateElement.textContent = date + " " + monthName + " " + year;
+            // Format jam, misalnya "01:23:45"
+            var formattedTime = (hours < 10 ? "0" : "") + hours + ":" +
+                                (minutes < 10 ? "0" : "") + minutes + ":" +
+                                (seconds < 10 ? "0" : "") + seconds;
 
-            clock.textContent = hours + ":" + minutes + ":" + seconds;
+            // Format tanggal, misalnya "Tanggal 31 Desember 2023"
+            var formattedDate = "" + date + " " + monthName + " " + year;
 
-            setTimeout(updateTime, 1000); // Memperbarui waktu setiap detik
+            // Format hari, misalnya "Hari Senin"
+            var formattedDay = "" + dayName;
+
+            // Update teks jam, tanggal, dan hari
+            clockValue.textContent = formattedTime;
+            dateValue.textContent = formattedDate;
+            dayValue.textContent = formattedDay;
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            startSlideshow();
-        });
+        // Panggil fungsi updateRunningText() untuk menginisialisasi isi jam, tanggal, dan hari
+        updateRunningText();
+
+        // Panggil fungsi updateRunningText() sesuai dengan kebutuhan
+        setInterval(updateRunningText, 1000); // Mengubah teks setiap 1 detik
     </script>
 </body>
 

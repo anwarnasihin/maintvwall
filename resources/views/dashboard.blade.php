@@ -18,7 +18,7 @@
                 </button>
             </div>
         </div>
-        <div class="card-body" style="background-image: url('assets/dist/img/Wallpaper-ZOOM.003.jpeg'); background-size: cover; background-repeat: no-repeat; min-height: 30em;">
+        <div class="card-body" style="background-image: url('assets/dist/img/Wallpaper-ZOOM.003.jpeg'); background-size: cover; background-repeat: no-repeat; min-height: 45em;">
             <h2 class="card-body" style="text-align: center; font-size: 30px; font-weight: bold; color: #007BFF; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
                 <span style="color: #007BFF; opacity: 0.8;">Welcome to the </span><span style="color: #FF5733;">BINUS @Bekasi TV Wall</span> <span style="opacity: 0.8;">Application</span>
             </h2>
