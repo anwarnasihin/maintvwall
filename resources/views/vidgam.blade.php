@@ -39,7 +39,7 @@
     bottom: 0;
     width: 100%;
     height: 50px; /* Sesuaikan tinggi footer sesuai kebutuhan Anda */
-    background-color: rgba(0, 0, 0, 0.8); /* Warna latar belakang footer */
+    background-color: rgba(0, 57, 212, 0.8); /* Warna latar belakang footer */
     color: #fff; /* Warna teks footer */
     text-align: center; /* Pusatkan teks dalam footer */
     line-height: 50px; /* Sesuaikan dengan tinggi footer untuk pusatkan vertikal teks */
