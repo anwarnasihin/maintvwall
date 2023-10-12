@@ -27,7 +27,7 @@
 
         #player {
             width: 100%;
-            height: calc(100% - 50px);
+            height: calc(100% - 40px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -35,15 +35,15 @@
         }
 
         #footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 50px; /* Sesuaikan tinggi footer sesuai kebutuhan Anda */
-    background-color: rgba(0, 57, 212, 0.8); /* Warna latar belakang footer */
-    color: #fff; /* Warna teks footer */
-    text-align: center; /* Pusatkan teks dalam footer */
-    line-height: 50px; /* Sesuaikan dengan tinggi footer untuk pusatkan vertikal teks */
-}
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px; /* Sesuaikan tinggi footer sesuai kebutuhan Anda */
+            background-color: rgba(0, 57, 212, 0.8); /* Warna latar belakang footer */
+            color: #fff; /* Warna teks footer */
+            text-align: center; /* Pusatkan teks dalam footer */
+            line-height: 50px; /* Sesuaikan dengan tinggi footer untuk pusatkan vertikal teks */
+        }
 
         #player.transition {
             width: 100%;
@@ -53,7 +53,7 @@
 
         #player img {
             max-width: 100%;
-            max-height: 100%;
+            max-height: calc(100% - 28px); /* 28px adalah tinggi dari runningTextContainer dan paddingnya */
             width: auto;
             height: auto;
         }
@@ -102,11 +102,11 @@
             font-weight: bold;
             background-color: rgb(119, 0, 0);
             color: #fff;
-            padding: 4px 3px; /* Sesuaikan dengan tinggi padding yang Anda inginkan */
+            padding: 4px 3px;
             z-index: 9999;
             white-space: nowrap;
-            border-top-left-radius: 7px; /* Sudut kiri atas */
-            border-top-right-radius: 15px; /* Sudut kanan atas */
+            border-top-left-radius: 7px;
+            border-top-right-radius: 15px;
         }
 
         #datetime {
