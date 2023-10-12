@@ -59,11 +59,13 @@
         }
 
         #player video {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: calc(100% - 40px); /* 40px adalah tinggi "running text" termasuk padding */
         }
+
 
         #youtube-player {
             top: 0;
@@ -98,11 +100,13 @@
             font-size: 24px;
             font-family: "Segoe UI", Arial, sans-serif;
             font-weight: bold;
-            background-color: rgb(2, 0, 119);
+            background-color: rgb(119, 0, 0);
             color: #fff;
-            padding: 10px;
+            padding: 4px 3px; /* Sesuaikan dengan tinggi padding yang Anda inginkan */
             z-index: 9999;
-            white-space: nowrap; /* Mencegah teks wrap */
+            white-space: nowrap;
+            border-top-left-radius: 7px; /* Sudut kiri atas */
+            border-top-right-radius: 15px; /* Sudut kanan atas */
         }
 
         #datetime {
@@ -111,13 +115,13 @@
         }
 
         #datetime > div {
-            text-shadow: 2px 2px 4px rgba(185, 236, 0, 0.5); /* Tambahkan bayangan teks */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Tambahkan bayangan teks */
             display: inline-block;
             margin-right: 3px; /* Jarak antara elemen-elemen dalam datetime */
         }
 
         #runningText {
-            text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5); /* Tambahkan bayangan teks */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Tambahkan bayangan teks */
         }
 
         #clockValue, #dateValue, #dayValue {
