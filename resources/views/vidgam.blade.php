@@ -59,8 +59,10 @@
         }
 
         #player video {
+            top: 0;
+            left: 0;
             width: 100%;
-            height: auto;
+            height: 100%;
         }
 
         #youtube-player {
@@ -93,10 +95,10 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            font-size: 26px;
+            font-size: 24px;
             font-family: "Segoe UI", Arial, sans-serif;
             font-weight: bold;
-            background-color: rgba(0, 0, 0, 1);
+            background-color: rgb(2, 0, 119);
             color: #fff;
             padding: 10px;
             z-index: 9999;
@@ -116,6 +118,10 @@
 
         #runningText {
             text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5); /* Tambahkan bayangan teks */
+        }
+
+        #clockValue, #dateValue, #dayValue {
+            font-size: 24px;
         }
     </style>
 </head>
