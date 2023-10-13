@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>TV Wall BINUS@BEKASI</title>
     <style>
@@ -16,6 +15,13 @@
             background-repeat: no-repeat;
             /* Agar gambar tidak diulang */
             background-image: url('/logo/backVidGram.jpg');
+
+            /* new */
+            color: #fff;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-weight: bold;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         #container {
@@ -34,15 +40,18 @@
             transition: width 0.5s, height 0.5s, background-color 0.5s;
         }
 
-        #footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 50px; /* Sesuaikan tinggi footer sesuai kebutuhan Anda */
-            background-color: rgba(0, 57, 212, 0.8); /* Warna latar belakang footer */
-            color: #fff; /* Warna teks footer */
-            text-align: center; /* Pusatkan teks dalam footer */
-            line-height: 50px; /* Sesuaikan dengan tinggi footer untuk pusatkan vertikal teks */
+        /* new */
+        footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #770000;
+        padding: 4px 0;
+        display: flex;
+        justify-content: space-between;
+        border-top-left-radius: 7px;
+        border-top-right-radius: 7px;
         }
 
         #player.transition {
@@ -74,8 +83,6 @@
             height: 100%;
         }
 
-
-
         /* Mengatur tinggi gambar berdasarkan lebar layar */
         @media screen and (max-width: 768px) {
             #player img {
@@ -92,66 +99,84 @@
             }
         }
 
-        #runningTextContainer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            font-size: 24px;
-            font-family: "Segoe UI", Arial, sans-serif;
-            font-weight: bold;
-            background-color: rgb(119, 0, 0);
-            color: #fff;
-            padding: 4px 3px;
-            z-index: 9999;
-            white-space: nowrap;
-            border-top-left-radius: 7px;
-            border-top-right-radius: 15px;
+        /* new */
+        #running-text-container {
+        flex-grow: 1;
+        overflow: hidden;
+        white-space: nowrap;
+        border-top-left-radius: 7px;
+        border-top-right-radius: 15px;
+        white-space: nowrap;
         }
 
-        #datetime {
-            display: inline-block;
-            vertical-align: bottom; /* Mengatur vertikal ke bawah */
+        /* new */
+        #date-time {
+        display: flex;
+        align-items: center;
+        margin-left: 5px;
+        margin-right: 5px;
+        max-width: 1500px;
         }
 
-        #datetime > div {
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Tambahkan bayangan teks */
-            display: inline-block;
-            margin-right: 3px; /* Jarak antara elemen-elemen dalam datetime */
+        /* new */
+        #running-text {
+        animation: marquee 20s linear infinite;
+        transition: transform 0.5s ease-in-out;
+        font-size: 24px;
+        font-family: "Segoe UI", Arial, sans-serif;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        font-weight: bold;
         }
 
-        #runningText {
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Tambahkan bayangan teks */
+        /* new */
+        #date-time > div {
+        display: flex;
+        white-space: nowrap; /* Mencegah teks memisah saat diperbesar */
         }
 
-        #clockValue, #dateValue, #dayValue {
-            font-size: 24px;
+        /* new */
+        #date {
+        margin-right: 5px; /* Menambahkan spasi antara "date" dan "time" */
+         }
+
+         @keyframes marquee {
+        0% {
+          transform: translateX(100%);
         }
+
+        100% {
+          transform: translateX(-100%);
+        }
+      }
     </style>
 </head>
 
 <body>
-    <div id="runningTextContainer">
-        <!-- Elemen datetime -->
-        <div id="datetime">
-            <div id="day"><span id="dayValue"></span></div>
-            <div id="date"><span id="dateValue"></span></div>
-            <div id="clock"><span id="clockValue"></span></div>
-        </div>
-        <!-- Running text -->
-        <marquee id="runningText" behavior="scroll" direction="left">
-            Bina Nusantara @Bekasi, Striving for excellence, Perseverance, Integrity, Respect, Innovation, Teamwork
-        </marquee>
-    </div>
-
-
     <div id="container">
-        <div id="date">
-            {{-- <span id="day"></span>, <span id="formattedDate"></span> --}}
-        </div>
+        {{-- <div id="date">
+            <span id="day"></span>, <span id="formattedDate"></span>
+        </div> --}}
         <div id="clock"></div>
         <div id="player"></div>
     </div>
+
+    <footer>
+        <div id="date-time">
+          <div>
+            <span id="day"></span>, <span id="date"> </span>
+            <span id="time"> </span>|
+          </div>
+        </div>
+        <div id="running-text-container">
+          <div id="running-text">
+            Bina Nusantara @Bekasi, Striving for excellence, Perseverance,
+            Integrity, Respect, Innovation, Teamwork
+          </div>
+        </div>
+    </footer>
+
+
+    
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
@@ -337,48 +362,54 @@
             startSlideshow();
         });
 
-        function updateRunningText() {
-            // Ambil elemen-elemen jam, tanggal, dan hari
-            var clockValue = document.getElementById("clockValue");
-            var dateValue = document.getElementById("dateValue");
-            var dayValue = document.getElementById("dayValue");
+        function updateDateTime() {
+        const now = new Date();
+        const days = [
+          "Minggu",
+          "Senin",
+          "Selasa",
+          "Rabu",
+          "Kamis",
+          "Jumat",
+          "Sabtu",
+        ];
+        const day = days[now.getDay()];
+        const date = now.getDate();
+        const monthNames = [
+          "Januari",
+          "Februari",
+          "Maret",
+          "April",
+          "Mei",
+          "Juni",
+          "Juli",
+          "Agustus",
+          "September",
+          "Oktober",
+          "November",
+          "Desember",
+        ];
+        const month = monthNames[now.getMonth()];
+        const year = now.getFullYear();
+        const hours = now.getHours().toString().padStart(2, "0");
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const seconds = now.getSeconds().toString().padStart(2, "0");
 
-            var currentDate = new Date();
-            var hours = currentDate.getHours();
-            var minutes = currentDate.getMinutes();
-            var seconds = currentDate.getSeconds();
-            var day = currentDate.getDay();
-            var date = currentDate.getDate();
-            var month = currentDate.getMonth();
-            var year = currentDate.getFullYear();
+        document.getElementById("day").textContent = day;
+        document.getElementById("date").textContent =
+          date + " " + month + " " + year;
+        document.getElementById("time").textContent =
+          hours + ":" + minutes + ":" + seconds;
+      }
 
-            var dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-            var monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            var dayName = dayNames[day];
-            var monthName = monthNames[month];
-
-            // Format jam, misalnya "01:23:45"
-            var formattedTime = (hours < 10 ? "0" : "") + hours + ":" +
-                                (minutes < 10 ? "0" : "") + minutes + ":" +
-                                (seconds < 10 ? "0" : "") + seconds;
-
-            // Format tanggal, misalnya "Tanggal 31 Desember 2023"
-            var formattedDate = "" + date + " " + monthName + " " + year;
-
-            // Format hari, misalnya "Hari Senin"
-            var formattedDay = "" + dayName;
-
-            // Update teks jam, tanggal, dan hari
-            clockValue.textContent = formattedTime;
-            dateValue.textContent = formattedDate;
-            dayValue.textContent = formattedDay;
-        }
+      updateDateTime();
+      setInterval(updateDateTime, 1000);
 
         // Panggil fungsi updateRunningText() untuk menginisialisasi isi jam, tanggal, dan hari
-        updateRunningText();
+        // updateRunningText();
 
         // Panggil fungsi updateRunningText() sesuai dengan kebutuhan
-        setInterval(updateRunningText, 1000); // Mengubah teks setiap 1 detik
+        // setInterval(updateRunningText, 1000); // Mengubah teks setiap 1 detik
     </script>
 </body>
 
