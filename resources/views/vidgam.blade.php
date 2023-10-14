@@ -166,8 +166,8 @@
             <span id="day"></span>, <span id="date"> </span>
             <span id="time"> </span>
             <span style="
-            margin: 0 5px 0 5px;
-            line-height: 1.2em;
+            margin: 0 4px 0 5px;
+            line-height: 1.05em;
             ">|</span>
           </div>
         </div>
