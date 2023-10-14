@@ -164,7 +164,11 @@
         <div id="date-time">
           <div>
             <span id="day"></span>, <span id="date"> </span>
-            <span id="time"> </span>|
+            <span id="time"> </span>
+            <span style="
+            margin: 0 5px 0 5px;
+            line-height: 1.2em;
+            ">|</span>
           </div>
         </div>
         <div id="running-text-container">
