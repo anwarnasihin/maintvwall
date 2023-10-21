@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use PhpParser\Node\Stmt\Return_;
 use App\Http\Controllers\UploadfileController;
 use App\Http\Controllers\UploadgroupController;
+use App\Http\Controllers\UploadtextController;
 use App\Http\Controllers\UsersController;
 use App\Models\group;
 use Illuminate\Http\Request;
@@ -80,3 +81,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/edituser', [UsersController::class, 'edit'])->name('edituser');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/updateuser/{id}', [UsersController::class, 'update'])->name('updateuser');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/deleteuser/{id}', [UsersController::class, 'destroy'])->name('deleteuser');
+
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/datatext', [UploadtextController::class, 'index'])->name('datatext');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/createtext', [UploadtextController::class, 'create'])->name('createtext');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/simpantext', [UploadtextController::class, 'store'])->name('simpantext');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/edittext/{id}', [UploadtextController::class, 'edit'])->name('edittext');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/updatetext/{id}', [UploadtextController::class, 'update'])->name('updatetext');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/deletetext/{id}', [UploadtextController::class, 'destroy'])->name('deletetext');

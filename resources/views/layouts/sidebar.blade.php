@@ -53,6 +53,12 @@
                 &nbsp;<p>Add Data</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href=" {{ route('datatext') }} " class="nav-link {{ request()->is('datatext') ? 'active' : '' }}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fab fa-adversal"></i>
+                &nbsp;<p>Add Text</p>
+              </a>
+            </li>
           </ul>
         </li>
 

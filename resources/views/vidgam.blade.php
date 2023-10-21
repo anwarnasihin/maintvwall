@@ -169,8 +169,7 @@
         </div>
         <div id="running-text-container">
           <div id="running-text">
-            Bina Nusantara @Bekasi, Striving for excellence, Perseverance,
-            Integrity, Respect, Innovation, Teamwork
+            {{ $dtText->deskripsi }}
           </div>
         </div>
     </footer>
