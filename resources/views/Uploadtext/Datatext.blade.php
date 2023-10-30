@@ -8,10 +8,10 @@
         {{-- <h1 class="m-0">{{$judul}}</h1> --}}
       </div><!-- /.col -->
 
-    </div><!-- /.row -->
-  </div><!-- /.container-fluid -->
+    </div>
+  </div>
 </div>
-<!-- /.content-header -->
+
 <!-- Main content -->
 <section class="content">
   <div class="container-fluid">
@@ -26,6 +26,7 @@
                   <th class="text-center" style="width: 10px">No</th>
                   <th class="text-center">Judul</th>
                   <th class="text-center">Deskripsi</th>
+                  <th class="text-center">Status</th>
                   <th class="text-center">Aksi</th>
                 </tr>
 
@@ -36,8 +37,9 @@
                   <td>{{ $loop->iteration }}</td>
                   <td>{{ $item->judul}}</td>
                   <td>{{ $item->deskripsi}}</td>
+                  <td>{{ ($item->status == 1) ? "publish" : "tidak publish"}}</td>
                   <td>
-                    <a href="{{ url('edittext',$item->id) }}"><i class="fas fa-edit" style="color: #fdf512"></i></a>
+                    <a href="{{ url('edittext',$item->id) }}"><i class="fas fa-edit" style="color: #e7b100"></i></a>
                     &nbsp;
                     <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}">
                       <i class="fas fa-trash-alt"></i>
@@ -92,6 +94,7 @@
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
+        "searching": true, // Mengaktifkan pencarian
         "columnDefs": [{
           "className": "text-center",
           "targets": [0, 1, 2, 3], // table ke 1
@@ -100,7 +103,7 @@
           text: 'Tambah Data <i class="fas fa-plus-square"></i>',
           action: function(e, dt, node, config) {
             // Mengarahkan ke rute Laravel menggunakan tautan Blade
-            window.location.href = "{{ route('createtext') }}";
+            window.location.href = "{{ route('creategroup') }}";
           },
           className: 'btn-success' // Menambahkan kelas CSS untuk warna hijau
         }]
@@ -129,7 +132,7 @@
               }).then((result) => {
                   if (result.isConfirmed) {
                       // Redirect atau lakukan penghapusan di sini
-                      window.location.href = 'deletegroup/' + itemId;
+                      window.location.href = 'deletetext/' + itemId;
                   }
               });
           });

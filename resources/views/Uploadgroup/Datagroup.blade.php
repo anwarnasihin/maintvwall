@@ -8,10 +8,10 @@
         {{-- <h1 class="m-0">{{$judul}}</h1> --}}
       </div><!-- /.col -->
 
-    </div><!-- /.row -->
-  </div><!-- /.container-fluid -->
+    </div>
+  </div>
 </div>
-<!-- /.content-header -->
+
 <!-- Main content -->
 <section class="content">
   <div class="container-fluid">

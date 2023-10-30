@@ -12,12 +12,12 @@
                     </div>
 
                     <div class="card-body">
-                        <form action="{{ url('simpantext')}}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ url('updatetext', $txt->id) }}" method="POST" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <label for="judul">Judul</label>
-                            <input type="text" name="judul" class="form-control">
+                            <input type="text" name="judul" class="form-control" value="{{ $txt->judul}}">
                             <label for="deskripsi">Deskripsi</label>
-                            <textarea name="deskripsi" id="content" class="form-control" cols="30" rows="5"></textarea>
+                            <textarea name="deskripsi" id="content" class="form-control" cols="30" rows="5">{{ $txt->deskripsi}}</textarea>
                             <label for="status">Status</label>
                             <select class="form-control" name="status" id="status">
                                 <option value="1">Publish</option>
@@ -25,7 +25,7 @@
                             </select>
                             <br>
                             <div class="form-group">
-                                <button type="submit" class="btn btn-success">Simpan Data</button>
+                                <button type="submit" class="btn btn-success">Update Data</button>
                             </div>
                             
                         </form>

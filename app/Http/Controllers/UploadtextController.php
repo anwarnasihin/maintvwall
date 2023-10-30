@@ -13,9 +13,17 @@ class UploadtextController extends Controller
      */
     public function index()
     {
-         $dtText = Text::all();
+        $dtText = Text::all(); // Mengambil semua data teks dari database
         return view('Uploadtext.Datatext', compact('dtText'));
     }
+
+    public function getTexts()
+{
+    $texts = Text::all();
+    return response()->json($texts);
+}
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -33,11 +41,13 @@ class UploadtextController extends Controller
         $validatedData = $request->validate([
             'judul' => 'required|string',
             'deskripsi' => 'required|string',
+            'status' => 'required|string',
         ]);
 
-        Text::create([
+        text::create([
             'judul' => $validatedData['judul'],
             'deskripsi' => $validatedData['deskripsi'],
+            'status' => $validatedData['status'],
         ]);
     
         return redirect('datatext');
@@ -56,8 +66,8 @@ class UploadtextController extends Controller
      */
     public function edit($id)
     {
-        $txt = Text::findorfail($id);
-        return view('Uploadtext.Edittext',compact('txt'));
+        $txt = text::findorfail($id);
+        return view('uploadtext.edittext',compact('txt'));
     }
 
     /**
@@ -65,7 +75,7 @@ class UploadtextController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $txt = Text::findorfail($id);
+        $txt = text::findorfail($id);
         $txt->update($request->all());
         return redirect('datatext')->with('toast_success', 'Data berhasil di update');
     }
@@ -75,7 +85,7 @@ class UploadtextController extends Controller
      */
     public function destroy(string $id)
     {
-        $txt = Text::findOrFail($id); 
+        $txt = text::findOrFail($id); 
         $txt->forceDelete();
         return back()->with('toast_success', 'Data berhasil di hapus!');
     }
