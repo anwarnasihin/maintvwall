@@ -9,6 +9,7 @@ use App\Http\Controllers\UploadgroupController;
 use App\Http\Controllers\UploadtextController;
 use App\Http\Controllers\UsersController;
 use App\Models\group;
+use App\Models\text;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -37,7 +38,8 @@ Route::middleware([
     })->name('dashboard');
 });
 Route::get('/show/{group}', function ($group) {
-    return view('vidgam', ['group' => $group]);
+    $dtText = text::where('status',1)->get(); // Mengambil semua data teks dari database
+    return view('vidgam', ['group' => $group,'dtText'=>$dtText]);
 });
 Route::post('/getContent', function (Request $request) {
     $idGroup = group::where('name', $request->group)->first();

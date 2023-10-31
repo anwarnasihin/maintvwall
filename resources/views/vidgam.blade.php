@@ -171,15 +171,14 @@
             ">|</span>
           </div>
         </div>
-        @foreach($dtText as $text)
+        
         <div id="running-text-container">
             <div id="running-text">
-                {{ $text->judul }}: {{ $text->deskripsi }}
+                @foreach($dtText as $text)
+                {{ $text->deskripsi }},&nbsp;
+                @endforeach
             </div>
         </div>
-        @endforeach
-
-
     </footer>
 
 
