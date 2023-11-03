@@ -175,7 +175,7 @@
         <div id="running-text-container">
             <div id="running-text">
                 @foreach($dtText as $text)
-                {{ $text->deskripsi }},&nbsp;
+                {{ $text->deskripsi }}.&nbsp;
                 @endforeach
             </div>
         </div>
