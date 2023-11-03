@@ -103,7 +103,7 @@
           text: 'Tambah Data <i class="fas fa-plus-square"></i>',
           action: function(e, dt, node, config) {
             // Mengarahkan ke rute Laravel menggunakan tautan Blade
-            window.location.href = "{{ route('creategroup') }}";
+            window.location.href = "{{ route('createtext') }}";
           },
           className: 'btn-success' // Menambahkan kelas CSS untuk warna hijau
         }]
