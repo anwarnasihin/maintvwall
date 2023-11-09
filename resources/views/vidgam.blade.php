@@ -181,9 +181,6 @@
         </div>
     </footer>
 
-
-    
-
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
     <script>
