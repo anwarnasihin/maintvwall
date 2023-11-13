@@ -414,6 +414,38 @@
         // Panggil fungsi updateRunningText() sesuai dengan kebutuhan
         // setInterval(updateRunningText, 1000); // Mengubah teks setiap 1 detik
     </script>
+
+<script>
+    // Function to update running text
+    function updateRunningText() {
+        $.ajax({
+            url: '/datatext', // Adjust the API endpoint based on your Laravel routes
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                // Update the running text with the received data
+                var runningText = $('#running-text');
+                runningText.empty();
+
+                data.forEach(function(item) {
+                    runningText.append(item.deskripsi + '&nbsp;');
+                });
+            },
+            error: function(error) {
+                console.error('Error fetching running text:', error);
+            }
+        });
+    }
+
+    // Update running text initially
+    updateRunningText();
+
+    // Set up an interval to update running text every X milliseconds
+    setInterval(function() {
+        updateRunningText();
+    }, 1000); // Adjust the interval based on your preference
+</script>
+
 </body>
 
 </html>
