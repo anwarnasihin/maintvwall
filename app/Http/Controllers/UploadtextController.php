@@ -73,7 +73,7 @@ class UploadtextController extends Controller
     public function edit($id)
     {
         $txt = text::findorfail($id);
-        return view('uploadtext.edittext',compact('txt'));
+        return view('uploadtext.Edittext',compact('txt'));
     }
 
     /**
