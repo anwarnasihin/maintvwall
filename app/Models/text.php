@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class text extends Model
 {
-    protected $table = "text";
-    protected $primaryKey = "id";
     protected $fillable = [
         'judul',
         'deskripsi',

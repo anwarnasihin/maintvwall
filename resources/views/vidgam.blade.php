@@ -443,7 +443,7 @@
     // Set up an interval to update running text every X milliseconds
     setInterval(function() {
         updateRunningText();
-    }, 30000); // Adjust the interval based on your preference
+    }, 20000); // Adjust the interval based on your preference
 </script>
 
 </body>
