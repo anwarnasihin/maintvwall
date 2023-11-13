@@ -11,23 +11,23 @@ class UploadtextController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
         $dtText = Text::all(); // Mengambil semua data teks dari database
-        if ($request->ajax()) {
-            // Jika permintaan merupakan permintaan AJAX, kembalikan sebagai JSON
-            return response()->json($dtText);
-        } else {
+        // if ($request->ajax()) {
+        //     // Jika permintaan merupakan permintaan AJAX, kembalikan sebagai JSON
+        //     return response()->json($dtText);
+        // } else {
             // Jika bukan permintaan AJAX, kembalikan sebagai view
             return view('Uploadtext.Datatext', compact('dtText'));
-        }
+        // }
     }
 
-//     public function getTexts()
-// {
-//     $texts = Text::all();
-//     return response()->json($texts);
-// }
+    public function getTexts()
+{
+    $texts = Text::where('status',1)->get();
+    return response()->json($texts);
+}
 
 
 

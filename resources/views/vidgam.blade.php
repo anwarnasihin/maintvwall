@@ -419,7 +419,7 @@
     // Function to update running text
     function updateRunningText() {
         $.ajax({
-            url: '/datatext', // Adjust the API endpoint based on your Laravel routes
+            url: '/getTexts', // Adjust the API endpoint based on your Laravel routes
             method: 'GET',
             dataType: 'json',
             success: function(data) {
@@ -428,7 +428,7 @@
                 runningText.empty();
 
                 data.forEach(function(item) {
-                    runningText.append(item.deskripsi + '&nbsp;');
+                    runningText.append(item.deskripsi + '&nbsp;|&nbsp;');
                 });
             },
             error: function(error) {
@@ -443,7 +443,7 @@
     // Set up an interval to update running text every X milliseconds
     setInterval(function() {
         updateRunningText();
-    }, 1000); // Adjust the interval based on your preference
+    }, 30000); // Adjust the interval based on your preference
 </script>
 
 </body>

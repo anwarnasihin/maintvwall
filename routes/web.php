@@ -85,6 +85,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/deleteuser/{id}', [UsersController::class, 'destroy'])->name('deleteuser');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/datatext', [UploadtextController::class, 'index'])->name('datatext');
+Route::get('/getTexts', [UploadtextController::class, 'getTexts'])->name('getTexts');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/createtext', [UploadtextController::class, 'create'])->name('createtext');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/simpantext', [UploadtextController::class, 'store'])->name('simpantext');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/edittext/{id}', [UploadtextController::class, 'edit'])->name('edittext');
