@@ -38,11 +38,11 @@
                                     <td>{{ $item->email }}</td>
                                     <td>Password Tidak Ditampilkan</td>
                                     <td>
-                                      <a href="#" id="edit" class="edit-button" data-id="{{$item->id}}" data-name="{{ $item->name }}" data-email="{{ $item->email }}">
+                                      <a href="#" id="edit" class="edit-button" data-id="{{$item->id}}" data-name="{{ $item->name }}" data-email="{{ $item->email }}" data-toggle="tooltip" title="Edit">
                                         <i class="far fa-edit" style="color: #e7ea2e;"></i>
                                       </a>
                                       &nbsp;
-                                      <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}">
+                                      <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}" data-toggle="tooltip" title="Hapus">
                                         <i class="fas fa-trash-alt"></i>
                                       </a>
                                     </td>

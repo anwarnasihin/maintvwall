@@ -38,9 +38,9 @@
                   <td>{{ $item->keterangan}}</td>
                   <td>
                     <button class="btn btn-primary mr-2"><a href="/show/{{ $item->name}}" target="_blank" style="color: white;">Display</a></button>
-                    <a href="{{ url('editgroup',$item->id) }}"><i class="fas fa-edit" style="color: #d8d102"></i></a>
+                    <a href="{{ url('editgroup',$item->id) }}" data-toggle="tooltip" title="Edit"><i class="fas fa-edit" style="color: #d8d102"></i></a>
                     &nbsp;
-                    <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}">
+                    <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}" data-toggle="tooltip" title="Hapus">
                       <i class="fas fa-trash-alt"></i>
                     </a>
                   </td>

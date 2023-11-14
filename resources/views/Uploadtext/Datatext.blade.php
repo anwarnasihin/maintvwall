@@ -39,9 +39,11 @@
                   <td>{{ $item->deskripsi}}</td>
                   <td>{{ ($item->status == 1) ? "publish" : "tidak publish"}}</td>
                   <td>
-                    <a href="{{ url('edittext',$item->id) }}"><i class="fas fa-edit" style="color: #e7b100"></i></a>
+                    <a href="{{ url('edittext',$item->id) }}" data-toggle="tooltip" title="Edit">
+                      <i class="fas fa-edit" style="color: #e7b100"></i>
+                    </a>
                     &nbsp;
-                    <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}">
+                    <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}" data-toggle="tooltip" title="Hapus">
                       <i class="fas fa-trash-alt"></i>
                     </a>
                   </td>

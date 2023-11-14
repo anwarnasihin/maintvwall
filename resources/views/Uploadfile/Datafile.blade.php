@@ -70,13 +70,15 @@
                     <form id="form{{ $loop->iteration }}" action="/download" method="post">
                       @csrf
                       <input type="hidden" name="konten" value="{{ $item->direktori }}">
-                      <a onclick="document.getElementById('form{{ $loop->iteration }}').submit();" type="submit"><i class="fas fa-solid fa-download" style="color: #00f5e4;"></i></a>
+                      <a onclick="document.getElementById('form{{ $loop->iteration }}').submit();" type="submit" data-toggle="tooltip" title="download">
+                        <i class="fas fa-solid fa-download" style="color: #00f5e4;"></i>
+                      </a>
                     </form>
                     @endif
-                    <a href="#" id="edit" data-id="{{$item->id}}" data-direktori="{{ $item->typeFile }}" data-duration="{{ $item->duration }}">
+                    <a href="#" id="edit" data-id="{{$item->id}}" data-direktori="{{ $item->typeFile }}" data-duration="{{ $item->duration }}" data-toggle="tooltip" title="Edit">
                       <i class="far fa-edit" style="color: #e7ea2e;"></i>
                     </a>
-                    <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}">
+                    <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}" data-toggle="tooltip" title="Hapus">
                       <i class="fas fa-trash-alt"></i>
                     </a>
                   </td>
