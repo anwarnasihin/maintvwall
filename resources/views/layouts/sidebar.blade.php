@@ -75,11 +75,18 @@
 
         <li class="nav-item">
           <a href="" class="nav-link" data-toggle="modal" data-target="#logoutModal">
-            <i class="nav-icon fa fa-power-off"></i>
+            <i class="nav-icon fas fa-sign-out-alt"></i>
             <p>Logout</p>
           </a>
         </li>
 
+        <li class="nav-item">
+          <a href="" class="nav-link" data-toggle="modal" data-target="#shutdownModal">
+            <i class="nav-icon fa fa-power-off"></i>
+            <p>Shutdown</p>
+          </a>
+        </li>
+        
     </nav>
     <!-- /.sidebar-menu -->
   </div>
