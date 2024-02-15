@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>TV Wall BINUS@BEKASI</title>
     <style>
@@ -42,16 +43,16 @@
 
         /* new */
         footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: #770000;
-        padding: 4px 0;
-        display: flex;
-        justify-content: space-between;
-        border-top-left-radius: 7px;
-        border-top-right-radius: 7px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #770000;
+            padding: 4px 0;
+            display: flex;
+            justify-content: space-between;
+            border-top-left-radius: 7px;
+            border-top-right-radius: 7px;
         }
 
         #player.transition {
@@ -62,7 +63,8 @@
 
         #player img {
             max-width: 100%;
-            max-height: calc(100% - 28px); /* 28px adalah tinggi dari runningTextContainer dan paddingnya */
+            max-height: calc(100% - 28px);
+            /* 28px adalah tinggi dari runningTextContainer dan paddingnya */
             width: auto;
             height: auto;
         }
@@ -72,7 +74,8 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: calc(100% - 40px); /* 40px adalah tinggi "running text" termasuk padding */
+            height: calc(100% - 40px);
+            /* 40px adalah tinggi "running text" termasuk padding */
         }
 
 
@@ -101,53 +104,55 @@
 
         /* new */
         #running-text-container {
-        flex-grow: 1;
-        overflow: hidden;
-        white-space: nowrap;
-        border-top-left-radius: 7px;
-        border-top-right-radius: 15px;
-        white-space: nowrap;
+            flex-grow: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            border-top-left-radius: 7px;
+            border-top-right-radius: 15px;
+            white-space: nowrap;
         }
 
         /* new */
         #date-time {
-        display: flex;
-        align-items: center;
-        margin-left: 5px;
-        margin-right: 5px;
-        max-width: 1500px;
+            display: flex;
+            align-items: center;
+            margin-left: 5px;
+            margin-right: 5px;
+            max-width: 1500px;
         }
 
         /* new */
         #running-text {
-        animation: marquee 20s linear infinite;
-        transition: transform 0.5s ease-in-out;
-        font-size: 24px;
-        font-family: "Segoe UI", Arial, sans-serif;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        font-weight: bold;
+            animation: marquee 20s linear infinite;
+            transition: transform 0.5s ease-in-out;
+            font-size: 24px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
         }
 
         /* new */
-        #date-time > div {
-        display: flex;
-        white-space: nowrap; /* Mencegah teks memisah saat diperbesar */
+        #date-time>div {
+            display: flex;
+            white-space: nowrap;
+            /* Mencegah teks memisah saat diperbesar */
         }
 
         /* new */
         #date {
-        margin-right: 5px; /* Menambahkan spasi antara "date" dan "time" */
-         }
-
-         @keyframes marquee {
-        0% {
-          transform: translateX(100%);
+            margin-right: 5px;
+            /* Menambahkan spasi antara "date" dan "time" */
         }
 
-        100% {
-          transform: translateX(-100%);
+        @keyframes marquee {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
         }
-      }
     </style>
 </head>
 
@@ -162,25 +167,22 @@
 
     <footer>
         <div id="date-time">
-          <div>
-            <span id="day"></span>, <span id="date"> </span>
-            <span id="time"> </span>
-            <span style="
-            margin: 0 5px 0 5px;
-            line-height: 1.2em;
-            ">|</span>
-          </div>
+            <div>
+                <span id="day"></span>, <span id="date"> </span>
+                <span id="time"> </span>
+                <span style="margin: 0 5px 0 5px;line-height: 1.2em;">|</span>
+            </div>
         </div>
         <div id="running-text-container">
-          <div id="running-text">
-            Bina Nusantara @Bekasi, Striving for excellence, Perseverance,
-            Integrity, Respect, Innovation, Teamwork
-          </div>
+            <div id="running-text">
+                Bina Nusantara @Bekasi, Striving for excellence, Perseverance,
+                Integrity, Respect, Innovation, Teamwork
+            </div>
         </div>
     </footer>
 
 
-    
+
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
@@ -226,7 +228,7 @@
             }
 
             playVideoAndImage();
-            updateTime();
+            // updateTime();
         }
 
         function stopSlideshow() {
@@ -367,47 +369,47 @@
         });
 
         function updateDateTime() {
-        const now = new Date();
-        const days = [
-          "Minggu",
-          "Senin",
-          "Selasa",
-          "Rabu",
-          "Kamis",
-          "Jumat",
-          "Sabtu",
-        ];
-        const day = days[now.getDay()];
-        const date = now.getDate();
-        const monthNames = [
-          "Januari",
-          "Februari",
-          "Maret",
-          "April",
-          "Mei",
-          "Juni",
-          "Juli",
-          "Agustus",
-          "September",
-          "Oktober",
-          "November",
-          "Desember",
-        ];
-        const month = monthNames[now.getMonth()];
-        const year = now.getFullYear();
-        const hours = now.getHours().toString().padStart(2, "0");
-        const minutes = now.getMinutes().toString().padStart(2, "0");
-        const seconds = now.getSeconds().toString().padStart(2, "0");
+            const now = new Date();
+            const days = [
+                "Minggu",
+                "Senin",
+                "Selasa",
+                "Rabu",
+                "Kamis",
+                "Jumat",
+                "Sabtu",
+            ];
+            const day = days[now.getDay()];
+            const date = now.getDate();
+            const monthNames = [
+                "Januari",
+                "Februari",
+                "Maret",
+                "April",
+                "Mei",
+                "Juni",
+                "Juli",
+                "Agustus",
+                "September",
+                "Oktober",
+                "November",
+                "Desember",
+            ];
+            const month = monthNames[now.getMonth()];
+            const year = now.getFullYear();
+            const hours = now.getHours().toString().padStart(2, "0");
+            const minutes = now.getMinutes().toString().padStart(2, "0");
+            const seconds = now.getSeconds().toString().padStart(2, "0");
 
-        document.getElementById("day").textContent = day;
-        document.getElementById("date").textContent =
-          date + " " + month + " " + year;
-        document.getElementById("time").textContent =
-          hours + ":" + minutes + ":" + seconds;
-      }
+            document.getElementById("day").textContent = day;
+            document.getElementById("date").textContent =
+                date + " " + month + " " + year;
+            document.getElementById("time").textContent =
+                hours + ":" + minutes + ":" + seconds;
+        }
 
-      updateDateTime();
-      setInterval(updateDateTime, 1000);
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
 
         // Panggil fungsi updateRunningText() untuk menginisialisasi isi jam, tanggal, dan hari
         // updateRunningText();
