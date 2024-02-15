@@ -24,21 +24,24 @@
               <thead>
                 <tr>
                   <th class="text-center" style="width: 10px">No</th>
-                  <th class="text-center">Name</th>
-                  <th class="text-center">Keterangan</th>
+                  <th class="text-center">Judul</th>
+                  <th class="text-center">Deskripsi</th>
+                  <th class="text-center">Status</th>
                   <th class="text-center">Aksi</th>
                 </tr>
 
               </thead>
               <tbody>
-                @foreach ($dtGroup as $item)
+                @foreach ($dtText as $item)
                 <tr>
                   <td>{{ $loop->iteration }}</td>
-                  <td>{{ $item->name}}</td>
-                  <td>{{ $item->keterangan}}</td>
+                  <td>{{ $item->judul}}</td>
+                  <td>{{ $item->deskripsi}}</td>
+                  <td>{{ ($item->status == 1) ? "publish" : "tidak publish"}}</td>
                   <td>
-                    <button class="btn btn-primary mr-2"><a href="/show/{{ $item->name}}" target="_blank" style="color: white;">Display</a></button>
-                    <a href="{{ url('editgroup',$item->id) }}" data-toggle="tooltip" title="Edit"><i class="fas fa-edit" style="color: #d8d102"></i></a>
+                    <a href="{{ url('edittext',$item->id) }}" data-toggle="tooltip" title="Edit">
+                      <i class="fas fa-edit" style="color: #e7b100"></i>
+                    </a>
                     &nbsp;
                     <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}" data-toggle="tooltip" title="Hapus">
                       <i class="fas fa-trash-alt"></i>
@@ -46,7 +49,6 @@
                   </td>
                 </tr>
 
-                {{-- Modal Delete --}}
                 <div class="modal fade" id="modal-hapus{{$item->id}}">
                   <div class="modal-dialog">
                     <div class="modal-content">
@@ -57,7 +59,7 @@
                         </button>
                       </div>
                       <div class="modal-body">
-                        <p>Apakah kamu yakin ingin menghapus data <b>{{ $item->name}}</b> </p>
+                        <p>Apakah kamu yakin ingin menghapus data <b>{{ $item->judul}}</b> </p>
                       </div>
                       <div class="modal-footer justify-content-between">
                         <form action="{{ route('deletegroup',['id' => $item->id]) }}" method="POST">
@@ -70,6 +72,7 @@
                     </div>
                     <!-- /.modal-content -->
                   </div>
+                  <!-- /.modal-dialog -->
                 </div>
                 @endforeach
 
@@ -82,6 +85,7 @@
     </div>
     <!-- /.row -->
   </div><!-- /.container-fluid -->
+
   
 
   <!-- jQuery -->
@@ -92,6 +96,7 @@
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
+        "searching": true, // Mengaktifkan pencarian
         "columnDefs": [{
           "className": "text-center",
           "targets": [0, 1, 2, 3], // table ke 1
@@ -100,7 +105,7 @@
           text: 'Tambah Data <i class="fas fa-plus-square"></i>',
           action: function(e, dt, node, config) {
             // Mengarahkan ke rute Laravel menggunakan tautan Blade
-            window.location.href = "{{ route('creategroup') }}";
+            window.location.href = "{{ route('createtext') }}";
           },
           className: 'btn-success' // Menambahkan kelas CSS untuk warna hijau
         }]
@@ -129,7 +134,7 @@
               }).then((result) => {
                   if (result.isConfirmed) {
                       // Redirect atau lakukan penghapusan di sini
-                      window.location.href = 'deletegroup/' + itemId;
+                      window.location.href = 'deletetext/' + itemId;
                   }
               });
           });

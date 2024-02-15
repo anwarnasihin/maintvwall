@@ -70,13 +70,15 @@
                     <form id="form{{ $loop->iteration }}" action="/download" method="post">
                       @csrf
                       <input type="hidden" name="konten" value="{{ $item->direktori }}">
-                      <a onclick="document.getElementById('form{{ $loop->iteration }}').submit();" type="submit"><i class="fas fa-solid fa-download" style="color: #00f5e4;"></i></a>
+                      <a onclick="document.getElementById('form{{ $loop->iteration }}').submit();" type="submit" data-toggle="tooltip" title="download">
+                        <i class="fas fa-solid fa-download" style="color: #00f5e4;"></i>
+                      </a>
                     </form>
                     @endif
-                    <a href="#" id="edit" data-id="{{$item->id}}" data-direktori="{{ $item->typeFile }}" data-duration="{{ $item->duration }}">
+                    <a href="#" id="edit" data-id="{{$item->id}}" data-direktori="{{ $item->typeFile }}" data-duration="{{ $item->duration }}" data-toggle="tooltip" title="Edit">
                       <i class="far fa-edit" style="color: #e7ea2e;"></i>
                     </a>
-                    <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}">
+                    <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}" data-toggle="tooltip" title="Hapus">
                       <i class="fas fa-trash-alt"></i>
                     </a>
                   </td>
@@ -92,6 +94,34 @@
         </div>
         <!-- /.card -->
       </div>
+
+      {{-- new --}}
+                {{-- Modal Delete --}}
+                {{-- <div class="modal fade" id="modal-hapus{{$item->id}}">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title">Konfirmasi Hapus Data</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Apakah kamu yakin ingin menghapus data <b>{{ $item->name}}</b> </p>
+                      </div>
+                      <div class="modal-footer justify-content-between">
+                        <form action="{{ route('deletefile',['id' => $item->id]) }}" method="POST">
+                          @csrf
+                          @method('DELETE')
+                          <button type="button" class="btn btn-primary ml-auto" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+                        </form>
+                      </div>
+                    </div>
+                    <!-- /.modal-content -->
+                  </div>
+                </div> --}}
+       {{-- end new --}}
 
 
       <!-- Modal edit -->

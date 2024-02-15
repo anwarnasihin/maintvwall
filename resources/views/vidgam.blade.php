@@ -170,9 +170,13 @@
             <div>
                 <span id="day"></span>, <span id="date"> </span>
                 <span id="time"> </span>
-                <span style="margin: 0 5px 0 5px;line-height: 1.2em;">|</span>
+                <span style="
+            margin: 0 5px 0 5px;
+            line-height: 1.2em;
+            ">|</span>
             </div>
         </div>
+
         <div id="running-text-container">
             <div id="running-text">
                 Bina Nusantara @Bekasi, Striving for excellence, Perseverance,
@@ -417,6 +421,38 @@
         // Panggil fungsi updateRunningText() sesuai dengan kebutuhan
         // setInterval(updateRunningText, 1000); // Mengubah teks setiap 1 detik
     </script>
+
+    <script>
+        // Function to update running text
+        function updateRunningText() {
+            $.ajax({
+                url: '/getTexts', // Adjust the API endpoint based on your Laravel routes
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Update the running text with the received data
+                    var runningText = $('#running-text');
+                    runningText.empty();
+
+                    data.forEach(function(item) {
+                        runningText.append(item.deskripsi + '&nbsp;|&nbsp;');
+                    });
+                },
+                error: function(error) {
+                    console.error('Error fetching running text:', error);
+                }
+            });
+        }
+
+        // Update running text initially
+        updateRunningText();
+
+        // Set up an interval to update running text every X milliseconds
+        setInterval(function() {
+            updateRunningText();
+        }, 20000); // Adjust the interval based on your preference
+    </script>
+
 </body>
 
 </html>

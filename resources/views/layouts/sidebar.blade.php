@@ -23,7 +23,7 @@
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-        <li class="nav-item">
+        <li class="nav-item ">
           <a href="/dashboard" class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
@@ -32,7 +32,7 @@
           </a>
         </li>
 
-        <li class="nav-item {{ request()->is('datafile','datagroup') ? 'menu-open' : '' }}">
+        <li class="nav-item {{ request()->is('datafile','datagroup','datatext') ? 'menu-open' : '' }}">
           <a href="" class="nav-link">
             <i class="nav-icon fas fa-rocket"></i>
             <p>
@@ -40,19 +40,29 @@
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
+          
           <ul class="nav nav-treeview">
             <li class="nav-item">
               <a href=" {{ route('datagroup') }} " class="nav-link {{ request()->is('datagroup') ? 'active' : '' }}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-object-group"></i>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-layer-group"></i>
                 &nbsp;<p>Add Group</p>
               </a>
             </li>
+
             <li class="nav-item">
               <a href=" {{ route('datafile') }} " class="nav-link {{ request()->is('datafile') ? 'active' : '' }}">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-folder-plus"></i>
                 &nbsp;<p>Add Data</p>
               </a>
             </li>
+
+            <li class="nav-item">
+              <a href=" {{ route('datatext') }} " class="nav-link {{ request()->is('datatext') ? 'active' : '' }}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fab fa-adversal"></i>
+                &nbsp;<p>Add Text</p>
+              </a>
+            </li>
+            
           </ul>
         </li>
 
@@ -65,11 +75,18 @@
 
         <li class="nav-item">
           <a href="" class="nav-link" data-toggle="modal" data-target="#logoutModal">
-            <i class="nav-icon fa fa-power-off"></i>
+            <i class="nav-icon fas fa-sign-out-alt"></i>
             <p>Logout</p>
           </a>
         </li>
 
+        <li class="nav-item">
+          <a href="" class="nav-link" data-toggle="modal" data-target="#shutdownModal">
+            <i class="nav-icon fa fa-power-off"></i>
+            <p>Shutdown</p>
+          </a>
+        </li>
+        
     </nav>
     <!-- /.sidebar-menu -->
   </div>
