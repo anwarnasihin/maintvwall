@@ -39,8 +39,8 @@ Route::middleware([
     })->name('dashboard');
 });
 Route::get('/show/{group}', function ($group) {
-    $dtText = text::where('status',1)->get(); // Mengambil semua data teks dari database
-    return view('vidgam', ['group' => $group,'dtText'=>$dtText]);
+    $dtText = text::where('status', 1)->get(); // Mengambil semua data teks dari database
+    return view('vidgam', ['group' => $group, 'dtText' => $dtText]);
 });
 Route::post('/getContent', function (Request $request) {
     $idGroup = group::where('name', $request->group)->first();
@@ -48,7 +48,7 @@ Route::post('/getContent', function (Request $request) {
         $today = date("Y-m-d");
         $query->where('group', '=', $idGroup->id)
             ->where(function ($query) use ($today, $idGroup) {
-                $query->where('str_date', '<', $today)
+                $query->where('str_date', '<=', $today)
                     ->where('ed_date', '>=', $today)
                     ->where('group', $idGroup->id);
             });
