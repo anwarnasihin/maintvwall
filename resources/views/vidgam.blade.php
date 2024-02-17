@@ -365,6 +365,8 @@
                     }
                 });
 
+                updateRunningText();
+
             }
         }
 
@@ -426,9 +428,11 @@
         // Function to update running text
         function updateRunningText() {
             $.ajax({
+                type: 'POST',
                 url: '/getTexts', // Adjust the API endpoint based on your Laravel routes
-                method: 'GET',
-                dataType: 'json',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     // Update the running text with the received data
                     var runningText = $('#running-text');
@@ -443,14 +447,6 @@
                 }
             });
         }
-
-        // Update running text initially
-        updateRunningText();
-
-        // Set up an interval to update running text every X milliseconds
-        setInterval(function() {
-            updateRunningText();
-        }, 20000); // Adjust the interval based on your preference
     </script>
 
 </body>
