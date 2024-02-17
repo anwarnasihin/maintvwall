@@ -346,7 +346,7 @@
 
             } else {
                 currentData = 0;
-                console.log(csrfToken)
+                
                 $.ajax({
                     type: 'POST',
                     url: '/getContent',
