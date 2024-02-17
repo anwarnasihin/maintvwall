@@ -352,7 +352,7 @@
                     type: 'POST',
                     url: '/getContent',
                     data: {
-                        _token: "{{ csrf_token() }}",
+                        _token: $('meta[name="csrf-token"]').attr('content'),
                         group: '{{$group}}',
                     },
                     success: function(dataa) {
@@ -431,7 +431,7 @@
                 type: 'POST',
                 url: '/getTexts', // Adjust the API endpoint based on your Laravel routes
                 data: {
-                    _token: "{{ csrf_token() }}",
+                    _token: $('meta[name="csrf-token"]').attr('content'),
                 },
                 success: function(data) {
                     // Update the running text with the received data
