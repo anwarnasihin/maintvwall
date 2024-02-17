@@ -53,9 +53,10 @@ Route::post('/getContent', function (Request $request) {
                     ->where('group', $idGroup->id);
             });
     });
+    $token = csrf_token();
     $data = $dataa->get();
     //return $data;
-    return response()->json($data);
+    return response()->json([$data, $token]);
 });
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->post('/download', function (Request $request) {

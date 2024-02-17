@@ -3,6 +3,7 @@
 
 <head>
     <title>TV Wall BINUS@BEKASI</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         body {
             margin: 0;
@@ -170,10 +171,7 @@
             <div>
                 <span id="day"></span>, <span id="date"> </span>
                 <span id="time"> </span>
-                <span style="
-            margin: 0 5px 0 5px;
-            line-height: 1.2em;
-            ">|</span>
+                <span style="margin: 0 5px 0 5px;line-height: 1.2em;">|</span>
             </div>
         </div>
 
@@ -199,6 +197,7 @@
         var dayElement = document.getElementById("day");
         var formattedDateElement = document.getElementById("formattedDate");
         var slideshowInterval;
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
         function createVideoPlayer(src) {
             var videoPlayer = document.createElement("video");
@@ -347,16 +346,17 @@
 
             } else {
                 currentData = 0;
-
+                console.log(csrfToken)
                 $.ajax({
                     type: 'POST',
                     url: '/getContent',
                     data: {
-                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        _token: csrfToken,
                         group: '{{$group}}',
                     },
                     success: function(dataa) {
-                        data = dataa;
+                        data = dataa[0];
+                        csrfToken = dataa[1];
                         playVideoAndImage();
                     },
                     error: function(xhr, status, error) {
@@ -431,7 +431,7 @@
                 type: 'POST',
                 url: '/getTexts', // Adjust the API endpoint based on your Laravel routes
                 data: {
-                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    _token: csrfToken,
                 },
                 success: function(data) {
                     // Update the running text with the received data
