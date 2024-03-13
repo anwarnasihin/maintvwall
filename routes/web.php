@@ -54,9 +54,11 @@ Route::post('/getContent', function (Request $request) {
             });
     });
     $token = csrf_token();
+    //GET RUNNING TEXT
     $data = $dataa->get();
+    $texts = Text::where('status', 1)->get();
     //return $data;
-    return response()->json([$data, $token]);
+    return response()->json([$data, $texts, $token]);
 });
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->post('/download', function (Request $request) {

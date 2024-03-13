@@ -190,6 +190,7 @@
     <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
     <script>
         var data;
+        var count = 0;
 
         var currentData = 0;
         var player = document.getElementById("player");
@@ -345,8 +346,13 @@
                 }
 
             } else {
+
+                if (count == 5) {
+                    window.location.reload();
+                    count = 0;
+                }
                 currentData = 0;
-                
+
                 $.ajax({
                     type: 'POST',
                     url: '/getContent',
@@ -356,8 +362,11 @@
                     },
                     success: function(dataa) {
                         data = dataa[0];
-                        csrfToken = dataa[1];
+                        csrfToken = dataa[2];
                         playVideoAndImage();
+                        setRunningText(dataa[1]);
+                        count++;
+                        console.log(count);
                     },
                     error: function(xhr, status, error) {
                         // Tangani kesalahan di sini, contohnya:
@@ -365,7 +374,6 @@
                     }
                 });
 
-                updateRunningText();
 
             }
         }
@@ -416,35 +424,15 @@
 
         updateDateTime();
         setInterval(updateDateTime, 1000);
-
-        // Panggil fungsi updateRunningText() untuk menginisialisasi isi jam, tanggal, dan hari
-        // updateRunningText();
-
-        // Panggil fungsi updateRunningText() sesuai dengan kebutuhan
-        // setInterval(updateRunningText, 1000); // Mengubah teks setiap 1 detik
     </script>
 
     <script>
-        // Function to update running text
-        function updateRunningText() {
-            $.ajax({
-                type: 'POST',
-                url: '/getTexts', // Adjust the API endpoint based on your Laravel routes
-                data: {
-                    _token: csrfToken,
-                },
-                success: function(data) {
-                    // Update the running text with the received data
-                    var runningText = $('#running-text');
-                    runningText.empty();
+        function setRunningText(data) {
+            var runningText = $('#running-text');
+            runningText.empty();
 
-                    data.forEach(function(item) {
-                        runningText.append(item.deskripsi + '&nbsp;|&nbsp;');
-                    });
-                },
-                error: function(error) {
-                    console.error('Error fetching running text:', error);
-                }
+            data.forEach(function(item) {
+                runningText.append(item.deskripsi + '&nbsp;|&nbsp;');
             });
         }
     </script>
