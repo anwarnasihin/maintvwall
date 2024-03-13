@@ -366,7 +366,6 @@
                         playVideoAndImage();
                         setRunningText(dataa[1]);
                         count++;
-                        console.log(count);
                     },
                     error: function(xhr, status, error) {
                         // Tangani kesalahan di sini, contohnya:
