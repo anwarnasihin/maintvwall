@@ -111,9 +111,9 @@ class UploadfileController extends Controller
         $dt = Source::find($id); // Untuk mengambil data yang sudah dihapus
         $dt->forceDelete(); // Untuk menghapus secara permanen
 
-        // if (file_exists(public_path($dt->direktori))) {
-        //     unlink(public_path($dt->direktori));
-        // }
+        if (file_exists(public_path($dt->direktori))) {
+            unlink(public_path($dt->direktori));
+        }
 
         return back()->with('toast_success', 'Data berhasil di hapus!');
     }
