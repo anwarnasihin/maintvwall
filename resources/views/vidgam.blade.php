@@ -122,15 +122,23 @@
             max-width: 1500px;
         }
 
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
         /* new */
         #running-text {
-            animation: marquee 20s linear infinite;
-            transition: transform 0.5s ease-in-out;
+            display: inline-block;
             font-size: 24px;
             font-family: "Segoe UI", Arial, sans-serif;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             font-weight: bold;
+            animation: marquee linear infinite;
         }
+
 
         /* new */
         #date-time>div {
@@ -147,7 +155,7 @@
 
         @keyframes marquee {
             0% {
-                transform: translateX(100%);
+                transform: translateX(50%);
             }
 
             100% {
@@ -175,7 +183,7 @@
             </div>
         </div>
 
-        <div id="running-text-container">
+        <div id="running-text-container" class="marquee-container">
             <div id="running-text">
                 Bina Nusantara @Bekasi, Striving for excellence, Perseverance,
                 Integrity, Respect, Innovation, Teamwork
@@ -189,6 +197,25 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const runningText = document.getElementById('running-text');
+            const containerWidth = document.querySelector('.marquee-container').offsetWidth;
+            const textWidth = runningText.offsetWidth;
+
+            // Set speed in pixels per second
+            const speed = 80; // Ubah kecepatan sesuai keinginan
+
+            // Calculate the duration for the entire animation
+            const duration = (textWidth + containerWidth) / speed;
+
+            // Set the duration for the animation
+            runningText.style.animationDuration = `${duration}s`;
+
+            // Position the text to start just outside the container
+            runningText.style.left = `${containerWidth}px`;
+        });
+
+
         var data;
         var count = 0;
 
