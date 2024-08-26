@@ -267,7 +267,7 @@
         }
 
         function playVideoAndImage() {
-            if (data && currentData <= data.length) {
+            if (data && currentData < data.length) {
                 var media = data[currentData];
                 var mediaPlayer;
 
