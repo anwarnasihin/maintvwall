@@ -374,7 +374,7 @@
 
             } else {
 
-                if (count == 5) {
+                if (count == 3) {
                     window.location.reload();
                     count = 0;
                 }
