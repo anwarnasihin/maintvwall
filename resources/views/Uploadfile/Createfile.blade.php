@@ -60,6 +60,20 @@
                                     </div>
                                 </div>
                             </div>
+                       
+                            <div class="form-group">
+                                <label>Pilih Hari Tampil</label>
+                                <br>
+                                <label><input type="checkbox" name="selected_days[]" value="1"> Senin</label>
+                                <label><input type="checkbox" name="selected_days[]" value="2"> Selasa</label>
+                                <label><input type="checkbox" name="selected_days[]" value="3"> Rabu</label>
+                                <label><input type="checkbox" name="selected_days[]" value="4"> Kamis</label>
+                                <label><input type="checkbox" name="selected_days[]" value="5"> Jumat</label>
+                                <label><input type="checkbox" name="selected_days[]" value="6"> Sabtu</label>
+                                <label><input type="checkbox" name="selected_days[]" value="7"> Minggu</label>
+                                <label><input type="checkbox" id="checkAll"> All Day</label>
+                            </div>
+
                             <div class="form-group">
                                 <button type="submit" class="btn btn-success">Simpan Data</button>
                             </div>
@@ -67,6 +81,17 @@
                     </div>
                 </div>
                 <!-- /.card -->
+
+                @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
             </div>
         </div>
         <!-- /.row -->
@@ -83,7 +108,11 @@
 
             //Date picker
             $('#strDate,#edDate').datetimepicker({
+
                 format: 'DD/MM/YYYY'
+
+                format: 'YYYY-MM-DD'
+
             });
 
 
@@ -105,5 +134,39 @@
             });
         })
     </script>
+
+    @section('scripts')
+<script>
+    $(document).ready(function() {
+        $('#checkAll').change(function() {
+            let isChecked = $(this).prop('checked');
+            $('input[name="selected_days[]"]').prop('checked', isChecked);
+        });
+
+        $('input[name="selected_days[]"]').change(function() {
+            let totalHari = $('input[name="selected_days[]"]').length;
+            let checkedHari = $('input[name="selected_days[]"]:checked').length;
+            $('#checkAll').prop('checked', totalHari === checkedHari);
+        });
+    });
+</script>
+@endsection
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('#checkAll').change(function() {
+            let isChecked = $(this).prop('checked');
+            $('input[name="selected_days[]"]').prop('checked', isChecked);
+        });
+
+        $('input[name="selected_days[]"]').change(function() {
+            let totalHari = $('input[name="selected_days[]"]').length;
+            let checkedHari = $('input[name="selected_days[]"]:checked').length;
+            $('#checkAll').prop('checked', totalHari === checkedHari);
+        });
+    });
+</script>
+@endsection
+
 </section>
 @endsection

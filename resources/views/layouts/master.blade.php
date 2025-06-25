@@ -100,6 +100,9 @@
 
   @include('js.script')
 
+  @yield('scripts')
+
+
 </body>
 
 </html>

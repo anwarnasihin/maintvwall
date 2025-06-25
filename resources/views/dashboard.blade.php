@@ -26,6 +26,28 @@
             <img src="assets/dist/img/C.png" alt="Description of the image" style="display: block; margin: 0 auto;" width="85" height="95">
 
 
+            <!-- <div class="mt-4">
+                @if(count($files) > 0)
+                    @foreach ($files as $file)
+                        <div class="mb-4 text-center">
+                            @if ($file->typeFile == 'images')
+                                <img src="{{ asset($file->direktori) }}" 
+                                    style="max-width: 80%; height: auto; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);">
+                            @elseif ($file->typeFile == 'video')
+                                <video style="max-width: 80%;" controls autoplay loop>
+                                    <source src="{{ asset($file->direktori) }}" type="video/mp4">
+                                </video>
+                            @elseif ($file->typeFile == 'youtube')
+                                <iframe width="80%" height="400px" 
+                                        src="{{ $file->direktori }}" frameborder="0" allowfullscreen></iframe>
+                            @endif
+                        </div>
+                    @endforeach
+                @else
+                    <p class="text-center text-muted mt-3" style="font-size: 20px;">Tidak ada konten aktif hari ini.</p>
+                @endif
+            </div> -->
+
 
         </div>
 

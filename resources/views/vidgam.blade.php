@@ -174,6 +174,20 @@
         <div id="player"></div>
     </div>
 
+
+    @foreach($files as $konten)
+    @if($konten->typeFile === 'images')
+    <img src="{{ asset('storage/uploads/'.$konten->directory) }}" alt="Image" style="width: 100%;">
+    @elseif($konten->typeFile === 'video')
+    <video autoplay muted playsinline loop style="width: 100%;">
+        <source src="{{ asset('storage/uploads/'.$konten->directory) }}" type="video/mp4">
+    </video>
+    @elseif($konten->typeFile === 'youtube')
+    <iframe width="100%" height="500" src="{{ $konten->directory }}" frameborder="0" allowfullscreen></iframe>
+    @endif
+    @endforeach
+
+
     <footer>
         <div id="date-time">
             <div>
