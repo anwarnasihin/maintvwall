@@ -7,11 +7,10 @@ use App\Models\source;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-<<<<<<< HEAD
-=======
+
 use Carbon\Carbon;
 
->>>>>>> menghilangkankontendidashboard
+
 
 class UploadfileController extends Controller
 {
@@ -38,8 +37,7 @@ class UploadfileController extends Controller
      */
     public function store(Request $request)
     {
-<<<<<<< HEAD
-=======
+
 
         $strDate = str_replace('/', '-', $request->str_date);
         $edDate = str_replace('/', '-', $request->ed_date);
@@ -56,7 +54,7 @@ class UploadfileController extends Controller
         ]);
 
         // Proses penyimpanan file
->>>>>>> menghilangkankontendidashboard
+
         if ($request->typeFile != "youtube") {
             $file = $request->file('file');
             $filename = time() . '_' . $file->getClientOriginalName();
@@ -64,29 +62,29 @@ class UploadfileController extends Controller
         } else {
             $fileInput = $request->linkYoutube;
         }
-<<<<<<< HEAD
+
         // dd($request->all());
-=======
+
 
         // Simpan data ke database
->>>>>>> menghilangkankontendidashboard
+
         $postt = new source();
         $postt->group = $request->group;
         $postt->typeFile = $request->typeFile;
         $postt->direktori = $fileInput;
-<<<<<<< HEAD
+
         $postt->duration = $request->duration != null ? $request->duration : 0;
         $postt->str_date = date("Y-m-d", strtotime(str_replace('/', '-', $request->str_date)));
         $postt->ed_date = date("Y-m-d", strtotime(str_replace('/', '-', $request->ed_date)));
         $postt->users = Auth::user()->id;
-=======
+
         $postt->duration = $request->duration ?? 0;
         $postt->str_date = date("Y-m-d", strtotime($strDate));
         $postt->ed_date = date("Y-m-d", strtotime($edDate));
         $postt->selected_days = json_encode($request->selected_days); // Simpan sebagai JSON
         $postt->users = Auth::user()->id;
 
->>>>>>> menghilangkankontendidashboard
+
         $postt->save();
 
         if ($postt->id && $request->typeFile != "youtube") {
@@ -95,22 +93,21 @@ class UploadfileController extends Controller
             }
         }
 
-<<<<<<< HEAD
+
         return redirect('datafile')->with('toast_success', 'Data berhasil di simpan!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
-    }
+    // public function show(string $id)
+    // {
+    //     //
+    // }
 
-=======
-        // Jika penyimpanan berhasil, arahkan kembali ke halaman `datafile`
-        return redirect()->route('datafile')->with('toast_success', 'Data berhasil disimpan!');
-    }
+    //     // // Jika penyimpanan berhasil, arahkan kembali ke halaman `datafile`
+    //     // return redirect()->route('datafile')->with('toast_success', 'Data berhasil disimpan!');
+    // }
 
 
     public function show($group)
@@ -129,12 +126,6 @@ class UploadfileController extends Controller
     }
 
 
-
-
-
-
-
->>>>>>> menghilangkankontendidashboard
     /**
      * Show the form for editing the specified resource.
      */
@@ -178,13 +169,13 @@ class UploadfileController extends Controller
         $dt = Source::find($id); // Untuk mengambil data yang sudah dihapus
         $dt->forceDelete(); // Untuk menghapus secara permanen
 
-<<<<<<< HEAD
+
         if (file_exists(public_path($dt->direktori))) {
             unlink(public_path($dt->direktori));
-=======
+
         if ($dt->direktori && file_exists(storage_path('app/public/' . $dt->direktori))) {
             unlink(storage_path('app/public/' . $dt->direktori));
->>>>>>> menghilangkankontendidashboard
+
         }
 
         return back()->with('toast_success', 'Data berhasil di hapus!');
