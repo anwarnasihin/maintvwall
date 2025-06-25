@@ -25,7 +25,7 @@
 
             <img src="assets/dist/img/C.png" alt="Description of the image" style="display: block; margin: 0 auto;" width="85" height="95">
 
-            <div class="mt-4">
+            <!-- <div class="mt-4">
                 @if(count($files) > 0)
                     @foreach ($files as $file)
                         <div class="mb-4 text-center">
@@ -45,7 +45,7 @@
                 @else
                     <p class="text-center text-muted mt-3" style="font-size: 20px;">Tidak ada konten aktif hari ini.</p>
                 @endif
-            </div>
+            </div> -->
 
         </div>
 
