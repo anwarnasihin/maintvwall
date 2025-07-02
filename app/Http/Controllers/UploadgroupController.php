@@ -35,15 +35,8 @@ class UploadgroupController extends Controller
             'keterangan' => 'required|string',
         ]);
 
-    
         // Menghapus spasi dari input 'nama' dan 'keterangan'
         $nama = str_replace(' ', '', $request->input('nama'));
-    
-
-
-        // Menghapus spasi dari input 'nama' dan 'keterangan'
-        $nama = str_replace(' ', '', $request->input('nama'));
-
 
         // Simpan data yang telah dihapus spasi
         Group::create([
@@ -51,13 +44,7 @@ class UploadgroupController extends Controller
             'keterangan' => $request->input('keterangan'),
         ]);
 
-    
         return redirect('datagroup');
-    
-
-
-        return redirect('datagroup');
-
     }
 
     /**
@@ -74,11 +61,7 @@ class UploadgroupController extends Controller
     public function edit($id)
     {
         $gro = Group::findorfail($id);
-
-        return view('Uploadgroup.Editgroup',compact('gro'));
-
         return view('Uploadgroup.Editgroup', compact('gro'));
-
     }
 
     /**
@@ -96,11 +79,7 @@ class UploadgroupController extends Controller
      */
     public function destroy(string $id)
     {
-
-        $gro = Group::findOrFail($id); 
-
         $gro = Group::findOrFail($id);
-
         $gro->forceDelete();
         return back()->with('toast_success', 'Data berhasil di hapus!');
     }

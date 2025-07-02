@@ -81,7 +81,6 @@
                     </div>
                 </div>
                 <!-- /.card -->
-
                 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -91,7 +90,6 @@
         </ul>
     </div>
 @endif
-
             </div>
         </div>
         <!-- /.row -->
@@ -108,11 +106,7 @@
 
             //Date picker
             $('#strDate,#edDate').datetimepicker({
-
-                format: 'DD/MM/YYYY'
-
                 format: 'YYYY-MM-DD'
-
             });
 
 
@@ -134,7 +128,6 @@
             });
         })
     </script>
-
     @section('scripts')
 <script>
     $(document).ready(function() {

@@ -64,11 +64,7 @@
                   <td>{{ $item->duration }}</td>
                   <td>{{ $item->str_date }}</td>
                   <td class="{{$item->ed_date <= date('Y-m-d')?'text-danger':''}}">{{ $item->ed_date }}</td>
-
-                  <td>{{$item->user->name}}</td>
-
                   <td>{{ optional($item->user)->name }}</td>
-
                   <td class="text-center">
                     @if ($item->typeFile != "youtube")
                     <form id="form{{ $loop->iteration }}" action="/download" method="post">
@@ -362,9 +358,6 @@
 </script>
 
 @include('sweetalert::alert')
-
-@endsection
-
 @if(session('toast_success'))
 <script>
     Swal.fire({
