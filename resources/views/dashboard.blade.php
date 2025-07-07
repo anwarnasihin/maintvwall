@@ -1,11 +1,27 @@
 @extends('layouts.master')
 @section('title.home')
 @section('content')
+
+{{-- Gaya jam keren dengan Orbitron + efek glow --}}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap');
+
+    #clock-digital {
+        margin-top: 20px;
+        font-size: 64px;
+        font-weight: 700;
+        font-family: 'Orbitron', sans-serif;
+        color:rgb(99, 0, 0); /* Biru neon */
+        
+    }
+</style>
+
 <section class="content">
     <section class="content-header">
         <div class="container-fluid">
         </div>
     </section>
+
     <div class="card">
         <div class="card-header">
             <h3 class="card-title"></h3>
@@ -18,39 +34,41 @@
                 </button>
             </div>
         </div>
-        <div class="card-body" style="background-image: url('assets/dist/img/virtual background - bekasi-04.png'); background-size: cover; background-repeat: no-repeat; min-height: 45em;">
-            <h2 class="card-body" style="text-align: center; font-size: 30px; font-weight: bold; color: #007BFF; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
-                <span style="color: #007BFF; opacity: 0.8;">Welcome to the </span><span style="color: #FF5733;">BINUS @Bekasi TV Wall</span> <span style="opacity: 0.8;">Application</span>
+
+        <div class="card-body" style="position: relative; background-image: url('assets/dist/img/virtual background - bekasi-04.png'); background-size: cover; background-repeat: no-repeat; min-height: 45em; text-align: center;">
+            
+            <h2 class="card-body" style="font-size: 30px; font-weight: bold; color: #007BFF; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
+                <span style="color: #007BFF; opacity: 0.8;">Welcome to the </span>
+                <span style="color: #FF5733;">BINUS @Bekasi TV Wall</span>
+                <span style="opacity: 0.8;">Application</span>
             </h2>
 
-           <img src="assets/dist/img/Road-To-45.png" alt="Description of the image" style="display: block; margin: 0px auto 0;" width="175" height="185">
+            <img src="assets/dist/img/Road-To-45.png" alt="Logo Road To 45" style="display: block; margin: 0 auto;" width="175" height="185">
 
-            <!-- <div class="mt-4">
-                @if(count($files) > 0)
-                    @foreach ($files as $file)
-                        <div class="mb-4 text-center">
-                            @if ($file->typeFile == 'images')
-                                <img src="{{ asset($file->direktori) }}" 
-                                    style="max-width: 80%; height: auto; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);">
-                            @elseif ($file->typeFile == 'video')
-                                <video style="max-width: 80%;" controls autoplay loop>
-                                    <source src="{{ asset($file->direktori) }}" type="video/mp4">
-                                </video>
-                            @elseif ($file->typeFile == 'youtube')
-                                <iframe width="80%" height="400px" 
-                                        src="{{ $file->direktori }}" frameborder="0" allowfullscreen></iframe>
-                            @endif
-                        </div>
-                    @endforeach
-                @else
-                    <p class="text-center text-muted mt-3" style="font-size: 20px;">Tidak ada konten aktif hari ini.</p>
-                @endif
-            </div> -->
+            {{-- JAM DIGITAL DI BAWAH LOGO --}}
+            <div id="clock-digital">00:00:00 AM</div>
 
         </div>
-
-
     </div>
-
 </section>
+
+{{-- SCRIPT JAM DIGITAL 12 JAM --}}
+<script>
+    function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+
+        hours = hours % 12;
+        hours = hours ? hours : 12; // jam 0 jadi 12
+
+        document.getElementById('clock-digital').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+
 @endsection
