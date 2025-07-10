@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="{{ asset('assets/dist/img/C.png ')}}" height="200" width="200">
+  <link rel="icon" href="{{ asset('assets/dist/img/BKEN KEREN ASYIK LIPAT BIRU1.png')}}" height="200" width="200">
   <title>TV WALL BINUS@BEKASI</title>
 
   <!-- Google Font: Source Sans Pro -->
@@ -21,7 +21,7 @@
 
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
-      <img class="animation__shake" src="{{ asset('assets/dist/img/LogoBinus.jpg ')}}" alt="AdminLTELogo" height="100" width="155">
+      <img class="animation__shake" src="{{ asset('assets/dist/img/TEXT BEKEN KEREN ASYIK.png ')}}" alt="AdminLTELogo" height="100" width="155">
     </div>
 
     @include('layouts.nav-header')
