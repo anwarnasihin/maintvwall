@@ -322,7 +322,15 @@
     }
 
     $('#modalShowKonten').modal('show');
-  })
+  });
+
+  // Script untuk handle ceklis "All Day"
+  $(document).ready(function() {
+    $('#checkAll').on('change', function() {
+      const isChecked = $(this).is(':checked');
+      $('input[name="selected_days[]"]').prop('checked', isChecked);
+    });
+  });
 </script>
 
 <!-- jQuery -->
