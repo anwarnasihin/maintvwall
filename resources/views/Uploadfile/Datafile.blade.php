@@ -19,6 +19,23 @@
     width: 100%;
     height: 100%;
   }
+
+  .day-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .day-wrapper label {
+    margin: 0;
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  .modal-lg {
+  max-width: 1200px !important; /* atau 900px kalau masih sempit */
+}
+
 </style>
 <div class="content-header">
   <div class="container-fluid">
@@ -161,6 +178,21 @@
                       </div>
                     </div>
                   </div>
+
+                  <div class="form-group">
+                    <label>Pilih Hari Tampil</label>
+                    <div class="day-wrapper">
+                      <label><input type="checkbox" name="selected_days[]" value="1"> Senin</label>
+                      <label><input type="checkbox" name="selected_days[]" value="2"> Selasa</label>
+                      <label><input type="checkbox" name="selected_days[]" value="3"> Rabu</label>
+                      <label><input type="checkbox" name="selected_days[]" value="4"> Kamis</label>
+                      <label><input type="checkbox" name="selected_days[]" value="5"> Jumat</label>
+                      <label><input type="checkbox" name="selected_days[]" value="6"> Sabtu</label>
+                      <label><input type="checkbox" name="selected_days[]" value="7"> Minggu</label>
+                      <label><input type="checkbox" id="checkAll"> All Day</label>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </form>
@@ -174,7 +206,7 @@
 
       <!-- Modal -->
       <div class="modal fade" id="modalShowKonten" tabindex="-1" role="dialog" aria-labelledby="modalShowKontenTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLongTitle">Preview Content</h5>
