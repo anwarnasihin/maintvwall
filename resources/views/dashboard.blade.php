@@ -14,6 +14,12 @@
         color:rgb(99, 0, 0); /* Biru neon */
         
     }
+
+    #date-digital {
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif; /* Gunakan font yang sama dengan jam */
+    color: rgb(99, 0, 0); /* Warna yang sama dengan jam */
+}
 </style>
 
 <section class="content">
@@ -47,6 +53,7 @@
 
             {{-- JAM DIGITAL DI BAWAH LOGO --}}
             <div id="clock-digital">00:00:00 AM</div>
+            <div id="date-digital" style="font-size: 30px; color: rgb(99, 0, 0);"></div>
 
         </div>
     </div>
@@ -65,6 +72,17 @@
         hours = hours ? hours : 12; // jam 0 jadi 12
 
         document.getElementById('clock-digital').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+
+        // Tanggal, bulan, dan tahun dalam format "11 Juli 2025"
+        const day = String(now.getDate()).padStart(2, '0');
+        const monthNames = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+        const month = monthNames[now.getMonth()]; // Mendapatkan nama bulan
+        const year = now.getFullYear();
+
+        document.getElementById('date-digital').textContent = `${day} ${month} ${year}`;
     }
 
     setInterval(updateClock, 1000);
