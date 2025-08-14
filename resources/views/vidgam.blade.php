@@ -48,12 +48,19 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: #770000;
+            /* fallback color */
+            background-color: #001477;
+
+            /* gradiasi */
+            background: linear-gradient(90deg, #006496, #008ED3, #F2E313);
+
             padding: 4px 0;
             display: flex;
             justify-content: space-between;
+            align-items: center; /* biar teks pas di tengah */
             border-top-left-radius: 7px;
             border-top-right-radius: 7px;
+            color: #fff;
         }
 
         #player.transition {
@@ -136,6 +143,7 @@
             font-family: "Segoe UI", Arial, sans-serif;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             font-weight: bold;
+            color: #ffffff; /* Warna kuning */
             animation: marquee linear infinite;
         }
 
