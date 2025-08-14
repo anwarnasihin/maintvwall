@@ -52,7 +52,7 @@
             background-color: #001477;
 
             /* gradiasi */
-            background: linear-gradient(90deg, #006496, #008ED3, #F2E313);
+            background: linear-gradient(90deg, #100C08, #95122C, #CA3F16, #c57c1d);
 
             padding: 4px 0;
             display: flex;
