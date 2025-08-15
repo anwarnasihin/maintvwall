@@ -16,7 +16,7 @@
             /* Lebar gambar mengisi seluruh lebar, tinggi mengikuti lebar gambar */
             background-repeat: no-repeat;
             /* Agar gambar tidak diulang */
-            background-image: url('/logo/backVidGram.jpg');
+            background-image: url('/logo/bg6.jpg');
 
             /* new */
             color: #fff;
