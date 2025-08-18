@@ -16,7 +16,7 @@
             /* Lebar gambar mengisi seluruh lebar, tinggi mengikuti lebar gambar */
             background-repeat: no-repeat;
             /* Agar gambar tidak diulang */
-            background-image: url('/logo/bg6.jpg');
+            background-image: url('/logo/bg7.jpg');
 
             /* new */
             color: #fff;
@@ -170,6 +170,24 @@
                 transform: translateX(-100%);
             }
         }
+
+        /* logo depan konten */
+        .logo { /*untuk logo yang ada di depan konten*/
+                position: absolute;
+                width: 120px;   /* atur sesuai kebutuhan */
+                z-index: 9999;  /* supaya selalu di atas konten */
+                opacity: 0.5; /* 0 = transparan penuh, 1 = solid */
+            }
+
+            .logo-left {
+                left: 40px; /* makin besar nilainya makin ke kanan */
+                top: 5px;
+            }
+
+            .logo-right {
+                right: 20px; /* makin besar nilainya makin ke kiri */
+                top: -20px;
+            }
     </style>
 </head>
 
@@ -180,6 +198,9 @@
         </div> --}}
         <div id="clock"></div>
         <div id="player"></div>
+
+        {{-- <img src="{{ asset('logo/LOGO BINUS Bekasi full putih.png') }}" class="logo logo-left"> <!--untuk logo yang ada di depan konten sebelah kiri--> --}}
+        {{-- <img src="{{ asset('logo/BINUS 45 putih.png') }}" class="logo logo-right"> <!--untuk logo yang ada di depan konten sebelah kanan--> --}}
     </div>
 
     @foreach($files as $konten)
