@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\text;
-use App\Models\source;
+use App\Models\Source;
 use Illuminate\Http\Request;
 
 class UploadtextController extends Controller
@@ -14,7 +14,7 @@ class UploadtextController extends Controller
     public function index()
     {
         $dtText = Text::all(); // Mengambil semua data teks dari database
-        // if ($request->ajax()) {
+        // if ($request->ajax())
         //     // Jika permintaan merupakan permintaan AJAX, kembalikan sebagai JSON
         //     return response()->json($dtText);
         // } else {
@@ -55,7 +55,7 @@ class UploadtextController extends Controller
             'deskripsi' => $validatedData['deskripsi'],
             'status' => $validatedData['status'],
         ]);
-    
+
         return redirect('datatext');
     }
 
@@ -91,7 +91,7 @@ class UploadtextController extends Controller
      */
     public function destroy(string $id)
     {
-        $txt = text::findOrFail($id); 
+        $txt = text::findOrFail($id);
         $txt->forceDelete();
         return back()->with('toast_success', 'Data berhasil di hapus!');
     }

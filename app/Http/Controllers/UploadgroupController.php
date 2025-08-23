@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\group;
-use App\Models\source;
+use App\Models\Source;
 use Illuminate\Http\Request;
 
 class UploadgroupController extends Controller
@@ -13,7 +13,7 @@ class UploadgroupController extends Controller
      */
     public function index()
     {
-        $dtGroup = group::all();
+        $dtGroup = Group::all();
         return view('Uploadgroup.Datagroup', compact('dtGroup'));
     }
 
