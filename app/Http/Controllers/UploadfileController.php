@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\group;
+use App\Models\Group;
 use App\Models\source;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
