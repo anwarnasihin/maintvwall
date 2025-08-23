@@ -75,16 +75,24 @@
 
 
     /* Teks angka besar */
+.small-box .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .small-box .inner h3 {
-    color: #fff !important;
-    font-size: 70px !important; /* ukuran angka */
+    color: #fff !important;   /* putih */
+    margin: 0;
+    font-size: 40px;
     font-weight: bold;
 }
 
 /* Teks keterangan lebih kecil */
 .small-box .inner p {
-    color: #fff !important;
-    font-size: 16px !important; /* ukuran teks bawah */
+    color: #fff !important;   /* putih */
+    margin: 0;
+    font-size: 16px;
 }
 
 
@@ -112,76 +120,98 @@
 
     /* Style posisi & ukuran icon */
     .small-box .icon {
-        font-size: 40px;
-        right: 10px;
-        top: 10px;
+    position: static !important; /* hilangkan absolute */
+    font-size: 50px;
+    opacity: 0.55; /* biar agak soft seperti contoh */
     }
+
+    /* bikin col custom 1/5 */
+    .col-5ths {
+    flex: 0 0 20%;
+    max-width: 20%;
+    padding: 0 10px; /* kiri kanan */
+    }
+
+    .row {
+    margin-left: -10px;
+    margin-right: -10px;
+    }
+
 </style>
 
             {{-- STATISTIK --}}
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3 mt-5"> {{-- g3 disana untuk mengatur jarak antar box, semakin besar angkanya maka akan semakin lebar jaraknya--}}
-                    <div class="col">
+
+                <div class="row mt-5">
+                    <div class="col-5ths">
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <h3>{{ $totalUsers }}</h3>
-                                <p>Total Users</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-users"></i>
+                                <div>
+                                    <h3>{{ $totalUsers }}</h3>
+                                    <p>Total Users</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col">
+                    <div class="col-5ths">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>{{ $totalImages }}</h3>
-                                <p>Total Images</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-image"></i>
+                                <div>
+                                    <h3>{{ $totalImages }}</h3>
+                                    <p>Total Images</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-image"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col">
+                    <div class="col-5ths">
                         <div class="small-box bg-warning">
                             <div class="inner">
-                                <h3>{{ $totalVideos }}</h3>
-                                <p>Total Videos</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-video"></i>
+                                <div>
+                                    <h3>{{ $totalVideos }}</h3>
+                                    <p>Total Videos</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-video"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col">
+                    <div class="col-5ths">
                         <div class="small-box bg-danger">
                             <div class="inner">
-                                <h3>{{ $totalTexts }}</h3>
-                                <p>Total Texts</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-font"></i>
+                                <div>
+                                    <h3>{{ $totalTexts }}</h3>
+                                    <p>Total Texts</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-font"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col">
+                    <div class="col-5ths">
                         <div class="small-box bg-primary">
                             <div class="inner">
-                                <h3>{{ $totalGroups }}</h3>
-                                <p>Total Groups</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-layer-group"></i>
+                                <div>
+                                    <h3>{{ $totalGroups }}</h3>
+                                    <p>Total Groups</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-layer-group"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-
         </div>
     </div>
 </section>
