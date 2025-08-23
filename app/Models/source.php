@@ -21,7 +21,7 @@ class Source extends Model
 
     public function groups()
     {
-        return $this->belongsTo(group::class, 'group', 'id');
+        return $this->belongsTo(Group::class, 'group', 'id');
     }
     public function user()
     {
