@@ -205,21 +205,23 @@
 
 @foreach($files as $konten)
     @php
-        $ext = strtolower(pathinfo($konten->directory, PATHINFO_EXTENSION));
-        $imageExt = ['jpg', 'jpeg', 'png', 'gif'];
-        $videoExt = ['mp4', 'webm', 'ogg'];
-    @endphp
+    $ext = strtolower(pathinfo($konten->directory, PATHINFO_EXTENSION));
+    $imageExt = ['jpg', 'jpeg', 'png', 'gif'];
+    $videoExt = ['mp4', 'webm', 'ogg'];
+@endphp
 
-    @if(in_array($ext, $imageExt) || $konten->typeFile === 'images')
-        <img src="{{ asset('storage/uploads/'.$konten->directory) }}" alt="Image" style="width: 100%; height: auto;">
-    @elseif(in_array($ext, $videoExt) || $konten->typeFile === 'video')
-        <video autoplay muted playsinline loop style="width: 100%; height: auto;">
-            <source src="{{ asset('storage/uploads/'.$konten->directory) }}" type="video/{{ $ext }}">
-            Browser Anda tidak mendukung video tag.
-        </video>
-    @elseif($konten->typeFile === 'youtube')
-        <iframe width="100%" height="500" src="{{ $konten->directory }}" frameborder="0" allowfullscreen></iframe>
-    @endif
+@if(in_array($ext, $imageExt) || $konten->typeFile === 'images')
+    <img src="{{ asset('assets/images/'.$konten->directory) }}"
+         alt="Image" style="width: 100%; height: auto;">
+@elseif(in_array($ext, $videoExt) || $konten->typeFile === 'video')
+    <video autoplay muted playsinline loop style="width: 100%; height: auto;">
+        <source src="{{ asset('assets/video/'.$konten->directory) }}" type="video/{{ $ext }}">
+        Browser Anda tidak mendukung video tag.
+    </video>
+@elseif($konten->typeFile === 'youtube')
+    <iframe width="100%" height="500" src="{{ $konten->directory }}" frameborder="0" allowfullscreen></iframe>
+@endif
+
 @endforeach
 
 
