@@ -17,7 +17,7 @@ class HomeController extends Controller
         $today = Carbon::now()->dayOfWeekIso; // 1 = Senin, ..., 7 = Minggu
         $currentDate = Carbon::now()->toDateString();
 
-        $files = Source::where('str_date', '<=', $currentDate)
+        $files = source::where('str_date', '<=', $currentDate)
                         ->where('ed_date', '>=', $currentDate)
                         ->whereNotNull('selected_days')
                         ->whereRaw("JSON_CONTAINS(selected_days, '\"$today\"')")
