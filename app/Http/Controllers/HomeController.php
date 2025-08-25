@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\Source;
+use App\Models\source;
 use App\Models\User;
-use App\Models\Text;
-use App\Models\Group;
+use App\Models\text;
+use App\Models\group;
 
 
 class HomeController extends Controller
@@ -30,10 +30,10 @@ class HomeController extends Controller
         // Nanti setelah cek hasil di atas, baru aktifkan lagi yang bawah ini
 
         $totalUsers  = User::count();
-        $totalImages = Source::where('typeFile', 'images')->count();
-        $totalVideos = Source::where('typeFile', 'video')->count();
-        $totalTexts  = Text::count();   // ambil dari tabel texts
-        $totalGroups = Group::count();  // ambil dari tabel groups
+        $totalImages = source::where('typeFile', 'images')->count();
+        $totalVideos = source::where('typeFile', 'video')->count();
+        $totalTexts  = text::count();   // ambil dari tabel texts
+        $totalGroups = group::count();  // ambil dari tabel groups
 
         return view('dashboard', compact(
             'files',
