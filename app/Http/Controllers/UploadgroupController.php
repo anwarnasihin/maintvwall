@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Group;
-use App\Models\Source;
+use App\Models\group;
+use App\Models\source;
 use Illuminate\Http\Request;
 
 class UploadgroupController extends Controller
@@ -13,7 +13,7 @@ class UploadgroupController extends Controller
      */
     public function index()
     {
-        $dtGroup = Group::all();
+        $dtGroup = group::all();
         return view('Uploadgroup.Datagroup', compact('dtGroup'));
     }
 
@@ -39,7 +39,7 @@ class UploadgroupController extends Controller
         $nama = str_replace(' ', '', $request->input('nama'));
 
         // Simpan data yang telah dihapus spasi
-        Group::create([
+        group::create([
             'name' => $nama,
             'keterangan' => $request->input('keterangan'),
         ]);
@@ -60,7 +60,7 @@ class UploadgroupController extends Controller
      */
     public function edit($id)
     {
-        $gro = Group::findorfail($id);
+        $gro = group::findorfail($id);
         return view('Uploadgroup.Editgroup', compact('gro'));
     }
 
@@ -69,7 +69,7 @@ class UploadgroupController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $gro = Group::findorfail($id);
+        $gro = group::findorfail($id);
         $gro->update($request->all());
         return redirect('datagroup')->with('toast_success', 'Data berhasil di update');
     }
@@ -79,7 +79,7 @@ class UploadgroupController extends Controller
      */
     public function destroy(string $id)
     {
-        $gro = Group::findOrFail($id);
+        $gro = group::findOrFail($id);
         $gro->forceDelete();
         return back()->with('toast_success', 'Data berhasil di hapus!');
     }

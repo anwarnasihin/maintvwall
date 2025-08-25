@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\text;
-use App\Models\Source;
+use App\Models\source;
 use Illuminate\Http\Request;
 
 class UploadtextController extends Controller
@@ -13,7 +13,7 @@ class UploadtextController extends Controller
      */
     public function index()
     {
-        $dtText = Text::all(); // Mengambil semua data teks dari database
+        $dtText = text::all(); // Mengambil semua data teks dari database
         // if ($request->ajax())
         //     // Jika permintaan merupakan permintaan AJAX, kembalikan sebagai JSON
         //     return response()->json($dtText);
@@ -25,7 +25,7 @@ class UploadtextController extends Controller
 
     public function getTexts()
 {
-    $texts = Text::where('status',1)->get();
+    $texts = text::where('status',1)->get();
     return response()->json($texts);
 }
 
