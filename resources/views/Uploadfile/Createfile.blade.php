@@ -60,19 +60,70 @@
                                     </div>
                                 </div>
                             </div>
-                       
-                            <div class="form-group">
-                                <label>Pilih Hari Tampil</label>
-                                <br>
-                                <label><input type="checkbox" name="selected_days[]" value="1"> Senin</label>
-                                <label><input type="checkbox" name="selected_days[]" value="2"> Selasa</label>
-                                <label><input type="checkbox" name="selected_days[]" value="3"> Rabu</label>
-                                <label><input type="checkbox" name="selected_days[]" value="4"> Kamis</label>
-                                <label><input type="checkbox" name="selected_days[]" value="5"> Jumat</label>
-                                <label><input type="checkbox" name="selected_days[]" value="6"> Sabtu</label>
-                                <label><input type="checkbox" name="selected_days[]" value="7"> Minggu</label>
-                                <label><input type="checkbox" id="checkAll"> All Day</label>
+
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Display Days <span class="text-red-500">*</span></label>
+                                <div class="flex flex-wrap gap-3">
+                                    <!-- Hari-hari -->
+                                    <label class="flex flex-col items-center text-center">
+                                        <input type="checkbox" name="selected_days[]" value="1" class="peer hidden" />
+                                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
+                                            <div class="font-semibold">Mon</div>
+                                            <div class="text-xs text-gray-500 peer-checked:text-white">Monday</div>
+                                        </div>
+                                    </label>
+                                    <label class="flex flex-col items-center text-center">
+                                        <input type="checkbox" name="selected_days[]" value="2" class="peer hidden" />
+                                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
+                                            <div class="font-semibold">Tue</div>
+                                            <div class="text-xs text-gray-500 peer-checked:text-white">Tuesday</div>
+                                        </div>
+                                    </label>
+                                    <label class="flex flex-col items-center text-center">
+                                        <input type="checkbox" name="selected_days[]" value="3" class="peer hidden" checked />
+                                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
+                                            <div class="font-semibold">Wed</div>
+                                            <div class="text-xs text-gray-500 peer-checked:text-white">Wednesday</div>
+                                        </div>
+                                    </label>
+                                    <label class="flex flex-col items-center text-center">
+                                        <input type="checkbox" name="selected_days[]" value="4" class="peer hidden" />
+                                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
+                                            <div class="font-semibold">Thu</div>
+                                            <div class="text-xs text-gray-500 peer-checked:text-white">Thursday</div>
+                                        </div>
+                                    </label>
+                                    <label class="flex flex-col items-center text-center">
+                                        <input type="checkbox" name="selected_days[]" value="5" class="peer hidden" />
+                                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
+                                            <div class="font-semibold">Fri</div>
+                                            <div class="text-xs text-gray-500 peer-checked:text-white">Friday</div>
+                                        </div>
+                                    </label>
+                                    <label class="flex flex-col items-center text-center">
+                                        <input type="checkbox" name="selected_days[]" value="6" class="peer hidden" />
+                                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
+                                            <div class="font-semibold">Sat</div>
+                                            <div class="text-xs text-gray-500 peer-checked:text-white">Saturday</div>
+                                        </div>
+                                    </label>
+                                    <label class="flex flex-col items-center text-center">
+                                        <input type="checkbox" name="selected_days[]" value="7" class="peer hidden" checked />
+                                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
+                                            <div class="font-semibold">Sun</div>
+                                            <div class="text-xs text-gray-500 peer-checked:text-white">Sunday</div>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- Select All -->
+                                <label class="mt-4 flex items-center space-x-2">
+                                    <input type="checkbox" id="checkAll" class="h-4 w-4 text-purple-600 border-gray-300 rounded" />
+                                    <span class="text-sm text-gray-700 font-medium">Select All Days</span>
+                                </label>
+                                <p class="text-sm text-gray-400">Select which days of the week this media should be displayed</p>
                             </div>
+
 
                             <div class="form-group">
                                 <button type="submit" class="btn btn-success">Simpan Data</button>
@@ -82,14 +133,14 @@
                 </div>
                 <!-- /.card -->
                 @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
             </div>
         </div>
         <!-- /.row -->
@@ -129,37 +180,37 @@
         })
     </script>
     @section('scripts')
-<script>
-    $(document).ready(function() {
-        $('#checkAll').change(function() {
-            let isChecked = $(this).prop('checked');
-            $('input[name="selected_days[]"]').prop('checked', isChecked);
-        });
+    <script>
+        $(document).ready(function() {
+            $('#checkAll').change(function() {
+                let isChecked = $(this).prop('checked');
+                $('input[name="selected_days[]"]').prop('checked', isChecked);
+            });
 
-        $('input[name="selected_days[]"]').change(function() {
-            let totalHari = $('input[name="selected_days[]"]').length;
-            let checkedHari = $('input[name="selected_days[]"]:checked').length;
-            $('#checkAll').prop('checked', totalHari === checkedHari);
+            $('input[name="selected_days[]"]').change(function() {
+                let totalHari = $('input[name="selected_days[]"]').length;
+                let checkedHari = $('input[name="selected_days[]"]:checked').length;
+                $('#checkAll').prop('checked', totalHari === checkedHari);
+            });
         });
-    });
-</script>
-@endsection
-@section('scripts')
-<script>
-    $(document).ready(function() {
-        $('#checkAll').change(function() {
-            let isChecked = $(this).prop('checked');
-            $('input[name="selected_days[]"]').prop('checked', isChecked);
-        });
+    </script>
+    @endsection
+    @section('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#checkAll').change(function() {
+                let isChecked = $(this).prop('checked');
+                $('input[name="selected_days[]"]').prop('checked', isChecked);
+            });
 
-        $('input[name="selected_days[]"]').change(function() {
-            let totalHari = $('input[name="selected_days[]"]').length;
-            let checkedHari = $('input[name="selected_days[]"]:checked').length;
-            $('#checkAll').prop('checked', totalHari === checkedHari);
+            $('input[name="selected_days[]"]').change(function() {
+                let totalHari = $('input[name="selected_days[]"]').length;
+                let checkedHari = $('input[name="selected_days[]"]:checked').length;
+                $('#checkAll').prop('checked', totalHari === checkedHari);
+            });
         });
-    });
-</script>
-@endsection
+    </script>
+    @endsection
 
 </section>
 @endsection

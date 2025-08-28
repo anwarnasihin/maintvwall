@@ -39,7 +39,7 @@ class UploadgroupController extends Controller
         $nama = str_replace(' ', '', $request->input('nama'));
 
         // Simpan data yang telah dihapus spasi
-        group::create([
+        Group::create([
             'name' => $nama,
             'keterangan' => $request->input('keterangan'),
         ]);
@@ -60,7 +60,7 @@ class UploadgroupController extends Controller
      */
     public function edit($id)
     {
-        $gro = group::findorfail($id);
+        $gro = Group::findorfail($id);
         return view('Uploadgroup.Editgroup', compact('gro'));
     }
 
@@ -69,7 +69,7 @@ class UploadgroupController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $gro = group::findorfail($id);
+        $gro = Group::findorfail($id);
         $gro->update($request->all());
         return redirect('datagroup')->with('toast_success', 'Data berhasil di update');
     }
@@ -79,7 +79,7 @@ class UploadgroupController extends Controller
      */
     public function destroy(string $id)
     {
-        $gro = group::findOrFail($id);
+        $gro = Group::findOrFail($id);
         $gro->forceDelete();
         return back()->with('toast_success', 'Data berhasil di hapus!');
     }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\group;
-use App\Models\source;
+use App\Models\Group;
+use App\Models\Source;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +17,13 @@ class UploadfileController extends Controller
      */
     public function index()
     {
-        $dataFile = source::with('groups', 'user')->latest()->get(); // Menggunakan metode get()
+        $dataFile = Source::with('groups', 'user')->latest()->get(); // Menggunakan metode get()
+        return view('Uploadfile.Datafile', compact('dataFile'), ['judul' => 'Data Source']);
+    }
+
+    public function oldIndex()
+    {
+        $dataFile = Source::with('groups', 'user')->latest()->get();
         return view('Uploadfile.Datafile', compact('dataFile'), ['judul' => 'Data Source']);
     }
 
@@ -25,6 +31,12 @@ class UploadfileController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
+    {
+        $group = group::get();
+        return view('Uploadfile.Createfile', ['group' => $group]);
+    }
+
+    public function oldCreate()
     {
         $group = group::get();
         return view('Uploadfile.Createfile', ['group' => $group]);
@@ -109,7 +121,7 @@ class UploadfileController extends Controller
      */
     public function edit($id)
     {
-        $dt = source::findorfail($id);
+        $dt = Source::findorfail($id);
         return view('Uploadfile.Editfile', compact('dt'));
     }
 
@@ -118,7 +130,7 @@ class UploadfileController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $dt = source::findorfail($id);
+        $dt = Source::findorfail($id);
         $dt->update($request->all());
 
         return redirect('datafile')->with('toast_success', 'Data berhasil di update!');
@@ -126,17 +138,37 @@ class UploadfileController extends Controller
 
     public function updateDuration(Request $request)
     {
-        $dt = source::findorfail($request->id);
-        $dt->duration = $request->duration > 0 ? $request->duration : 0;
+        $request->validate([
+            'id' => 'required|exists:sources,id',
+            'duration' => 'nullable|numeric|min:0',
+            'str_date' => 'nullable|date',
+            'ed_date' => 'nullable|date|after_or_equal:str_date',
+            'selected_days' => 'nullable|array',
+        ]);
+
+        $dt = Source::findorfail($request->id);
+
+        // Update duration (only for images)
+        if ($request->has('duration')) {
+            $dt->duration = $request->duration > 0 ? $request->duration : 0;
+        }
+
+        // Update dates
         if ($request->str_date != null) {
-            $dt->str_date = date("Y-m-d", strtotime(str_replace('/', '-', $request->str_date)));
+            $dt->str_date = date("Y-m-d", strtotime($request->str_date));
         }
         if ($request->ed_date != null) {
-            $dt->ed_date = date("Y-m-d", strtotime(str_replace('/', '-', $request->ed_date)));
+            $dt->ed_date = date("Y-m-d", strtotime($request->ed_date));
         }
+
+        // Update selected days
+        if ($request->has('selected_days') && is_array($request->selected_days)) {
+            $dt->selected_days = json_encode($request->selected_days);
+        }
+
         $dt->save();
 
-        return redirect('datafile')->with('toast_success', 'Data berhasil di update!');
+        return redirect('datafile')->with('toast_success', 'Media settings updated successfully!');
     }
 
     /**
@@ -144,7 +176,7 @@ class UploadfileController extends Controller
      */
     public function destroy(string $id)
     {
-        $dt = source::find($id); // Untuk mengambil data yang sudah dihapus
+        $dt = Source::find($id); // Untuk mengambil data yang sudah dihapus
         $dt->forceDelete(); // Untuk menghapus secara permanen
 
         if ($dt->direktori && file_exists(storage_path('app/public/' . $dt->direktori))) {
