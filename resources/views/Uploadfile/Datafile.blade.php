@@ -123,7 +123,7 @@
         </div>
         <!-- /.card -->
       </div>
-
+ <!-- Modal edit -->
       <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
           <div class="modal-content">
@@ -144,26 +144,26 @@
                     <small class="form-text text-muted">Only applicable for images. Leave empty for videos.</small>
                   </div>
 
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-6">
                     <label for="str_date">Start Date</label>
                     <div class="input-group date" id="strDate" data-target-input="nearest">
-                      <input type="text" name="str_date" id="str_date" class="form-control datetimepicker-input" data-target="#strDate" placeholder="DD/MM/YYYY">
+                      <input type="text" name="str_date" id="str_date" class="form-control datetimepicker-input" data-target="#strDate" placeholder="YYYY-MM-DD">
                       <div class="input-group-append" data-target="#strDate" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
                     </div>
                   </div>
 
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-6">
                     <label for="ed_date">End Date</label>
                     <div class="input-group date" id="edDate" data-target-input="nearest">
-                      <input type="text" name="ed_date" id="ed_date" class="form-control datetimepicker-input" data-target="#edDate" placeholder="DD/MM/YYYY">
+                      <input type="text" name="ed_date" id="ed_date" class="form-control datetimepicker-input" data-target="#edDate" placeholder="YYYY-MM-DD">
                       <div class="input-group-append" data-target="#edDate" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
                     </div>
                   </div>
-                  <!-- Modal edit -->
+                 
                   <div class="mb-4 col-12">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Display Days <span class="text-red-500">*</span></label>
                     <div class="flex flex-wrap gap-3">
@@ -440,7 +440,7 @@
   $(function() {
     //Date picker
     $('#strDate,#edDate').datetimepicker({
-      format: 'DD/MM/YYYY'
+      format: 'YYYY-MM-DD'
     });
 
     $("#example1").DataTable({
@@ -460,7 +460,7 @@
       }, {
         targets: [5, 6],
         render: function(oTable) {
-          return moment(oTable).format('DD-MM-YYYY');
+          return moment(oTable).format('YYYY-MM-DD');
         }
       }],
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
