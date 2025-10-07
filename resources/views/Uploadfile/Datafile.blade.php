@@ -267,15 +267,35 @@
     $('#formDuration')[0].reset();
     $('input[name="selected_days[]"]').prop('checked', false);
     $('#checkAll').prop('checked', false);
+
+    const hasMoment = typeof moment !== 'undefined';
+    const todayMoment = hasMoment ? moment() : null;
+    const today = hasMoment ? todayMoment.format('YYYY-MM-DD') : new Date().toISOString().slice(0, 10);
+
+    if (hasMoment) {
+      $('#strDate').datetimepicker('date', todayMoment);
+      $('#edDate').datetimepicker('date', null);
+      $('#str_date').val(today);
+      $('#ed_date').val('');
+    } else {
+      $('#str_date').val(today);
+      $('#ed_date').val('');
+    }
   }
 
   function formatDate(dateString) {
     if (!dateString) return '';
     const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) {
+      if (typeof moment !== 'undefined') {
+        return moment().format('YYYY-MM-DD');
+      }
+      return new Date().toISOString().slice(0, 10);
+    }
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    return `${year}-${month}-${day}`;
   }
 
   $(document).on('click', '#edit', function(e) {
@@ -312,10 +332,18 @@
 
     // Set dates
     if (strDate) {
-      $('#str_date').val(formatDate(strDate));
+      const formattedStart = formatDate(strDate);
+      if (typeof moment !== 'undefined') {
+        $('#strDate').datetimepicker('date', moment(formattedStart, 'YYYY-MM-DD'));
+      }
+      $('#str_date').val(formattedStart);
     }
     if (edDate) {
-      $('#ed_date').val(formatDate(edDate));
+      const formattedEnd = formatDate(edDate);
+      if (typeof moment !== 'undefined') {
+        $('#edDate').datetimepicker('date', moment(formattedEnd, 'YYYY-MM-DD'));
+      }
+      $('#ed_date').val(formattedEnd);
     }
 
     // Set selected days
@@ -443,6 +471,8 @@
       format: 'YYYY-MM-DD'
     });
 
+    resetForm();
+
     $("#example1").DataTable({
       "responsive": true,
       "lengthChange": false,
@@ -503,3 +533,4 @@
 </script>
 @endif
 @endsection
+

@@ -116,7 +116,6 @@
                                     </label>
                                 </div>
 
-                                <!-- Select All -->
                                 <label class="mt-4 flex items-center space-x-2">
                                     <input type="checkbox" id="checkAll" class="h-4 w-4 text-purple-600 border-gray-300 rounded" />
                                     <span class="text-sm text-gray-700 font-medium">Select All Days</span>
