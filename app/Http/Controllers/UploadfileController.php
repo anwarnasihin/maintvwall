@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Group;
-use App\Models\Source;
+use App\Models\group;
+use App\Models\source;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,13 +17,13 @@ class UploadfileController extends Controller
      */
     public function index()
     {
-        $dataFile = Source::with('groups', 'user')->latest()->get(); // Menggunakan metode get()
+        $dataFile = source::with('groups', 'user')->latest()->get(); // Menggunakan metode get()
         return view('Uploadfile.Datafile', compact('dataFile'), ['judul' => 'Data Source']);
     }
 
     public function oldIndex()
     {
-        $dataFile = Source::with('groups', 'user')->latest()->get();
+        $dataFile = source::with('groups', 'user')->latest()->get();
         return view('Uploadfile.Datafile', compact('dataFile'), ['judul' => 'Data Source']);
     }
 
@@ -121,7 +121,7 @@ class UploadfileController extends Controller
      */
     public function edit($id)
     {
-        $dt = Source::findorfail($id);
+        $dt = source::findorfail($id);
         return view('Uploadfile.Editfile', compact('dt'));
     }
 
@@ -130,7 +130,7 @@ class UploadfileController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $dt = Source::findorfail($id);
+        $dt = source::findorfail($id);
         $dt->update($request->all());
 
         return redirect('datafile')->with('toast_success', 'Data berhasil di update!');
@@ -146,7 +146,7 @@ class UploadfileController extends Controller
             'selected_days' => 'nullable|array',
         ]);
 
-        $dt = Source::findorfail($request->id);
+        $dt = source::findorfail($request->id);
 
         // Update duration (only for images)
         if ($request->has('duration')) {
@@ -176,7 +176,7 @@ class UploadfileController extends Controller
      */
     public function destroy(string $id)
     {
-        $dt = Source::find($id); // Untuk mengambil data yang sudah dihapus
+        $dt = source::find($id); // Untuk mengambil data yang sudah dihapus
         $dt->forceDelete(); // Untuk menghapus secara permanen
 
         if ($dt->direktori && file_exists(storage_path('app/public/' . $dt->direktori))) {
