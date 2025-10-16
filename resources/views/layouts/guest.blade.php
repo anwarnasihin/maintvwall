@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <link rel="icon" href="{{ asset('assets/dist/img/C.png ')}}" height="200" width="200">
+        <link rel="icon" href="{{ asset('assets/dist/img/BKEN KEREN ASYIK LIPAT BIRU1.png ')}}" height="200" width="200">
         <title>TV WALL BINUS@BEKASI</title>
 
         <!-- Fonts -->
