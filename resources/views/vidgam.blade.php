@@ -374,56 +374,59 @@
                 }
                 if (media.typeFile === "youtube") {
 
-                    // URL video YouTube
-                    var youtubeUrl = media.direktori;
+    // URL video YouTube
+    var youtubeUrl = media.direktori;
 
-                    // Mencari posisi awal kode video
-                    var startPos = youtubeUrl.lastIndexOf("/") + 1;
+    // 🔧 Ambil kode video dengan aman dari berbagai jenis link
+    var videoCode = null;
+    var match = youtubeUrl.match(/(?:v=|\/live\/|\/embed\/)([a-zA-Z0-9_-]{11})/);
+    if (match && match[1]) {
+        videoCode = match[1];
+    } else {
+        var startPos = youtubeUrl.lastIndexOf("/") + 1;
+        videoCode = youtubeUrl.substring(startPos).split('?')[0];
+    }
 
-                    // Mengambil kode video dari URL
-                    var videoCode = youtubeUrl.substring(startPos);
+    // Menambahkan kelas untuk transisi
+    player.classList.add('transition');
 
-                    // Menambahkan kelas untuk transisi
-                    player.classList.add('transition');
+    player.innerHTML = "";
 
-                    player.innerHTML = "";
+    // Menunggu durasi transisi selesai
+    setTimeout(function() {
+        // Menghapus kelas transisi
+        player.classList.remove('transition');
 
-                    // Menunggu durasi transisi selesai
-                    setTimeout(function() {
-                        // Menghapus kelas transisi
-                        player.classList.remove('transition');
+        var youtubePlayerDiv = document.createElement('div');
+        youtubePlayerDiv.id = 'youtube-player'; // gunakan id unik
+        player.classList.add('transition');
+        player.appendChild(youtubePlayerDiv);
+        player.classList.remove('transition');
 
-                        var youtubePlayerDiv = document.createElement('div');
-                        youtubePlayerDiv.id = 'youtube-player'; // Use a different ID to avoid conflicts
-                        player.classList.add('transition');
-                        player.appendChild(youtubePlayerDiv);
-                        player.classList.remove('transition');
-                        setTimeout(function() {
-                            var youtubePlayerDiv = new YT.Player('youtube-player', {
-                                height: '100%', // Set height to 100%
-                                width: '100%',
-                                videoId: videoCode,
-                                playerVars: {
-                                    'controls': 0, // Kontrol video (0 untuk dihilangkan)
-                                    'autoplay': 1, // Autoplay video (1 untuk ya)
-                                    // ... tambahkan opsi lain sesuai kebutuhan
-                                },
-                                events: {
-                                    'onStateChange': onPlayerStateChange
-                                }
-                            });
-                        }, 100)
-                    }, 1000); // Ganti 500 dengan durasi transisi Anda (dalam milidetik)
-
-                    function onPlayerStateChange(event) {
-                        if (event.data === YT.PlayerState.ENDED) {
-                            // Saat video selesai, ganti elemen iframe dengan elemen div
-                            currentData++;
-                            playVideoAndImage();
-
-                        }
-                    }
+        setTimeout(function() {
+            var youtubePlayerDiv = new YT.Player('youtube-player', {
+                height: '100%', // Set height to 100%
+                width: '100%',
+                videoId: videoCode,
+                playerVars: {
+                    'controls': 0, // Sembunyikan kontrol video
+                    'autoplay': 1, // Jalankan otomatis
+                },
+                events: {
+                    'onStateChange': onPlayerStateChange
                 }
+            });
+        }, 100);
+    }, 1000);
+
+    function onPlayerStateChange(event) {
+        if (event.data === YT.PlayerState.ENDED) {
+            currentData++;
+            playVideoAndImage();
+        }
+    }
+}
+
 
             } else {
 
