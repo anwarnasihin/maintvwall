@@ -40,24 +40,25 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 Route::get('/show/{group}', [UploadfileController::class, 'show'])->name('showGroup');
 
 Route::post('/getContent', function (Request $request) {
+    // 1. Ambil Group ID
     $idGroup = group::where('name', $request->group)->first();
 
-    $dataa = source::where(function ($query) use ($idGroup) {
-        $today = date("Y-m-d");
-        $todayday = Carbon::now('Asia/Jakarta')->dayOfWeekIso; // 1 = Senin, ..., 7 = Minggu
-        $query->where('group', '=', $idGroup->id)
-            ->where(function ($query) use ($today, $idGroup, $todayday) {
-                $query->where('str_date', '<=', $today)
-                    ->where('ed_date', '>=', $today)
-                    ->whereRaw("JSON_CONTAINS(selected_days, '\"$todayday\"')")
-                    ->where('group', $idGroup->id);
-            });
-    });
+    // Pastikan group ketemu biar tidak error
+    if(!$idGroup) return response()->json([[], [], csrf_token()]);
+
+    // 2. Query Data - ABAIKAN JAM MULAI (STR_DATE)
+    $now = Carbon::now('Asia/Jakarta');
+    $todayday = $now->dayOfWeekIso;
+
+    $data = source::where('group', $idGroup->id)
+        ->where('ed_date', '>=', $now) // Cukup cek apakah belum melewati waktu berakhir
+        ->whereRaw("JSON_CONTAINS(selected_days, '\"$todayday\"')")
+        ->get();
+
     $token = csrf_token();
-    //GET RUNNING TEXT
-    $data = $dataa->get();
     $texts = Text::where('status', 1)->get();
-    //return $data;
+
+    // Kembalikan Data
     return response()->json([$data, $texts, $token]);
 });
 
@@ -97,5 +98,31 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/edittext/{id}', [UploadtextController::class, 'edit'])->name('edittext');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->post('/updatetext/{id}', [UploadtextController::class, 'update'])->name('updatetext');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->get('/deletetext/{id}', [UploadtextController::class, 'destroy'])->name('deletetext');
-
+Route::delete('/hapus-masal', [UploadfileController::class, 'bulkDelete'])->name('hapusmasal');
 Route::match(['get', 'post'], '/shutdown', [ShutdownController::class, 'shutdown']);
+
+Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/dashboard', function () {
+        // 1. Hitung User
+        $totalUsers = \App\Models\User::count();
+
+        // 2. Hitung Group (Pakai model 'group' huruf kecil sesuai kodingan Mas)
+        $totalGroups = \App\Models\group::count();
+
+        // 3. Hitung Text (Pakai model 'text')
+        $totalTexts  = \App\Models\text::count();
+
+        // 4. Hitung File Upload (Pakai model 'source')
+        // Karena saya belum tau cara bedakan video/gambar di database Mas,
+        // kita hitung total file yang ada di tabel source saja.
+        $totalImages = \App\Models\source::count();
+        $totalVideos = 0; // Sementara 0 dulu, atau mau disamakan dengan source juga boleh
+
+        // Kirim semua variabel angka ini ke tampilan
+        return view('admin.dashboard', compact('totalUsers', 'totalImages', 'totalVideos', 'totalTexts', 'totalGroups'));
+    })->name('dashboard');
+
+    // Route Resource Users (JANGAN DIHAPUS)
+    Route::resource('users', \App\Http\Controllers\AdminUserController::class);
+});

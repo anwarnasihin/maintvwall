@@ -9,31 +9,29 @@ use App\Models\User;
 use App\Models\text;
 use App\Models\group;
 
-
 class HomeController extends Controller
 {
     public function index()
     {
-        $today = Carbon::now()->dayOfWeekIso; // 1 = Senin, ..., 7 = Minggu
-        $currentDate = Carbon::now()->toDateString();
+        // --- LOGIKA WAKTU (SUDAH DIPERBAIKI) ---
+        // Gunakan Timezone Jakarta dan Waktu Lengkap (Jam + Menit)
+        $now = Carbon::now('Asia/Jakarta');
+        $todayDay = $now->dayOfWeekIso;
 
-        $files = source::where('str_date', '<=', $currentDate)
-                        ->where('ed_date', '>=', $currentDate)
+        // --- LOGIKA BARU: ABAIKAN START TIME, FOKUS KE END TIME ---
+        $files = source::where('ed_date', '>=', $now) // Masih tayang selama belum melewati waktu END
                         ->whereNotNull('selected_days')
-                        ->whereRaw("JSON_CONTAINS(selected_days, '\"$today\"')")
+                        ->whereRaw("JSON_CONTAINS(selected_days, '\"$todayDay\"')")
                         ->get();
 
-        // Debug typeFile unik
-        // $allTypes = Source::select('typeFile')->distinct()->pluck('typeFile');
-        // dd($allTypes); // sementara untuk cek data
-
-        // Nanti setelah cek hasil di atas, baru aktifkan lagi yang bawah ini
+        // ----------------------------------------
 
         $totalUsers  = User::count();
+        // Hitung total images/video dari tabel source
         $totalImages = source::where('typeFile', 'images')->count();
         $totalVideos = source::where('typeFile', 'video')->count();
-        $totalTexts  = text::count();   // ambil dari tabel texts
-        $totalGroups = group::count();  // ambil dari tabel groups
+        $totalTexts  = text::count();
+        $totalGroups = group::count();
 
         return view('dashboard', compact(
             'files',
@@ -43,6 +41,5 @@ class HomeController extends Controller
             'totalTexts',
             'totalGroups'
         ));
-
     }
 }

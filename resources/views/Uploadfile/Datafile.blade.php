@@ -3,72 +3,55 @@
 @section('content')
 
 <style>
-  #player img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-  }
+  /* --- Styling CSS --- */
+  #player img { max-width: 100%; max-height: 100%; width: auto; height: auto; }
+  #player video { width: 100%; height: auto; }
+  #youtube-player { width: 100%; height: 100%; }
+  .day-wrapper { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+  .day-wrapper .form-check-inline { margin-right: 15px; margin-bottom: 10px; }
+  .modal-lg { max-width: 900px !important; }
+  .form-check-input { margin-right: 5px; }
+  .form-check-label { margin-bottom: 0; font-weight: normal; }
 
-  #player video {
-    width: 100%;
-    height: auto;
-  }
-
-  #youtube-player {
-    width: 100%;
-    height: 100%;
-  }
-
-  .day-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .day-wrapper .form-check-inline {
-    margin-right: 15px;
-    margin-bottom: 10px;
-  }
-
-  .modal-lg {
-    max-width: 900px !important;
-  }
-
-  .form-check-input {
-    margin-right: 5px;
-  }
-
-  .form-check-label {
-    margin-bottom: 0;
-    font-weight: normal;
-  }
+  /* Styling tambahan untuk checkbox di tabel */
+  .sub_chk { cursor: pointer; width: 18px; height: 18px; }
 </style>
 
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
-      <div class="col-sm-6">
-        <h1 class="m-0">{{$judul}}</h1>
-      </div><!-- /.col -->
-    </div><!-- /.row -->
-  </div><!-- /.container-fluid -->
+      <div class="col-sm-6"><h1 class="m-0">{{$judul}}</h1></div>
+    </div>
+  </div>
 </div>
-<!-- /.content-header -->
 
-<!-- Main content -->
 <section class="content">
   <div class="container-fluid">
     <div class="row">
       <div class="col-12">
         <div class="card">
-          <!-- /.card-header -->
           <div class="card-body">
+
+            {{-- --- AREA TOMBOL ATAS --- --}}
+            <div class="mb-3 d-flex align-items-center" style="gap: 10px;">
+                {{-- Container untuk Tombol Tambah Data dari DataTable --}}
+                <div id="button_tambah_container"></div>
+
+                {{-- Tombol Pilih Semua --}}
+                <button type="button" class="btn btn-outline-primary btn-sm" id="btnSelectAll">
+                    <i class="far fa-check-square"></i> Pilih Semua
+                </button>
+
+                {{-- Tombol Hapus Masal --}}
+                <button class="btn btn-danger btn-sm" id="deleteAll" style="display:none;">
+                    <i class="fas fa-trash"></i> Hapus yang Tercentang (<span id="countSelected">0</span>)
+                </button>
+            </div>
+
             <table id="example1" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th class="text-center" style="width: 10px">No</th>
+                  <th class="text-center" style="width: 70px;">No</th>
                   <th class="text-center">Group</th>
                   <th class="text-center">Type File</th>
                   <th class="text-center">Direktori</th>
@@ -81,35 +64,68 @@
               </thead>
               <tbody>
                 @foreach ($dataFile as $item)
-                <tr>
-                  <td class="text-center">{{ $loop->iteration }}</td>
+                @php $isExpired = \Carbon\Carbon::now('Asia/Jakarta')->gt($item->ed_date); @endphp
+                <tr style="{{ $isExpired ? 'background-color: #FFE4EF;' : '' }}">
+                  <td class="text-center">
+                        <div class="d-flex align-items-center justify-content-center" style="gap: 10px;">
+                            <input type="checkbox" class="sub_chk" data-id="{{$item->id}}">
+                            <span class="ml-1">{{ $loop->iteration }}</span>
+                        </div>
+                  </td>
                   <td>{{ $item->groups ? $item->groups->name : ' ' }}</td>
                   <td>{{ $item->typeFile }}</td>
-                  <td><a id="showKonten" href="#" data-type="{{ $item->typeFile }}" data-konten="{{ $item->direktori }}">{{ $item->direktori }}</a></td>
+                  <td>
+                        <a id="showKonten" href="#" data-type="{{ $item->typeFile }}" data-konten="{{ $item->direktori }}">
+                            {{-- Logika: Jika youtube tampilkan link asli, jika file ambil namanya saja --}}
+                            @if($item->typeFile == 'youtube')
+                                {{ $item->direktori }}
+                            @else
+                                <i class="fas fa-file-alt mr-1"></i> {{ basename($item->direktori) }}
+                            @endif
+                        </a>
+                  </td>
                   <td>{{ $item->duration }}</td>
-                  <td>{{ $item->str_date }}</td>
-                  <td class="{{$item->ed_date <= date('Y-m-d')?'text-danger':''}}">{{ $item->ed_date }}</td>
+
+                  <td class="text-center">
+                    {{ date('d M Y', strtotime($item->str_date)) }} <br>
+                    <small class="badge badge-success"><i class="far fa-clock"></i> {{ date('H:i', strtotime($item->str_date)) }}</small>
+                  </td>
+
+                  <td class="text-center">
+                    <div style="{{ $isExpired ? 'color: #ff4d4d; font-weight: bold;' : '' }}">
+                        {{ date('d M Y', strtotime($item->ed_date)) }}
+                    </div>
+                    <small class="badge {{ $isExpired ? 'badge-dark' : 'badge-danger' }}"
+                        style="{{ $isExpired ? 'background-color: #ff4d4d !important; color: white;' : '' }}">
+                        <i class="far fa-clock"></i> {{ date('H:i', strtotime($item->ed_date)) }}
+                    </small>
+                    @if($isExpired) <br><small class="text-danger" style="font-weight: 800; font-size: 10px;">EXPIRED</small> @endif
+                  </td>
+
                   <td>{{ optional($item->user)->name }}</td>
                   <td class="text-center">
                     @if ($item->typeFile != "youtube")
-                    <form id="form{{ $loop->iteration }}" action="/download" method="post">
+                    <form id="form{{ $loop->iteration }}" action="/download" method="post" style="display:inline;">
                       @csrf
                       <input type="hidden" name="konten" value="{{ $item->direktori }}">
-                      <a onclick="document.getElementById('form{{ $loop->iteration }}').submit();" type="submit" data-toggle="tooltip" title="download">
-                        <i class="fas fa-solid fa-download" style="color: #00f5e4;"></i>
+                      <a onclick="document.getElementById('form{{ $loop->iteration }}').submit();" type="button" data-toggle="tooltip" title="download">
+                        <i class="fas fa-solid fa-download" style="color: #20c544;"></i>
                       </a>
                     </form>
                     @endif
-                    <a href="#" id="edit"
+
+                    <a href="#" class="edit-btn"
                       data-id="{{$item->id}}"
                       data-direktori="{{ $item->typeFile }}"
                       data-duration="{{ $item->duration }}"
                       data-str-date="{{ $item->str_date }}"
                       data-ed-date="{{ $item->ed_date }}"
                       data-selected-days="{{ $item->selected_days }}"
+                      data-youtube="{{ $item->youtube_link }}"
                       data-toggle="tooltip" title="Edit">
-                      <i class="far fa-edit" style="color: #e7ea2e;"></i>
+                      <i class="far fa-edit" style="color: #1e1efa;"></i>
                     </a>
+
                     <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}" data-toggle="tooltip" title="Hapus">
                       <i class="fas fa-trash-alt"></i>
                     </a>
@@ -119,418 +135,234 @@
               </tbody>
             </table>
           </div>
-          <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-      </div>
- <!-- Modal edit -->
-      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalCenterTitle">Edit Source</h5>
-              <button type="button" onclick="resetForm()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <form id="formDuration" method="post" action="/editDuration">
-              @csrf
-              <input type="hidden" id="id" name="id">
-
-              <div class="modal-body">
-                <div class="row">
-                  <div id="durationDiv" class="form-group col-12">
-                    <label for="duration">Duration (milliseconds)</label>
-                    <input type="number" id="duration" name="duration" class="form-control" placeholder="Enter duration in milliseconds" min="0">
-                    <small class="form-text text-muted">Only applicable for images. Leave empty for videos.</small>
-                  </div>
-
-                  <div class="form-group col-6">
-                    <label for="str_date">Start Date</label>
-                    <div class="input-group date" id="strDate" data-target-input="nearest">
-                      <input type="text" name="str_date" id="str_date" class="form-control datetimepicker-input" data-target="#strDate" placeholder="YYYY-MM-DD">
-                      <div class="input-group-append" data-target="#strDate" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="form-group col-6">
-                    <label for="ed_date">End Date</label>
-                    <div class="input-group date" id="edDate" data-target-input="nearest">
-                      <input type="text" name="ed_date" id="ed_date" class="form-control datetimepicker-input" data-target="#edDate" placeholder="YYYY-MM-DD">
-                      <div class="input-group-append" data-target="#edDate" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                      </div>
-                    </div>
-                  </div>
-                 
-                  <div class="mb-4 col-12">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Display Days <span class="text-red-500">*</span></label>
-                    <div class="flex flex-wrap gap-3">
-                      <label class="flex flex-col items-center text-center">
-                        <input type="checkbox" name="selected_days[]" value="1" class="peer hidden" />
-                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
-                          <div class="font-semibold">Mon</div>
-                          <div class="text-xs text-gray-500 peer-checked:text-white">Monday</div>
-                        </div>
-                      </label>
-                      <label class="flex flex-col items-center text-center">
-                        <input type="checkbox" name="selected_days[]" value="2" class="peer hidden" />
-                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
-                          <div class="font-semibold">Tue</div>
-                          <div class="text-xs text-gray-500 peer-checked:text-white">Tuesday</div>
-                        </div>
-                      </label>
-                      <label class="flex flex-col items-center text-center">
-                        <input type="checkbox" name="selected_days[]" value="3" class="peer hidden" checked />
-                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
-                          <div class="font-semibold">Wed</div>
-                          <div class="text-xs text-gray-500 peer-checked:text-white">Wednesday</div>
-                        </div>
-                      </label>
-                      <label class="flex flex-col items-center text-center">
-                        <input type="checkbox" name="selected_days[]" value="4" class="peer hidden" />
-                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
-                          <div class="font-semibold">Thu</div>
-                          <div class="text-xs text-gray-500 peer-checked:text-white">Thursday</div>
-                        </div>
-                      </label>
-                      <label class="flex flex-col items-center text-center">
-                        <input type="checkbox" name="selected_days[]" value="5" class="peer hidden" />
-                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
-                          <div class="font-semibold">Fri</div>
-                          <div class="text-xs text-gray-500 peer-checked:text-white">Friday</div>
-                        </div>
-                      </label>
-                      <label class="flex flex-col items-center text-center">
-                        <input type="checkbox" name="selected_days[]" value="6" class="peer hidden" />
-                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
-                          <div class="font-semibold">Sat</div>
-                          <div class="text-xs text-gray-500 peer-checked:text-white">Saturday</div>
-                        </div>
-                      </label>
-                      <label class="flex flex-col items-center text-center">
-                        <input type="checkbox" name="selected_days[]" value="7" class="peer hidden" checked />
-                        <div class="w-20 px-2 py-2 rounded-md border border-gray-300 peer-checked:bg-purple-600 peer-checked:text-white">
-                          <div class="font-semibold">Sun</div>
-                          <div class="text-xs text-gray-500 peer-checked:text-white">Sunday</div>
-                        </div>
-                      </label>
-                    </div>
-
-                    <div class="mt-4 form-check">
-                      <input type="checkbox" id="checkAll" class="form-check-input" />
-                      <label class="form-check-label" for="checkAll">Select All Days</label>
-                    </div>
-                    <p class="text-sm text-gray-400 mt-2">Select which days of the week this media should be displayed</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="resetForm()" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal -->
-      <div class="modal fade" id="modalShowKonten" tabindex="-1" role="dialog" aria-labelledby="modalShowKontenTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">Preview Content</h5>
-              <button type="button" class="close" onclick="player.innerHTML = '';" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div id="player"></div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="player.innerHTML = '';">Close</button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
-    <!-- /.row -->
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
 
-<script src="assets/plugins/jquery/jquery.min.js"></script>
+{{-- --- MODAL EDIT (SUDAH DILENGKAPI BIAR TIDAK BLANK HITAM) --- --}}
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Content Source</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <form action="{{ route('editDuration') }}" method="POST">
+                @csrf
+                <input type="hidden" id="id" name="id">
+                <input type="hidden" id="uid" name="uid">
+                <div class="modal-body">
+                    <div class="row">
+                        <div id="durationDiv" class="form-group col-12">
+                            <label>Duration (ms)</label>
+                            <input type="number" id="duration" name="duration" class="form-control">
+                        </div>
+                        <div id="youtube_group" class="form-group col-12" style="display:none;">
+                            <label>Link YouTube</label>
+                            <input type="text" id="youtube_link" name="youtube_link" class="form-control">
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Start Date</label>
+                            <div class="input-group date" id="strDate" data-target-input="nearest">
+                                <input type="text" name="str_date" id="str_date" class="form-control datetimepicker-input" data-target="#strDate">
+                                <div class="input-group-append" data-target="#strDate" data-toggle="datetimepicker"><div class="input-group-text"><i class="fa fa-calendar"></i></div></div>
+                            </div>
+                        </div>
+                        <div class="form-group col-6">
+                            <label>End Date</label>
+                            <div class="input-group date" id="edDate" data-target-input="nearest">
+                                <input type="text" name="ed_date" id="ed_date" class="form-control datetimepicker-input" data-target="#edDate">
+                                <div class="input-group-append" data-target="#edDate" data-toggle="datetimepicker"><div class="input-group-text"><i class="fa fa-calendar"></i></div></div>
+                            </div>
+                        </div>
+                            {{-- Edit ceklis Allday --}}
+                        <div class="form-group col-12">
+                            <label>Days</label>
+                            <div class="d-flex flex-wrap mb-3" style="gap:10px;">
+                                @foreach(['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] as $idx => $day)
+                                <div class="border p-2 text-center" style="min-width:60px; border-radius: 5px;">
+                                    {{-- Tambahkan class 'day-chk' di sini --}}
+                                    <input type="checkbox" name="selected_days[]" class="day-chk" value="{{$idx+1}}"> <br>
+                                    <small><b>{{$day}}</b></small>
+                                </div>
+                                @endforeach
+                            </div>
+
+                            {{-- Gunakan onclick="pilihSemuaHari(this)" agar langsung terpanggil --}}
+                            <div class="form-check">
+                                <input type="checkbox" id="checkAllDays" class="form-check-input" onclick="pilihSemuaHari(this)">
+                                <label class="form-check-label" for="checkAllDays" style="font-size: 14px; cursor: pointer; font-weight: bold; color: #007bff;">
+                                    <i class="fas fa-check-double"></i> Select All Days
+                                </label>
+                            </div>
+                        </div>
+                        {{-- END Edit ceklis Allday --}}
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- MODAL PREVIEW --}}
+<div class="modal fade" id="modalShowKonten" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content"><div class="modal-body text-center" id="player"></div></div>
+    </div>
+</div>
+
+<script src="{{ asset('assets/plugins/moment/moment.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 <script>
-  function resetForm() {
-    $('#formDuration')[0].reset();
-    $('input[name="selected_days[]"]').prop('checked', false);
-    $('#checkAll').prop('checked', false);
+window.addEventListener('load', function() {
+    // 1. Inisialisasi DataTable
+    var table = $("#example1").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": [{ text: 'Tambah Data <i class="fas fa-plus-square"></i>', action: function() { window.location.href = "{{ route('createfile') }}"; }, className: 'btn-success' }],
+        "columnDefs": [{ "orderable": false, "targets": 0 }]
+    });
+    table.buttons().container().appendTo('#button_tambah_container');
 
-    const hasMoment = typeof moment !== 'undefined';
-    const todayMoment = hasMoment ? moment() : null;
-    const today = hasMoment ? todayMoment.format('YYYY-MM-DD') : new Date().toISOString().slice(0, 10);
-
-    if (hasMoment) {
-      $('#strDate').datetimepicker('date', todayMoment);
-      $('#edDate').datetimepicker('date', null);
-      $('#str_date').val(today);
-      $('#ed_date').val('');
-    } else {
-      $('#str_date').val(today);
-      $('#ed_date').val('');
-    }
-  }
-
-  function formatDate(dateString) {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) {
-      if (typeof moment !== 'undefined') {
-        return moment().format('YYYY-MM-DD');
-      }
-      return new Date().toISOString().slice(0, 10);
-    }
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${year}-${month}-${day}`;
-  }
-
-  $(document).on('click', '#edit', function(e) {
-    e.preventDefault();
-    var uid = $(this).data('id');
-    var direktori = $(this).data('direktori');
-    var duration = $(this).data('duration');
-    var strDate = $(this).data('str-date');
-    var edDate = $(this).data('ed-date');
-    var selectedDays = $(this).data('selected-days');
-
-    console.log('Edit data:', {
-      id: uid,
-      direktori: direktori,
-      duration: duration,
-      strDate: strDate,
-      edDate: edDate,
-      selectedDays: selectedDays
+    // 2. Logika Pilih Semua
+    var isAllSelected = false;
+    $('#btnSelectAll').on('click', function() {
+        isAllSelected = !isAllSelected;
+        var rows = table.rows({ 'search': 'applied' }).nodes();
+        $('input.sub_chk', rows).prop('checked', isAllSelected);
+        $(this).html(isAllSelected ? '<i class="far fa-window-close"></i> Batal Pilih' : '<i class="far fa-check-square"></i> Pilih Semua');
+        updateDeleteUI();
     });
 
-    // Reset form first
-    resetForm();
+    $('#example1 tbody').on('change', 'input.sub_chk', function() { updateDeleteUI(); });
 
-    // Set values
-    $('#id').val(uid);
-
-    if (direktori == "images") {
-      $('#durationDiv').show();
-      $('#duration').val(duration || '');
-    } else {
-      $('#durationDiv').hide();
-      $('#duration').val('');
+    function updateDeleteUI() {
+        var checkedCount = table.$('input.sub_chk:checked').length;
+        $('#countSelected').text(checkedCount);
+        if (checkedCount > 0) { $('#deleteAll').fadeIn(); } else { $('#deleteAll').fadeOut(); }
     }
 
-    // Set dates
-    if (strDate) {
-      const formattedStart = formatDate(strDate);
-      if (typeof moment !== 'undefined') {
-        $('#strDate').datetimepicker('date', moment(formattedStart, 'YYYY-MM-DD'));
-      }
-      $('#str_date').val(formattedStart);
-    }
-    if (edDate) {
-      const formattedEnd = formatDate(edDate);
-      if (typeof moment !== 'undefined') {
-        $('#edDate').datetimepicker('date', moment(formattedEnd, 'YYYY-MM-DD'));
-      }
-      $('#ed_date').val(formattedEnd);
-    }
+    // 3. Hapus Masal
+    $('#deleteAll').on('click', function() {
+        var ids = [];
+        table.$('input.sub_chk:checked').each(function() { ids.push($(this).attr('data-id')); });
+        Swal.fire({ title: 'Hapus '+ids.length+' data?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Hapus!' }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({ url: "{{ route('hapusmasal') }}", type: 'DELETE', data: { _token: "{{ csrf_token() }}", ids: ids.join(",") }, success: function() { location.reload(); } });
+            }
+        });
+    });
 
-    // Set selected days
-    if (selectedDays) {
-      try {
-        var days = [];
-        if (typeof selectedDays === 'string') {
-          days = JSON.parse(selectedDays);
-        } else if (Array.isArray(selectedDays)) {
-          days = selectedDays;
-        }
+    // 4. Fungsi Edit
+    $('body').on('click', '.edit-btn', function(e) {
+        e.preventDefault();
+        var uid = $(this).data('id');
+        var direktori = $(this).data('direktori');
+        $('#id').val(uid); $('#uid').val(uid);
+        if (direktori == "images") { $('#durationDiv').show(); $('#duration').val($(this).data('duration')); } else { $('#durationDiv').hide(); }
+        $('#str_date').val($(this).data('str-date'));
+        $('#ed_date').val($(this).data('ed-date'));
+        $('#exampleModalCenter').modal('show');
+    });
 
-        console.log('Parsed days:', days);
-
-        if (Array.isArray(days)) {
-          days.forEach(function(day) {
-            var dayValue = String(day); // Convert to string for comparison
-            $('input[name="selected_days[]"][value="' + dayValue + '"]').prop('checked', true);
-            console.log('Checking day:', dayValue);
-          });
-
-          // Check if all days are selected
-          if (days.length === 7) {
-            $('#checkAll').prop('checked', true);
-          }
-        }
-      } catch (e) {
-        console.log('Error parsing selected days:', e);
-      }
-    }
-
-    $('#exampleModalCenter').modal('show');
-  });
-
-  $(document).on('click', '#showKonten', function(e) {
+    // 5. Preview & Hapus Satuan
+$('body').on('click', '#showKonten', function(e) {
     e.preventDefault();
     var type = $(this).data('type');
     var direktori = $(this).data('konten');
     var player = document.getElementById("player");
-    var mediaPlayer;
 
-    function createVideoPlayer(src) {
-      var videoPlayer = document.createElement("video");
-      videoPlayer.id = "videoPlayer";
-      videoPlayer.src = src;
-      videoPlayer.muted = true;
-      return videoPlayer;
-    }
-
-    function createImagePlayer(src) {
-      var imagePlayer = document.createElement("img");
-      imagePlayer.id = "imagePlayer";
-      imagePlayer.src = src;
-      imagePlayer.alt = "Slideshow Image";
-      return imagePlayer;
-    }
-
-    if (type == "images") {
-      mediaPlayer = createImagePlayer(direktori);
-      player.innerHTML = "";
-      player.appendChild(mediaPlayer);
-    }
-
-    if (type == "video") {
-      mediaPlayer = createVideoPlayer(direktori);
-      player.innerHTML = "";
-      player.appendChild(mediaPlayer);
-
-      mediaPlayer.addEventListener('loadedmetadata', function() {
-        var videoDuration = Math.floor(mediaPlayer.duration * 1000);
-        setTimeout(function() {
-          currentData++;
-          playVideoAndImage();
-        }, videoDuration);
-        mediaPlayer.play();
-      });
-    }
-
+    // --- LOGIKA BARU AGAR YOUTUBE BISA TAMPIL ---
     if (type == "youtube") {
-      var youtubeUrl = direktori;
-      var startPos = youtubeUrl.lastIndexOf("/") + 1;
-      var videoCode = youtubeUrl.substring(startPos);
-
-      player.innerHTML = "";
-      var youtubePlayerDiv = document.createElement('div');
-      youtubePlayerDiv.id = 'youtube-player';
-      player.appendChild(youtubePlayerDiv);
-
-      var youtubePlayerDiv = new YT.Player('youtube-player', {
-        height: '100%',
-        width: '100%',
-        videoId: videoCode,
-        playerVars: {
-          'controls': 0,
-          'autoplay': 1,
+        var videoId = extractYouTubeId(direktori);
+        if(videoId) {
+            player.innerHTML = `<iframe width="100%" height="450"
+                                src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1"
+                                frameborder="0" allow="autoplay; encrypted-media"
+                                allowfullscreen></iframe>`;
+        } else {
+            player.innerHTML = `<div class="alert alert-danger">ID YouTube tidak valid Booss!</div>`;
         }
-      });
+    }
+    else if (type == "images") {
+        player.innerHTML = `<img src="${direktori}" style="max-width:100%">`;
+    }
+    else {
+        player.innerHTML = `<video src="${direktori}" autoplay loop muted style="width:100%"></video>`;
     }
 
     $('#modalShowKonten').modal('show');
-  });
+});
 
-  // Script untuk handle ceklis "All Day"
-  $(document).ready(function() {
-    $('#checkAll').on('change', function() {
-      const isChecked = $(this).is(':checked');
-      $('input[name="selected_days[]"]').prop('checked', isChecked);
-    });
+// Fungsi pembantu ambil ID Video YouTube (Tetap taruh di sini Booss)
+function extractYouTubeId(url) {
+    // Regex sakti untuk menangkap ID dari link biasa, embed, maupun LIVE
+    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|live\/)([^#\&\?]*).*/;
+    var match = url.match(regExp);
 
-    // Check "All Day" if all individual days are selected
-    $('input[name="selected_days[]"]').on('change', function() {
-      const totalDays = $('input[name="selected_days[]"]').length;
-      const checkedDays = $('input[name="selected_days[]"]:checked').length;
-      $('#checkAll').prop('checked', checkedDays === totalDays);
-    });
-  });
-</script>
+    // Kembalikan ID jika panjangnya 11 karakter (standar YouTube)
+    return (match && match[2].length == 11) ? match[2] : null;
+}
 
-<!-- jQuery -->
-<script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
-<script>
-  $(function() {
-    //Date picker
-    $('#strDate,#edDate').datetimepicker({
-      format: 'YYYY-MM-DD'
-    });
-
-    resetForm();
-
-    $("#example1").DataTable({
-      "responsive": true,
-      "lengthChange": false,
-      "autoWidth": false,
-      "buttons": [{
-        text: 'Tambah Data <i class="fas fa-plus-square"></i>',
-        action: function(e, dt, node, config) {
-          window.location.href = "{{ route('createfile') }}";
-        },
-        className: 'btn-success'
-      }],
-      "columnDefs": [{
-        "className": "text-center",
-        "targets": [0, 1, 2, 3, 4, 5],
-      }, {
-        targets: [5, 6],
-        render: function(oTable) {
-          return moment(oTable).format('YYYY-MM-DD');
-        }
-      }],
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-  });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.delete-item').forEach(function(link) {
-      link.addEventListener('click', function(e) {
+    $('body').on('click', '.delete-item', function(e) {
         e.preventDefault();
-        var itemId = this.dataset.id;
-
-        Swal.fire({
-          title: 'Apakah Anda yakin?',
-          text: 'Anda tidak akan dapat mengembalikan data ini!',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Ya, Hapus',
-          cancelButtonText: 'Batal'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = 'deletefile/' + itemId;
-          }
+        var itemId = $(this).data('id');
+        Swal.fire({ title: 'Hapus data?', icon: 'warning', showCancelButton: true }).then((result) => {
+            if (result.isConfirmed) { window.location.href = 'deletefile/' + itemId; }
         });
-      });
     });
-  });
+
+    // 6. Init Datepicker
+    $('#strDate, #edDate').datetimepicker({ format: 'YYYY-MM-DD HH:mm', sideBySide: true });
+});
+
+
+
+// Javascript untuk checklist Allday di Modal Edit
+// 1. Logika Klik "Pilih Semua Hari"
+$('body').on('click', '#checkAllDays', function() {
+    // Ambil status apakah tombol utama diceklis atau tidak
+    var isChecked = $(this).is(':checked');
+
+    // Paksa semua checkbox hari mengikuti status tombol utama
+    $('.day-chk').prop('checked', isChecked);
+});
+
+// 2. Logika Balikan (Jika hari di-uncheck manual satu per satu)
+$('body').on('change', '.day-chk', function() {
+    var totalHari = $('.day-chk').length;
+    var totalDiceklis = $('.day-chk:checked').length;
+
+    // Jika semua hari diceklis manual, maka tombol "Pilih Semua" otomatis ikut nyala
+    if (totalDiceklis === totalHari) {
+        $('#checkAllDays').prop('checked', true);
+    } else {
+        $('#checkAllDays').prop('checked', false);
+    }
+});
+
+// END NEW
+function pilihSemuaHari(sumber) {
+    // Ambil semua elemen yang punya class 'day-chk'
+    var checkboxes = document.getElementsByClassName('day-chk');
+
+    // Paksa setiap kotak hari mengikuti status tombol "Pilih Semua"
+    for (var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = sumber.checked;
+    }
+}
 </script>
 
-@include('sweetalert::alert')
 @if(session('toast_success'))
-<script>
-  Swal.fire({
-    icon: 'success',
-    title: 'Berhasil!',
-    text: "{{ session('toast_success') }}",
-  });
-</script>
+<script>Swal.fire({ icon: 'success', title: 'Berhasil!', text: "{{ session('toast_success') }}", timer: 3000, showConfirmButton: false });</script>
 @endif
 @endsection
-

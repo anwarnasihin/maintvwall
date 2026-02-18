@@ -1,524 +1,442 @@
 <!DOCTYPE html>
 <html>
-
+{{-- otomatis melakukan penyegaran data setiap satu jam --}}
+<meta http-equiv="refresh" content="3600">
 <head>
     <title>TV Wall BINUS@BEKASI</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-size: 100% auto;
-            /* Lebar gambar mengisi seluruh lebar, tinggi mengikuti lebar gambar */
-            background-repeat: no-repeat;
-            /* Agar gambar tidak diulang */
-            background-image: url('/logo/bg7.jpg');
+    /* --- 1. LAYOUT DASAR --- */
+    body {
+        margin: 0; padding: 0;
+        width: 100vw; height: 100vh;
+        /* background-color: #000; */
+        background-color: transparent;
+        /* background-image: url('/logo/bg8.jpg'); */
+        background-image: none;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        font-family: "Segoe UI", Arial, sans-serif; /* Font Standar Bersih */
+    }
 
-            /* new */
-            color: #fff;
-            font-family: "Segoe UI", Arial, sans-serif;
-            font-weight: bold;
-            font-size: 24px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
+    /* --- 2. AREA KONTEN (ATAS) --- */
+    #main-content {
+        flex-grow: 1;
+        position: relative;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        z-index: 10;
+    }
 
-        #container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
-        }
+    #player {
+        width: 100%; height: 100%;
+        display: flex; justify-content: center; align-items: center;
+        transition: opacity 0.5s ease-in-out;
+        opacity: 1;
+    }
+    #player.fade-out { opacity: 0; }
 
-        #player {
-            width: 100%;
-            height: calc(100% - 40px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: width 0.5s, height 0.5s, background-color 0.5s;
-        }
+    #player img, #player video {
+        max-width: 100%; max-height: 100%;
+        width: auto; height: auto;
+        object-fit: contain;
+        filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+    }
 
-        /* new */
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            /* fallback color */
-            background-color: #001477;
+    #youtube-player { width: 100%; height: 100%; }
 
-            /* gradiasi */
-            background: linear-gradient(90deg, #6715ff, #9125B8, #FD4B05, #FD7200, #D81E62, #c70a8b);
+    .no-content {
+        font-size: 24px; color: white;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 20px; border-radius: 10px; text-align: center;
+    }
 
-            padding: 4px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center; /* biar teks pas di tengah */
-            border-top-left-radius: 7px;
-            border-top-right-radius: 7px;
-            color: #fff;
-        }
+    /* --- 3. FOOTER GEOMETRIS (FIXED RAPI) --- */
+    footer {
+        height: 45px;
+        width: 100%;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        z-index: 9999;
+        flex-shrink: 0;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 -8px 15px rgba(0, 0, 0, 0.2);
+    }
 
-        #player.transition {
-            width: 100%;
-            height: 100%;
-            background-color: white;
-        }
+    /* --- KOTAK PEMBUNGKUS JAM (WARNA KUNING) --- */
+    #date-time {
+        /* Supaya Kotak Kuning ada di atas Kotak Biru */
+        z-index: 20;
+        position: relative;
 
-        #player img {
-            max-width: 100%;
-            max-height: calc(100% - 28px);
-            /* 28px adalah tinggi dari runningTextContainer dan paddingnya */
-            width: auto;
-            height: auto;
-        }
+        /* Bikin Miring Kotaknya */
+        transform: skewX(-30deg);
+        background: linear-gradient(180deg, #F9AF2D 0%,  #F2E313 100%);
 
-        #player video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: calc(100% - 40px);
-            /* 40px adalah tinggi "running text" termasuk padding */
-        }
+        /* Pengaturan Tata Letak */
+        height: 100%;
+        display: flex;
+        align-items: center;
 
+        /* --- BAGIAN PENTING: BIAR RAPAT KIRI --- */
+        /* Ini kuncinya Boss. Kita paksa tulisannya nempel ke kiri (awal) */
+        justify-content: flex-start;
 
-        #youtube-player {
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
+        /* Hapus jarak otomatis bawaan komputer */
+        gap: 0px;
 
-        /* Mengatur tinggi gambar berdasarkan lebar layar */
-        @media screen and (max-width: 768px) {
-            #player img {
-                height: 100vh;
-                width: auto;
-            }
-        }
+        /* Jarak dalam kotak (Kiri 40, Kanan 20) */
+        padding: 0 20px 0 40px;
+        margin-left: -20px;
 
-        @media screen and (min-width: 769px) {
-            #player img {
-                max-height: 100%;
-                /* height: auto; */
-                height: 100%;
-            }
-        }
+        /* Dekorasi Garis & Bayangan Hitam */
+        border-right: 5px solid #fff;
+        outline: 5px solid #F2E313;
+        box-shadow: 4px 4px 0px #000000;
 
-        /* new */
-        #running-text-container {
-            flex-grow: 1;
-            overflow: hidden;
-            white-space: nowrap;
-            border-top-left-radius: 7px;
-            border-top-right-radius: 15px;
-            white-space: nowrap;
-        }
+        /* Warna Tulisan "," */
+        /* color: #061e5c !important; */
+        font-weight: 800;
+        font-size: 20px;
 
-        /* new */
-        #date-time {
-            display: flex;
-            align-items: center;
-            margin-left: 5px;
-            margin-right: 5px;
-            max-width: 1500px;
-        }
+        /* Tulisan Dilarang Turun Baris */
+        white-space: nowrap;
 
-        .marquee-container {
-            overflow: hidden;
-            white-space: nowrap;
-            box-sizing: border-box;
-            width: 100%;
-        }
+        /*Text Shadow*/
+        text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+    }
 
-        /* new */
-        #running-text {
-            display: inline-block;
-            font-size: 24px;
-            font-family: "Segoe UI", Arial, sans-serif;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            font-weight: bold;
-            color: #ffffff; /* Warna kuning */
-            animation: marquee linear infinite;
-        }
+    /* --- PENGATURAN TULISAN (HARI, TANGGAL, JAM) --- */
+    #date-time span, #day, #date, #time, #date-time div {
+        /* Tegakkan tulisan biar gak miring */
+        transform: skewX(30deg);
+        display: inline-block;
 
+        /* Jenis Huruf */
+        font-family: "Segoe UI", Arial, sans-serif;
 
-        /* new */
-        #date-time>div {
-            display: flex;
-            white-space: nowrap;
-            /* Mencegah teks memisah saat diperbesar */
-        }
+        /* Warna text date (Wajib) */
+        color: #061e5c !important;
+        font-weight: 800;
+        font-style: normal;
+        text-shadow: none;
 
-        /* new */
-        #date {
-            margin-right: 5px;
-            /* Menambahkan spasi antara "date" dan "time" */
-        }
+        /* NOL-KAN SEMUA JARAK (Biar kita atur sendiri di bawah) */
+        margin: 0px !important;
+        padding: 0px !important;
 
-        @keyframes marquee {
-            0% {
-                transform: translateX(50%);
-            }
+        /*Text hari, tanggal, bulan tahun & waktu Shadow*/
+        text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
 
-            100% {
-                transform: translateX(-100%);
-            }
-        }
+    }
 
-        /* logo depan konten */
-        .logo { /*untuk logo yang ada di depan konten*/
-                position: absolute;
-                width: 120px;   /* atur sesuai kebutuhan */
-                z-index: 9999;  /* supaya selalu di atas konten */
-                opacity: 0.5; /* 0 = transparan penuh, 1 = solid */
-            }
+    /* --- ATUR JARAK SENDIRI DI SINI BOSS --- */
 
-            .logo-left {
-                left: 40px; /* makin besar nilainya makin ke kanan */
-                top: 5px;
-            }
+    /* 1. Pengaturan Jarak "Minggu," ke Angka "8" */
+    #day {
+        /* Ubah angka 3px ini. */
+        /* Kalau mau nempel banget, ganti jadi 0px */
+        margin-right: -10px !important;
+    }
 
-            .logo-right {
-                right: 20px; /* makin besar nilainya makin ke kiri */
-                top: -20px;
-            }
-    </style>
+    /* 2. Pengaturan Jarak "2026" ke Jam "07:00" */
+    #date {
+        /* Saya kasih jarak 15px biar TANGGAL dan JAM tidak dempetan */
+        margin-right: 0px !important;
+    }
+    /* --- KOTAK RUNNING TEXT (BIRU) --- */
+    .marquee-wrapper {
+        z-index: 10;
+        transform: skewX(-30deg);
+        background: linear-gradient(180deg, #2b52b9 0%,  #0077d4 100%); //Warna gradiasi
+
+        flex-grow: 1;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+
+        margin-left: 15px;
+        width: 105%;
+        margin-right: -20px;
+        box-shadow: inset 10px 0 20px rgba(0,0,0,0.2);
+    }
+
+    /* --- PERBAIKAN RUNNING TEXT (TEGAK) --- */
+    .marquee-content {
+        transform: skewX(30deg); /* Balikin Tegak */
+        display: inline-block;
+
+        position: absolute;
+        white-space: nowrap;
+        will-change: transform;
+
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        font-style: normal;      /* HAPUS MIRING */
+        color: #fff;
+
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+        line-height: 45px;
+    }
+
+    /* Animasi Marquee */
+    @keyframes marquee-animation {
+        0%   { left: 100%; transform: skewX(30deg); }
+        100% { left: -150%; transform: skewX(30deg); }
+    }
+</style>
+
 </head>
 
 <body>
-    <div id="container">
-        {{-- <div id="date">
-            <span id="day"></span>, <span id="formattedDate"></span>
-        </div> --}}
-        <div id="clock"></div>
-        <div id="player"></div>
-
-        {{-- <img src="{{ asset('logo/LOGO BINUS Bekasi full putih.png') }}" class="logo logo-left"> <!--untuk logo yang ada di depan konten sebelah kiri--> --}}
-        {{-- <img src="{{ asset('logo/BINUS 45 putih.png') }}" class="logo logo-right"> <!--untuk logo yang ada di depan konten sebelah kanan--> --}}
-    </div>
-
-@foreach($files as $konten)
-    @php
-    $ext = strtolower(pathinfo($konten->directory, PATHINFO_EXTENSION));
-    $imageExt = ['jpg', 'jpeg', 'png', 'gif'];
-    $videoExt = ['mp4', 'webm', 'ogg'];
-@endphp
-
-@if(in_array($ext, $imageExt) || $konten->typeFile === 'images')
-    <img src="{{ asset('assets/images/'.$konten->directory) }}"
-         alt="Image" style="width: 100%; height: auto;">
-@elseif(in_array($ext, $videoExt) || $konten->typeFile === 'video')
-    <video autoplay muted playsinline loop style="width: 100%; height: auto;">
-        <source src="{{ asset('assets/video/'.$konten->directory) }}" type="video/{{ $ext }}">
-        Browser Anda tidak mendukung video tag.
+{{-- BG VIDEO --}}
+    <video autoplay muted loop id="bg-video" style="
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        min-width: 100%;
+        min-height: 100%;
+        z-index: -1; /* Supaya di belakang konten */
+        object-fit: cover;
+    ">
+        <source src="{{ asset('logo/player1.mp4') }}" type="video/mp4">
     </video>
-@elseif($konten->typeFile === 'youtube')
-    <iframe width="100%" height="500" src="{{ $konten->directory }}" frameborder="0" allowfullscreen></iframe>
-@endif
 
-@endforeach
-
-
-
+    <div id="main-content">
+        <div id="player">
+            <div class="no-content">Memuat Konten...</div>
+        </div>
+    </div>
 
     <footer>
         <div id="date-time">
-            <div>
-                <span id="day"></span>, <span id="date"> </span>
-                <span id="time"> </span>
-                <span style="margin: 0 5px 0 5px;line-height: 1.2em;">|</span>
-            </div>
+            <span id="day"></span>
+            <span id="date"></span>
+            <span id="time"></span>
         </div>
 
-        <div id="running-text-container" class="marquee-container">
-            <div id="running-text">
-                Bina Nusantara @Bekasi, Striving for excellence, Perseverance,
-                Integrity, Respect, Innovation, Teamwork
+        <div class="marquee-wrapper">
+            <div id="running-text" class="marquee-content">
+                Loading Text...
             </div>
         </div>
     </footer>
 
-
-
-
     <script src="https://www.youtube.com/iframe_api"></script>
-    <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const runningText = document.getElementById('running-text');
-            const containerWidth = document.querySelector('.marquee-container').offsetWidth;
-            const textWidth = runningText.offsetWidth;
-
-            // Set speed in pixels per second
-            const speed = 80; // Ubah kecepatan sesuai keinginan
-
-            // Calculate the duration for the entire animation
-            const duration = (textWidth + containerWidth) / speed;
-
-            // Set the duration for the animation
-            runningText.style.animationDuration = `${duration}s`;
-
-            // Position the text to start just outside the container
-            runningText.style.left = `${containerWidth}px`;
-        });
-
-
-        var data;
-        var count = 0;
-
+        // --- DATA SETUP ---
+        var data = @json($files);
+        var groupName = "{{ $group }}";
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
         var currentData = 0;
         var player = document.getElementById("player");
-        var clock = document.getElementById("clock");
-        var dayElement = document.getElementById("day");
-        var formattedDateElement = document.getElementById("formattedDate");
-        var slideshowInterval;
-        var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-        function createVideoPlayer(src) {
-            var videoPlayer = document.createElement("video");
-            videoPlayer.id = "videoPlayer";
-            videoPlayer.src = '/' + src;
-            // videoPlayer.controls = true;
-            // videoPlayer.muted = true;
-            return videoPlayer;
-        }
+        $(document).ready(function() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000); // Jam jalan terus
 
-        function createImagePlayer(src) {
-            var imagePlayer = document.createElement("img");
-            imagePlayer.id = "imagePlayer";
-            imagePlayer.src = '/' + src;
-            imagePlayer.alt = "Slideshow Image";
-            return imagePlayer;
-        }
-
-        function startSlideshow() {
-            // stopSlideshow();
-
-            var container = document.getElementById("container");
-            if (container.requestFullscreen) {
-                container.requestFullscreen();
-            } else if (container.mozRequestFullScreen) {
-                container.mozRequestFullScreen();
-            } else if (container.webkitRequestFullscreen) {
-                container.webkitRequestFullscreen();
-            } else if (container.msRequestFullscreen) {
-                container.msRequestFullscreen();
-            }
-
-            playVideoAndImage();
-            // updateTime();
-        }
-
-        function stopSlideshow() {
-            clearInterval(slideshowInterval);
-        }
-
-        function playVideoAndImage() {
-            if (data && currentData < data.length) {
-                var media = data[currentData];
-                var mediaPlayer;
-
-                if (media.typeFile === "video") {
-                    mediaPlayer = createVideoPlayer(media.direktori);
-
-                    // Menambahkan kelas untuk transisi
-                    player.classList.add('transition');
-
-                    player.innerHTML = "";
-                    // Menunggu durasi transisi selesai
-                    setTimeout(function() {
-                        // Menghapus kelas transisi
-                        player.classList.remove('transition');
-
-                        player.appendChild(mediaPlayer);
-
-                        mediaPlayer.setAttribute('autoplay', 'autoplay');
-                    }, 1000); // Ganti 500 dengan durasi transisi Anda (dalam milidetik)
-                    mediaPlayer.addEventListener('loadedmetadata', function() {
-                        var videoDuration = Math.floor(mediaPlayer.duration * 1000);
-
-                        setTimeout(function() {
-                            currentData++;
-                            playVideoAndImage();
-                        }, videoDuration + 1000);
-                    });
-                }
-                if (media.typeFile === "images") {
-                    mediaPlayer = createImagePlayer(media.direktori);
-
-                    // Menambahkan kelas untuk transisi
-                    player.classList.add('transition');
-
-                    player.innerHTML = "";
-
-                    // Menunggu durasi transisi selesai
-                    setTimeout(function() {
-                        // Menghapus kelas transisi
-                        player.classList.remove('transition');
-
-                        // Menambahkan media player setelah transisi selesai
-                        player.appendChild(mediaPlayer);
-
-                        // Menambahkan timeout untuk melanjutkan setelah durasi media
-                        setTimeout(function() {
-                            currentData++;
-                            playVideoAndImage();
-                        }, media.duration);
-                    }, 1000); // Ganti 500 dengan durasi transisi Anda (dalam milidetik)
-                }
-                if (media.typeFile === "youtube") {
-
-    // URL video YouTube
-    var youtubeUrl = media.direktori;
-
-    // 🔧 Ambil kode video dengan aman dari berbagai jenis link
-    var videoCode = null;
-    var match = youtubeUrl.match(/(?:v=|\/live\/|\/embed\/)([a-zA-Z0-9_-]{11})/);
-    if (match && match[1]) {
-        videoCode = match[1];
-    } else {
-        var startPos = youtubeUrl.lastIndexOf("/") + 1;
-        videoCode = youtubeUrl.substring(startPos).split('?')[0];
-    }
-
-    // Menambahkan kelas untuk transisi
-    player.classList.add('transition');
-
-    player.innerHTML = "";
-
-    // Menunggu durasi transisi selesai
-    setTimeout(function() {
-        // Menghapus kelas transisi
-        player.classList.remove('transition');
-
-        var youtubePlayerDiv = document.createElement('div');
-        youtubePlayerDiv.id = 'youtube-player'; // gunakan id unik
-        player.classList.add('transition');
-        player.appendChild(youtubePlayerDiv);
-        player.classList.remove('transition');
-
-        setTimeout(function() {
-            var youtubePlayerDiv = new YT.Player('youtube-player', {
-                height: '100%', // Set height to 100%
-                width: '100%',
-                videoId: videoCode,
-                playerVars: {
-                    'controls': 0, // Sembunyikan kontrol video
-                    'autoplay': 1, // Jalankan otomatis
-                },
-                events: {
-                    'onStateChange': onPlayerStateChange
-                }
-            });
-        }, 100);
-    }, 1000);
-
-    function onPlayerStateChange(event) {
-        if (event.data === YT.PlayerState.ENDED) {
-            currentData++;
-            playVideoAndImage();
-        }
-    }
-}
-
-
+            // Start Player
+            if (data && data.length > 0) {
+                playVideoAndImage();
             } else {
-
-                if (count == 3) {
-                    window.location.reload();
-                    count = 0;
-                }
-                currentData = 0;
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/getContent',
-                    data: {
-                        _token: csrfToken,
-                        group: '{{$group}}',
-                    },
-                    success: function(dataa) {
-                        data = dataa[0];
-                        csrfToken = dataa[2];
-                        playVideoAndImage();
-                        setRunningText(dataa[1]);
-                        count++;
-                    },
-                    error: function(xhr, status, error) {
-                        // Tangani kesalahan di sini, contohnya:
-                        console.error(xhr.responseText);
-                    }
-                });
-
-
+                refreshContent(true); // Kalo kosong, pancing request ke server
             }
-        }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            startSlideshow();
+            // Start Running Text
+            refreshContent(true);
         });
 
-        function updateDateTime() {
-            const now = new Date();
-            const days = [
-                "Minggu",
-                "Senin",
-                "Selasa",
-                "Rabu",
-                "Kamis",
-                "Jumat",
-                "Sabtu",
-            ];
-            const day = days[now.getDay()];
-            const date = now.getDate();
-            const monthNames = [
-                "Januari",
-                "Februari",
-                "Maret",
-                "April",
-                "Mei",
-                "Juni",
-                "Juli",
-                "Agustus",
-                "September",
-                "Oktober",
-                "November",
-                "Desember",
-            ];
-            const month = monthNames[now.getMonth()];
-            const year = now.getFullYear();
-            const hours = now.getHours().toString().padStart(2, "0");
-            const minutes = now.getMinutes().toString().padStart(2, "0");
-            const seconds = now.getSeconds().toString().padStart(2, "0");
+        // --- FUNGSI UTAMA: PLAYER (DENGAN TRANSISI) ---
+        function playVideoAndImage() {
+            if (data && data.length > 0) {
+                // Sainty Check: Kalau index kebablasan, reset ke 0
+                if (currentData >= data.length) currentData = 0;
 
-            document.getElementById("day").textContent = day;
-            document.getElementById("date").textContent =
-                date + " " + month + " " + year;
-            document.getElementById("time").textContent =
-                hours + ":" + minutes + ":" + seconds;
+                var media = data[currentData];
+                var playerDiv = document.getElementById("player");
+
+                // 1. EFEK FADE OUT (Layar Merenup)
+                playerDiv.classList.add("fade-out");
+
+                // 2. TUNGGU 0.5 DETIK (Sesuai CSS), BARU GANTI KONTEN
+                setTimeout(function() {
+
+                    playerDiv.innerHTML = ""; // Bersihkan konten lama
+
+                    // --- LOGIC PATH ---
+                    var rawPath = media.directory || media.direktori;
+                    var finalPath = "";
+                    if (rawPath.includes('assets/')) {
+                        finalPath = '/' + rawPath;
+                    } else {
+                        if (media.typeFile === "video") finalPath = '/assets/video/' + rawPath;
+                        else finalPath = '/assets/images/' + rawPath;
+                    }
+
+                    console.log("Playing [" + (currentData+1) + "/" + data.length + "]:", finalPath);
+
+                    // A. VIDEO
+                    if (media.typeFile === "video") {
+                        var vid = document.createElement("video");
+                        vid.src = finalPath;
+                        vid.muted = true;      // Wajib mute
+                        vid.autoplay = true;   // Auto play
+                        vid.controls = false;  // Tombol hilang
+                        vid.loop = false;      // Video JANGAN looping sendiri, biar logic kita yg handle nextContent
+                        vid.style.width = "100%";
+                        vid.style.height = "100%";
+
+                        // Kalo video selesai -> Pindah konten
+                        vid.onended = function() { nextContent(); };
+                        vid.onerror = function() { nextContent(); };
+
+                        playerDiv.appendChild(vid);
+                        var promise = vid.play();
+                        if (promise !== undefined) promise.catch(error => {});
+                    }
+                    // B. IMAGE
+                    else if (media.typeFile === "images") {
+                        var img = document.createElement("img");
+                        img.src = finalPath;
+                        img.onerror = function() { nextContent(); };
+                        playerDiv.appendChild(img);
+
+                        // Durasi Gambar
+                        var duration = media.duration > 0 ? media.duration : 10000;
+                        setTimeout(function() { nextContent(); }, duration);
+                    }
+                    // C. YOUTUBE
+                    else if (media.typeFile === "youtube") {
+                        var divYT = document.createElement('div');
+                        divYT.id = 'youtube-player';
+                        playerDiv.appendChild(divYT);
+
+                        var videoCode = getYoutubeId(media.direktori);
+                        new YT.Player('youtube-player', {
+                            height: '100%', width: '100%', videoId: videoCode,
+                            playerVars: { 'autoplay': 1, 'controls': 0, 'mute': 1 },
+                            events: { 'onStateChange': function(e) { if (e.data === YT.PlayerState.ENDED) nextContent(); } }
+                        });
+                    }
+
+                    // 3. EFEK FADE IN (Muncul Perlahan)
+                    setTimeout(function() {
+                        playerDiv.classList.remove("fade-out");
+                    }, 50);
+
+                }, 500); // Waktu tunggu Fade Out (0.5 Detik)
+
+            } else {
+                // Data Kosong
+                player.innerHTML = '<div class="no-content">Tidak ada jadwal tayang.<br>('+ getCurrentTime() +')</div>';
+                setTimeout(function(){ refreshContent(); }, 5000);
+            }
         }
 
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-    </script>
+        // --- FUNGSI NEXT (LOGIKA LOOPING DIPERBAIKI DISINI) ---
+        function nextContent() {
+            currentData++; // Pindah ke nomor selanjutnya
 
-    <script>
-        function setRunningText(data) {
-            var runningText = $('#running-text');
-            runningText.empty();
+            // Cek apakah sudah melebihi jumlah data?
+            if (currentData >= data.length) {
+                console.log("Playlist Selesai. Looping ke awal (Nomor 1)...");
 
-            data.forEach(function(item) {
-                runningText.append(item.deskripsi + '&nbsp;|&nbsp;');
+                // 1. RESET KE AWAL
+                currentData = 0;
+
+                // 2. MAINKAN NOMOR 1 SEKARANG JUGA
+                playVideoAndImage();
+
+                // 3. CEK UPDATE DIAM-DIAM
+                refreshContent(false);
+            } else {
+                // Belum habis, lanjut mainkan next
+                playVideoAndImage();
+            }
+        }
+
+        // --- FUNGSI UPDATE DATA SERVER ---
+        function refreshContent(isFirstLoad = false) {
+            $.ajax({
+                type: 'POST',
+                url: '/getContent',
+                data: { _token: csrfToken, group: groupName },
+                success: function(response) {
+                    var newData = response[0];
+                    var newTexts = response[1];
+
+                    // KITA HANYA GANGGU PLAYER JIKA DATA BENAR-BENAR BEDA
+                    if (JSON.stringify(newData) !== JSON.stringify(data)) {
+                        console.log("Ada Data Baru! Update Playlist.");
+                        data = newData;
+                        // Kalau ini first load atau playlist tadinya kosong, langsung mainkan
+                        if (isFirstLoad || currentData >= data.length) {
+                            currentData = 0;
+                            playVideoAndImage();
+                        }
+                    } else if (isFirstLoad && (!data || data.length === 0)) {
+                        // Kasus data awal kosong
+                        data = newData;
+                        playVideoAndImage();
+                    }
+
+                    // Update Running Text
+                    if(newTexts) updateRunningText(newTexts);
+                }
             });
         }
+
+        // --- ANIMASI RUNNING TEXT ---
+        function updateRunningText(texts) {
+            var textContainer = $('#running-text');
+            var fullString = "";
+            texts.forEach(function(item) { fullString += item.deskripsi + " &nbsp; | &nbsp; "; });
+            if(fullString === "") fullString = "Selamat Datang di BINUS University @Bekasi";
+
+            if (textContainer.html().trim() !== fullString.trim()) {
+                textContainer.html(fullString);
+                var duration = ($('.marquee-wrapper').width() + textContainer.width()) / 100;
+                textContainer.css('animation', 'none');
+                setTimeout(function() { textContainer.css('animation', `marquee-animation ${duration}s linear infinite`); }, 50);
+            }
+        }
+
+        // --- HELPER ---
+        function getYoutubeId(url) {
+            var match = url.match(/(?:v=|\/live\/|\/embed\/)([a-zA-Z0-9_-]{11})/);
+            return (match && match[1]) ? match[1] : url;
+        }
+        function getCurrentTime() {
+            var now = new Date();
+            return String(now.getHours()).padStart(2,'0') + ":" + String(now.getMinutes()).padStart(2,'0');
+        }
+       function updateDateTime() {
+            const now = new Date();
+            const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+            const timeString = String(now.getHours()).padStart(2,'0') + ":" + String(now.getMinutes()).padStart(2,'0') + ":" + String(now.getSeconds()).padStart(2,'0');
+            const dateString = now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear() + ",&nbsp;";
+
+            // --- PERBAIKAN DI SINI ---
+            // cuma menampilkan Nama Hari saja.
+            $("#day").html(days[now.getDay()] + ",&nbsp;");
+            $("#date").html(dateString);
+            $("#time").text(timeString);
+        }
     </script>
-
 </body>
-
 </html>

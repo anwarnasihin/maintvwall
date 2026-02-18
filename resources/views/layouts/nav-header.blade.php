@@ -9,17 +9,17 @@
       {{-- Menampilkan nama sesuai user yg login --}}
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{{ route('dashboard')}}" class="nav-link" style="font-size: 20px; font-weight: bold;">
-            {{ auth()->user()->name }}
+            Hi, {{ auth()->user()->name }}
         </a>
       </li>
-    
+
     </ul>
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <!-- Navbar Search -->
       <li class="nav-item">
-        
+
         <div class="navbar-search-block">
           <form class="form-inline">
             <div class="input-group input-group-sm">

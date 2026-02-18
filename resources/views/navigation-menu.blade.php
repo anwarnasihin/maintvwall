@@ -15,6 +15,18 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                        @if (auth()->user() && auth()->user()->role == 'admin')
+                            <div class="border-t border-gray-200 my-2"></div> <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                                Admin Menu
+                            </div>
+
+                            <x-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')">
+                                {{ __('Kelola User') }}
+                            </x-nav-link>
+
+                            @endif
+
                 </div>
             </div>
 

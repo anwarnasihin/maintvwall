@@ -9,19 +9,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
-
 class UploadfileController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $dataFile = source::with('groups', 'user')->latest()->get(); // Menggunakan metode get()
-        return view('Uploadfile.Datafile', compact('dataFile'), ['judul' => 'Data Source']);
-    }
-
-    public function oldIndex()
     {
         $dataFile = source::with('groups', 'user')->latest()->get();
         return view('Uploadfile.Datafile', compact('dataFile'), ['judul' => 'Data Source']);
@@ -35,86 +28,74 @@ class UploadfileController extends Controller
         $group = group::get();
         return view('Uploadfile.Createfile', ['group' => $group]);
     }
-
-    public function oldCreate()
-    {
-        $group = group::get();
-        return view('Uploadfile.Createfile', ['group' => $group]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-
-        $strDate = str_replace('/', '-', $request->str_date);
-        $edDate = str_replace('/', '-', $request->ed_date);
-
-        // Validasi input
+        // 1. Validasi input (Sama seperti sebelumnya, tapi file sekarang array)
+        // 1. Validasi input
         $request->validate([
             'group' => 'required',
             'typeFile' => 'required',
-            'file' => 'required_without:linkYoutube|mimes:jpg,jpeg,png,mp4',
+
+            // PERBAIKAN DI SINI BOSS:
+            // 'file' harus divalidasi sebagai array dulu, baru isinya (file.*) dicek mimes-nya
+            'file' => 'required_without:linkYoutube|array',
+            'file.*' => 'mimes:jpg,jpeg,png,mp4',
+
             'linkYoutube' => 'required_without:file',
-            'str_date' => 'required|date',
-            'ed_date' => 'required|date|after_or_equal:str_date',
-            'selected_days' => 'required|array', // Pastikan user memilih minimal 1 hari
+            'str_date' => 'required',
+            'ed_date' => 'required',
+            'selected_days' => 'required|array',
         ]);
 
-        // Proses penyimpanan file
-        if ($request->typeFile != "youtube") {
-            $file = $request->file('file');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $fileInput = 'assets/' . $request->typeFile . '/' . $filename;
-        } else {
-            $fileInput = $request->linkYoutube;
+        // 2. Jika tipenya YouTube (Hanya satu link, tidak perlu looping file)
+        if ($request->typeFile == "youtube") {
+            $this->saveEntry($request, $request->linkYoutube);
         }
+        // 3. Jika upload file (Bisa banyak sekaligus)
+        else if ($request->hasFile('file')) {
+            $files = $request->file('file');
 
-        // Simpan data ke database
-        $postt = new source();
-        $postt->group = $request->group;
-        $postt->typeFile = $request->typeFile;
-        $postt->direktori = $fileInput;
-        $postt->duration = $request->duration ?? 0;
-        $postt->str_date = date("Y-m-d", strtotime($strDate));
-        $postt->ed_date = date("Y-m-d", strtotime($edDate));
-        $postt->selected_days = json_encode($request->selected_days); // Simpan sebagai JSON
-        $postt->users = Auth::user()->id;
+            foreach ($files as $file) {
+                // Buat nama unik untuk tiap file
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $fileInput = 'assets/' . $request->typeFile . '/' . $filename;
 
-        $postt->save();
-
-        if ($postt->id && $request->typeFile != "youtube") {
-            if ($postt->id) {
+                // Pindahkan file ke folder tujuan
                 $file->move(public_path('assets/' . $request->typeFile . '/'), $filename);
+
+                // Simpan ke database satu per satu
+                $this->saveEntry($request, $fileInput);
             }
         }
 
-        // Jika penyimpanan berhasil, arahkan kembali ke halaman `datafile`
-        return redirect()->route('datafile')->with('toast_success', 'Data berhasil disimpan!');
+        return redirect()->route('datafile')->with('toast_success', 'Semua data berhasil disimpan!');
     }
 
 
-    public function show($group)
+    public function show($group) // Nama parameter kita balikin jadi $group
     {
-        $today = Carbon::now('Asia/Jakarta')->dayOfWeekIso; // 1 = Senin, ..., 7 = Minggu
-        $currentDate = Carbon::now()->toDateString();
+        // 1. Cari Group ID berdasarkan Nama (misal "test")
+        $groupData = group::where('name', $group)->first();
 
-        // Ambil data berdasarkan filter
-        $files = source::where('group', $group)
-            ->where('str_date', '<=', $currentDate)
-            ->where('ed_date', '>=', $currentDate)
+        // Fallback: Kalau tidak ketemu by Name, cari by ID
+        if(!$groupData) {
+             $groupData = group::find($group);
+        }
+
+        $groupId = $groupData ? $groupData->id : null;
+
+        // 2. Filter Waktu (Jam & Menit)
+        $now = Carbon::now('Asia/Jakarta');
+        $today = $now->dayOfWeekIso; // 1 = Senin...
+
+        // --- LOGIKA BARU: HANYA CEK ED_DATE (WAKTU BERAKHIR) ---
+        $files = source::where('group', $groupId)
+            ->where('ed_date', '>=', $now) // Selama waktu sekarang belum melewati batas END, tampilkan!
             ->whereRaw("JSON_CONTAINS(selected_days, '\"$today\"')")
             ->get();
 
         return view('vidgam', compact('files', 'group'));
     }
-
-
-
-
-
-
 
     /**
      * Show the form for editing the specified resource.
@@ -131,6 +112,8 @@ class UploadfileController extends Controller
     public function update(Request $request, string $id)
     {
         $dt = source::findorfail($id);
+        // Hati-hati update all, tanggal bisa rusak kalau formatnya beda.
+        // Lebih aman definisikan satu-satu jika input tanggal juga diubah disini.
         $dt->update($request->all());
 
         return redirect('datafile')->with('toast_success', 'Data berhasil di update!');
@@ -141,27 +124,26 @@ class UploadfileController extends Controller
         $request->validate([
             'id' => 'required|exists:sources,id',
             'duration' => 'nullable|numeric|min:0',
-            'str_date' => 'nullable|date',
-            'ed_date' => 'nullable|date|after_or_equal:str_date',
+            'str_date' => 'nullable',
+            'ed_date' => 'nullable',
             'selected_days' => 'nullable|array',
         ]);
 
         $dt = source::findorfail($request->id);
 
-        // Update duration (only for images)
         if ($request->has('duration')) {
             $dt->duration = $request->duration > 0 ? $request->duration : 0;
         }
 
-        // Update dates
+        // --- PERBAIKAN 3: UPDATE TANGGAL + JAM ---
         if ($request->str_date != null) {
-            $dt->str_date = date("Y-m-d", strtotime($request->str_date));
+            $dt->str_date = date("Y-m-d H:i:s", strtotime($request->str_date));
         }
         if ($request->ed_date != null) {
-            $dt->ed_date = date("Y-m-d", strtotime($request->ed_date));
+            $dt->ed_date = date("Y-m-d H:i:s", strtotime($request->ed_date));
         }
+        // -----------------------------------------
 
-        // Update selected days
         if ($request->has('selected_days') && is_array($request->selected_days)) {
             $dt->selected_days = json_encode($request->selected_days);
         }
@@ -176,13 +158,61 @@ class UploadfileController extends Controller
      */
     public function destroy(string $id)
     {
-        $dt = source::find($id); // Untuk mengambil data yang sudah dihapus
-        $dt->forceDelete(); // Untuk menghapus secara permanen
+        $dt = source::find($id);
 
-        if ($dt->direktori && file_exists(storage_path('app/public/' . $dt->direktori))) {
-            unlink(storage_path('app/public/' . $dt->direktori));
+        if ($dt) {
+            // Path lengkap ke file di folder public
+            $filePath = public_path($dt->direktori);
+
+            // Cek apakah file benar-benar ada di folder assets, lalu hapus
+            if (file_exists($filePath) && is_file($filePath)) {
+                unlink($filePath);
+            }
+
+            // Hapus data dari database
+            $dt->forceDelete();
         }
 
-        return back()->with('toast_success', 'Data berhasil di hapus!');
+        return back()->with('toast_success', 'Data dan File berhasil dihapus permanen!');
     }
+
+    /**
+     * FUNGSI BARU UNTUK SIMPAN DATA KE DATABASE
+     * Letakkan di dalam class UploadfileController, paling bawah sebelum penutup class
+     */
+    private function saveEntry($request, $fileInput)
+    {
+        $postt = new source();
+        $postt->group = $request->group;
+        $postt->typeFile = $request->typeFile;
+        $postt->direktori = $fileInput;
+        $postt->duration = $request->duration ?? 0;
+
+        // Simpan Jam Lengkap (Y-m-d H:i:s)
+        $postt->str_date = date("Y-m-d H:i:s", strtotime($request->str_date));
+        $postt->ed_date = date("Y-m-d H:i:s", strtotime($request->ed_date));
+
+        $postt->selected_days = json_encode($request->selected_days);
+        $postt->users = Auth::user()->id; // Pastikan Auth sudah di-import di atas
+
+        $postt->save();
+    }
+
+    public function bulkDelete(Request $request)
+        {
+            $ids = $request->ids;
+            $items = source::whereIn('id', explode(",", $ids))->get();
+
+            foreach ($items as $item) {
+                $filePath = public_path($item->direktori);
+                // Hapus file fisik dulu Boss
+                if (file_exists($filePath) && is_file($filePath)) {
+                    unlink($filePath);
+                }
+                // Baru hapus datanya
+                $item->forceDelete();
+            }
+
+            return response()->json(['success' => "Konten masal berhasil dibersihkan!"]);
+        }
 }

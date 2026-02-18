@@ -40,7 +40,7 @@
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
-          
+
           <ul class="nav nav-treeview">
             <li class="nav-item">
               <a href=" {{ route('datagroup') }} " class="nav-link {{ request()->is('datagroup') ? 'active' : '' }}">
@@ -62,17 +62,19 @@
                 &nbsp;<p>Add Text</p>
               </a>
             </li>
-            
+
           </ul>
         </li>
 
-        <li class="nav-item">
-          <a href="{{ route('datausers') }}" class="nav-link {{ request()->is('datausers') ? 'active' : '' }}">
-            <i class="nav-icon fa fa-users"></i>
-            <p>Users</p>
-          </a>
-        </li>
+        @if (auth()->user()->role == 'admin')
+          <li class="nav-item">
+            <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+              <i class="nav-icon fa fa-users"></i>
+              <p>Users</p>
+            </a>
+          </li>
 
+        @endif
         <li class="nav-item">
           <a href="" class="nav-link" data-toggle="modal" data-target="#logoutModal">
             <i class="nav-icon fas fa-sign-out-alt"></i>
@@ -80,13 +82,13 @@
           </a>
         </li>
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <a href="" class="nav-link" data-toggle="modal" data-target="#shutdownModal">
             <i class="nav-icon fa fa-power-off"></i>
             <p>Shutdown</p>
           </a>
-        </li>
-        
+        </li> --}}
+
     </nav>
     <!-- /.sidebar-menu -->
   </div>
