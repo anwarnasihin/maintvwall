@@ -292,7 +292,7 @@
                     if (media.typeFile === "video") {
                         var vid = document.createElement("video");
                         vid.src = finalPath;
-                        vid.muted = true;      // Wajib mute
+                        vid.muted = false;      // Wajib mute
                         vid.autoplay = true;   // Auto play
                         vid.controls = false;  // Tombol hilang
                         vid.loop = false;      // Video JANGAN looping sendiri, biar logic kita yg handle nextContent
