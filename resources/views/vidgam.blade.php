@@ -199,8 +199,8 @@
         transform: skewX(30deg);
     }
     100% {
-        /* Ganti ke -200% atau lebih supaya teks sepanjang apapun pasti hilang dulu */
-        left: -250%;
+        /* settingan supaya teks sepanjang apapun pasti hilang dulu */
+        left: -210%;
         transform: skewX(30deg);
     }
 }
@@ -450,7 +450,7 @@ function updateRunningText(texts) {
             var textWidth = textContainer.width();
             var wrapperWidth = $('.marquee-wrapper').width();
 
-            // Gunakan pembagi 60 agar kecepatan pas dan stabil
+            // Rumus: (Lebar Layar + Lebar Teks) / KECEPATAN
             var duration = (textWidth + wrapperWidth) / 60;
 
             // Matikan dan nyalakan lagi secara instan
