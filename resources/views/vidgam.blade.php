@@ -188,13 +188,22 @@
 
         text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
         line-height: 45px;
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
     }
 
-    /* Animasi Marquee */
-    @keyframes marquee-animation {
-        0%   { left: 100%; transform: skewX(30deg); }
-        100% { left: -150%; transform: skewX(30deg); }
+   /* Animasi Marquee - Perbaikan Jarak Tempuh */
+@keyframes marquee-animation {
+    0%   {
+        left: 100%;
+        transform: skewX(30deg);
     }
+    100% {
+        /* Ganti ke -200% atau lebih supaya teks sepanjang apapun pasti hilang dulu */
+        left: -250%;
+        transform: skewX(30deg);
+    }
+}
 </style>
 
 </head>
@@ -244,6 +253,9 @@
         var currentData = 0;
         var player = document.getElementById("player");
 
+        // TARUH DI SINI BARIS BARUNYA:
+        var pendingTexts = null;
+
         $(document).ready(function() {
             updateDateTime();
             setInterval(updateDateTime, 1000); // Jam jalan terus
@@ -257,6 +269,15 @@
 
             // Start Running Text
             refreshContent(true);
+
+            // Detektif yang menunggu teks sampai hilang dari layar
+            document.getElementById('running-text').addEventListener('animationiteration', function() {
+                if (pendingTexts !== null) {
+                    console.log("Teks sudah hilang di ujung kuning, sekarang saatnya update data baru!");
+                    updateRunningText(pendingTexts);
+                    pendingTexts = null; // Kosongkan gudang setelah dipakai
+                }
+            });
         });
 
         // --- FUNGSI UTAMA: PLAYER (DENGAN TRANSISI) ---
@@ -370,49 +391,80 @@
 
         // --- FUNGSI UPDATE DATA SERVER ---
         function refreshContent(isFirstLoad = false) {
-            $.ajax({
-                type: 'POST',
-                url: '/getContent',
-                data: { _token: csrfToken, group: groupName },
-                success: function(response) {
-                    var newData = response[0];
-                    var newTexts = response[1];
+    $.ajax({
+        type: 'POST',
+        url: '/getContent',
+        data: { _token: csrfToken, group: groupName },
+        success: function(response) {
+            var newData = response[0];
+            var newTexts = response[1];
 
-                    // KITA HANYA GANGGU PLAYER JIKA DATA BENAR-BENAR BEDA
-                    if (JSON.stringify(newData) !== JSON.stringify(data)) {
-                        console.log("Ada Data Baru! Update Playlist.");
-                        data = newData;
-                        // Kalau ini first load atau playlist tadinya kosong, langsung mainkan
-                        if (isFirstLoad || currentData >= data.length) {
-                            currentData = 0;
-                            playVideoAndImage();
-                        }
-                    } else if (isFirstLoad && (!data || data.length === 0)) {
-                        // Kasus data awal kosong
-                        data = newData;
-                        playVideoAndImage();
-                    }
-
-                    // Update Running Text
-                    if(newTexts) updateRunningText(newTexts);
+            // --- 1. LOGIKA PLAYER VIDEO/IMAGE (Tetap Sama) ---
+            if (JSON.stringify(newData) !== JSON.stringify(data)) {
+                console.log("Ada Data Baru! Update Playlist.");
+                data = newData;
+                if (isFirstLoad || currentData >= data.length) {
+                    currentData = 0;
+                    playVideoAndImage();
                 }
-            });
-        }
+            } else if (isFirstLoad && (!data || data.length === 0)) {
+                data = newData;
+                playVideoAndImage();
+            }
 
-        // --- ANIMASI RUNNING TEXT ---
-        function updateRunningText(texts) {
-            var textContainer = $('#running-text');
-            var fullString = "";
-            texts.forEach(function(item) { fullString += item.deskripsi + " &nbsp; | &nbsp; "; });
-            if(fullString === "") fullString = "Selamat Datang di BINUS University @Bekasi";
-
-            if (textContainer.html().trim() !== fullString.trim()) {
-                textContainer.html(fullString);
-                var duration = ($('.marquee-wrapper').width() + textContainer.width()) / 100;
-                textContainer.css('animation', 'none');
-                setTimeout(function() { textContainer.css('animation', `marquee-animation ${duration}s linear infinite`); }, 50);
+            // --- 2. LOGIKA RUNNING TEXT (PERUBAHAN DI SINI) ---
+            if (newTexts) {
+                if (isFirstLoad) {
+                    // Kalau baru pertama kali buka, langsung tampilkan saja Booss
+                    updateRunningText(newTexts);
+                } else {
+                    // Kalau sedang jalan, simpan di gudang.
+                    // Biarkan si "Detektor Selesai" yang mengeksekusinya nanti
+                    pendingTexts = newTexts;
+                }
             }
         }
+    });
+}
+
+       // --- ANIMASI RUNNING TEXT (VERSI STABIL) ---
+function updateRunningText(texts) {
+    var textContainer = $('#running-text');
+    var fullString = "";
+
+    // 1. Gabung teks
+    texts.forEach(function(item) {
+        fullString += item.deskripsi + " &nbsp; | &nbsp; ";
+    });
+
+    if(fullString === "") fullString = "Selamat Datang di BINUS University @Bekasi";
+
+    // 2. Hanya update jika benar-benar ada perubahan isi
+    if (textContainer.html().trim() !== fullString.trim()) {
+
+        // Pasang teks baru
+        textContainer.html(fullString);
+
+        // Beri waktu 100ms agar browser selesai menghitung lebar teks
+        setTimeout(function() {
+            var textWidth = textContainer.width();
+            var wrapperWidth = $('.marquee-wrapper').width();
+
+            // Gunakan pembagi 60 agar kecepatan pas dan stabil
+            var duration = (textWidth + wrapperWidth) / 60;
+
+            // Matikan dan nyalakan lagi secara instan
+            textContainer.css('animation', 'none');
+
+            // Trigger reflow agar 'animation: none' benar-benar tereksekusi
+            void textContainer[0].offsetWidth;
+
+            textContainer.css({
+                'animation': `marquee-animation ${duration}s linear infinite`
+            });
+        }, 100);
+    }
+}
 
         // --- HELPER ---
         function getYoutubeId(url) {
