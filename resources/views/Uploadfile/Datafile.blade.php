@@ -88,7 +88,7 @@
 
                   <td class="text-center">
                     {{ date('d M Y', strtotime($item->str_date)) }} <br>
-                    <small class="badge badge-success"><i class="far fa-clock"></i> {{ date('H:i', strtotime($item->str_date)) }}</small>
+                    <small class="badge badge-success"><i class="far fa-clock"></i> {{ date('H:i:s', strtotime($item->str_date)) }}</small>
                   </td>
 
                   <td class="text-center">
@@ -97,7 +97,7 @@
                     </div>
                     <small class="badge {{ $isExpired ? 'badge-dark' : 'badge-danger' }}"
                         style="{{ $isExpired ? 'background-color: #ff4d4d !important; color: white;' : '' }}">
-                        <i class="far fa-clock"></i> {{ date('H:i', strtotime($item->ed_date)) }}
+                        <i class="far fa-clock"></i> {{ date('H:i:s', strtotime($item->ed_date)) }}
                     </small>
                     @if($isExpired) <br><small class="text-danger" style="font-weight: 800; font-size: 10px;">EXPIRED</small> @endif
                   </td>
@@ -322,7 +322,7 @@ function extractYouTubeId(url) {
     });
 
     // 6. Init Datepicker
-    $('#strDate, #edDate').datetimepicker({ format: 'YYYY-MM-DD HH:mm', sideBySide: true });
+    $('#strDate, #edDate').datetimepicker({ format: 'YYYY-MM-DD HH:mm:ss', sideBySide: true });
 });
 
 
