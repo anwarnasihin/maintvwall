@@ -42,8 +42,8 @@ class UploadfileController extends Controller
             'file.*' => 'mimes:jpg,jpeg,png,mp4',
 
             'linkYoutube' => 'required_without:file',
-            'str_date' => 'required',
-            'ed_date' => 'required',
+            'str_date' => 'required|date_format:Y-m-d H:i:s',
+            'ed_date' => 'required|date_format:Y-m-d H:i:s',
             'selected_days' => 'required|array',
         ]);
 
@@ -110,14 +110,20 @@ class UploadfileController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        $dt = source::findorfail($id);
-        // Hati-hati update all, tanggal bisa rusak kalau formatnya beda.
-        // Lebih aman definisikan satu-satu jika input tanggal juga diubah disini.
-        $dt->update($request->all());
+{
+    $dt = source::findorfail($id);
 
-        return redirect('datafile')->with('toast_success', 'Data berhasil di update!');
-    }
+    // Ambil semua data kecuali tanggal dulu
+    $input = $request->except(['str_date', 'ed_date']);
+
+    // Paksa format tanggal & jam pakai Carbon agar Linux tidak bingung
+    $input['str_date'] = \Carbon\Carbon::parse($request->str_date)->format('Y-m-d H:i:s');
+    $input['ed_date'] = \Carbon\Carbon::parse($request->ed_date)->format('Y-m-d H:i:s');
+
+    $dt->update($input);
+
+    return redirect('datafile')->with('toast_success', 'Data berhasil di update dengan jam yang benar!');
+}
 
     public function updateDuration(Request $request)
     {
@@ -137,10 +143,10 @@ class UploadfileController extends Controller
 
         // --- PERBAIKAN 3: UPDATE TANGGAL + JAM ---
         if ($request->str_date != null) {
-            $dt->str_date = date("Y-m-d H:i:s", strtotime($request->str_date));
+            $dt->str_date = \Carbon\Carbon::parse($request->str_date)->format('Y-m-d H:i:s');
         }
         if ($request->ed_date != null) {
-            $dt->ed_date = date("Y-m-d H:i:s", strtotime($request->ed_date));
+            $dt->ed_date = \Carbon\Carbon::parse($request->ed_date)->format('Y-m-d H:i:s');
         }
         // -----------------------------------------
 
@@ -189,8 +195,8 @@ class UploadfileController extends Controller
         $postt->duration = $request->duration ?? 0;
 
         // Simpan Jam Lengkap (Y-m-d H:i:s)
-        $postt->str_date = date("Y-m-d H:i:s", strtotime($request->str_date));
-        $postt->ed_date = date("Y-m-d H:i:s", strtotime($request->ed_date));
+        $postt->str_date = \Carbon\Carbon::parse($request->str_date)->format('Y-m-d H:i:s');
+        $postt->ed_date = \Carbon\Carbon::parse($request->ed_date)->format('Y-m-d H:i:s');
 
         $postt->selected_days = json_encode($request->selected_days);
         $postt->users = Auth::user()->id; // Pastikan Auth sudah di-import di atas
