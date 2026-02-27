@@ -340,18 +340,36 @@
                         setTimeout(function() { nextContent(); }, duration);
                     }
                     // C. YOUTUBE
-                    else if (media.typeFile === "youtube") {
-                        var divYT = document.createElement('div');
-                        divYT.id = 'youtube-player';
-                        playerDiv.appendChild(divYT);
+                        else if (media.typeFile === "youtube") {
+                            var divYT = document.createElement('div');
+                            divYT.id = 'youtube-player';
+                            playerDiv.appendChild(divYT);
 
-                        var videoCode = getYoutubeId(media.direktori);
-                        new YT.Player('youtube-player', {
-                            height: '100%', width: '100%', videoId: videoCode,
-                            playerVars: { 'autoplay': 1, 'controls': 0, 'mute': 1 },
-                            events: { 'onStateChange': function(e) { if (e.data === YT.PlayerState.ENDED) nextContent(); } }
-                        });
-                    }
+                            var videoCode = getYoutubeId(media.direktori);
+
+                            new YT.Player('youtube-player', {
+                                height: '100%',
+                                width: '100%',
+                                videoId: videoCode,
+                                playerVars: {
+                                    'autoplay': 1,
+                                    'controls': 0,
+                                    'mute': 0,          // Percobaan pertama (tapi sering diabaikan browser)
+                                    'playsinline': 1
+                                },
+                                events: {
+                                    'onReady': function(event) {
+                                        // INI KUNCINYA: Memaksa Unmute setelah player siap
+                                        event.target.unMute();
+                                        event.target.setVolume(100);
+                                        event.target.playVideo();
+                                    },
+                                    'onStateChange': function(e) {
+                                        if (e.data === YT.PlayerState.ENDED) nextContent();
+                                    }
+                                }
+                            });
+                        }
 
                     // 3. EFEK FADE IN (Muncul Perlahan)
                     setTimeout(function() {
