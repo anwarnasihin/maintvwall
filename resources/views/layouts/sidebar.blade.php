@@ -93,4 +93,13 @@
     <!-- /.sidebar-menu -->
   </div>
   <!-- /.sidebar -->
+
+  <!-- Bagian Bawah (Copyright) -->
+    <div class="sidebar-custom-footer p-3 text-center" style="border-top: 1px solid #4b545c; background: #343a40;">
+      <p class="mb-0" style="color: #b9b9b9; font-size: 15px; font-weight: 700;">
+          Version 6.5 <br>
+      </p>
+  </div>
 </aside>
+
+
