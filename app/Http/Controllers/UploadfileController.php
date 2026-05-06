@@ -126,38 +126,46 @@ class UploadfileController extends Controller
 }
 
     public function updateDuration(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|exists:sources,id',
-            'duration' => 'nullable|numeric|min:0',
-            'str_date' => 'nullable',
-            'ed_date' => 'nullable',
-            'selected_days' => 'nullable|array',
-        ]);
+{
+    $request->validate([
+        'id' => 'required|exists:sources,id',
+        'duration' => 'nullable|numeric|min:0',
+        'str_date' => 'nullable',
+        'ed_date' => 'nullable',
+        'selected_days' => 'nullable|array',
+        'youtube_link' => 'nullable|url', // Tambahkan validasi untuk link youtube
+    ]);
 
-        $dt = source::findorfail($request->id);
+    $dt = source::findorfail($request->id);
 
-        if ($request->has('duration')) {
-            $dt->duration = $request->duration > 0 ? $request->duration : 0;
-        }
-
-        // --- PERBAIKAN 3: UPDATE TANGGAL + JAM ---
-        if ($request->str_date != null) {
-            $dt->str_date = \Carbon\Carbon::parse($request->str_date)->format('Y-m-d H:i:s');
-        }
-        if ($request->ed_date != null) {
-            $dt->ed_date = \Carbon\Carbon::parse($request->ed_date)->format('Y-m-d H:i:s');
-        }
-        // -----------------------------------------
-
-        if ($request->has('selected_days') && is_array($request->selected_days)) {
-            $dt->selected_days = json_encode($request->selected_days);
-        }
-
-        $dt->save();
-
-        return redirect('datafile')->with('toast_success', 'Media settings updated successfully!');
+    // --- PERBAIKAN 1: UPDATE LINK YOUTUBE ---
+    // Cek jika tipe file adalah youtube, maka update kolom direktori
+    if ($dt->typeFile == 'youtube' && $request->has('youtube_link')) {
+        $dt->direktori = $request->youtube_link;
     }
+    // ----------------------------------------
+
+    if ($request->has('duration')) {
+        $dt->duration = $request->duration > 0 ? $request->duration : 0;
+    }
+
+    // --- PERBAIKAN 3: UPDATE TANGGAL + JAM ---
+    if ($request->str_date != null) {
+        $dt->str_date = \Carbon\Carbon::parse($request->str_date)->format('Y-m-d H:i:s');
+    }
+    if ($request->ed_date != null) {
+        $dt->ed_date = \Carbon\Carbon::parse($request->ed_date)->format('Y-m-d H:i:s');
+    }
+    // -----------------------------------------
+
+    if ($request->has('selected_days') && is_array($request->selected_days)) {
+        $dt->selected_days = json_encode($request->selected_days);
+    }
+
+    $dt->save();
+
+    return redirect('datafile')->with('toast_success', 'Media settings updated successfully!');
+}
 
     /**
      * Remove the specified resource from storage.

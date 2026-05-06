@@ -116,7 +116,8 @@
 
                     <a href="#" class="edit-btn"
                       data-id="{{$item->id}}"
-                      data-direktori="{{ $item->typeFile }}"
+                      data-direktori="{{ $item->typeFile }}" {{-- Ini untuk cek tipe file --}}
+                      data-konten="{{ $item->direktori }}"   {{-- untuk ambil link YouTube atau path file --}}
                       data-duration="{{ $item->duration }}"
                       data-str-date="{{ $item->str_date }}"
                       data-ed-date="{{ $item->ed_date }}"
@@ -159,10 +160,16 @@
                             <label>Duration (ms)</label>
                             <input type="number" id="duration" name="duration" class="form-control">
                         </div>
+
+                        {{-- Bagian Link YouTube di Modal Edit --}}
                         <div id="youtube_group" class="form-group col-12" style="display:none;">
-                            <label>Link YouTube</label>
-                            <input type="text" id="youtube_link" name="youtube_link" class="form-control">
+                            <label class="text-primary"><i class="fab fa-youtube"></i> Link YouTube</label>
+                            <input type="text" id="youtube_link_input" name="youtube_link" class="form-control"
+                                placeholder="Tempelkan link YouTube baru di sini..."
+                                style="border: 2px solid #007bff !important;">
+                            <small class="text-muted">Link saat ini: <span id="current_yt_link" class="text-truncate d-inline-block" style="max-width: 300px; vertical-align: bottom; font-weight: bold;"></span></small>
                         </div>
+
                         <div class="form-group col-6">
                             <label>Start Date</label>
                             <div class="input-group date" id="strDate" data-target-input="nearest">
@@ -262,17 +269,52 @@ window.addEventListener('load', function() {
         });
     });
 
-    // 4. Fungsi Edit
-    $('body').on('click', '.edit-btn', function(e) {
-        e.preventDefault();
-        var uid = $(this).data('id');
-        var direktori = $(this).data('direktori');
-        $('#id').val(uid); $('#uid').val(uid);
-        if (direktori == "images") { $('#durationDiv').show(); $('#duration').val($(this).data('duration')); } else { $('#durationDiv').hide(); }
-        $('#str_date').val($(this).data('str-date'));
-        $('#ed_date').val($(this).data('ed-date'));
-        $('#exampleModalCenter').modal('show');
+    // 4. Fungsi Edit (DIPERBAIKI UNTUK YOUTUBE)
+$('body').on('click', '.edit-btn', function(e) {
+    e.preventDefault();
+    var uid = $(this).data('id');
+    var typeFile = $(this).data('direktori'); // Di sini kamu menyimpan string "images", "video", atau "youtube"
+
+    $('#id').val(uid);
+    $('#uid').val(uid);
+
+    // Tampilkan input sesuai tipe file
+    if (typeFile === "youtube") {
+        // Ambil link youtube dari data-attribute tombol edit
+        // Catatan: Pastikan tombol edit di baris tabel sudah punya data-konten="{{ $item->direktori }}"
+        var linkYt = $(this).data('konten');
+
+        $('#youtube_group').show();
+        $('#durationDiv').hide();
+
+        // Masukkan link ke input agar bisa diedit
+        $('#youtube_link_input').val(linkYt);
+        $('#current_yt_link').text(linkYt);
+    }
+    else if (typeFile === "images") {
+        $('#durationDiv').show();
+        $('#youtube_group').hide();
+        $('#duration').val($(this).data('duration'));
+    }
+    else {
+        // Untuk Video
+        $('#durationDiv').hide();
+        $('#youtube_group').hide();
+    }
+
+    // Set Tanggal
+    $('#str_date').val($(this).data('str-date'));
+    $('#ed_date').val($(this).data('ed-date'));
+
+    // Logika Days (Tambahan agar hari yang tersimpan otomatis tercentang)
+    var selectedDays = $(this).data('selected-days').toString().split(',');
+    $('.day-chk').prop('checked', false); // Reset dulu
+    selectedDays.forEach(function(day) {
+        $('.day-chk[value="' + day + '"]').prop('checked', true);
     });
+
+    $('#exampleModalCenter').modal('show');
+});
 
     // 5. Preview & Hapus Satuan
 $('body').on('click', '#showKonten', function(e) {

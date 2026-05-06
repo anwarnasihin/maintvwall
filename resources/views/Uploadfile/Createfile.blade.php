@@ -170,14 +170,34 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
+    // FUNGSI BARU: Menangani tampilan saat user klik "Open" dari File Explorer
+    function showFileName(input) {
+        if (input.files && input.files.length > 0) {
+            renderFileList(input.files);
+        }
+    }
+
+    // FUNGSI RENDER: Menampilkan daftar file di layar
+    function renderFileList(files) {
+        let d = document.getElementById('fileNameDisplay');
+        if (d) {
+            d.style.display = 'block';
+            d.innerHTML = `<div class="mb-2 text-dark">File terpilih (${files.length}):</div>`;
+            for (let i = 0; i < files.length; i++) {
+                d.innerHTML += `<div class="text-success"><i class="fas fa-check-circle"></i> ${files[i].name}</div>`;
+            }
+            // Memberi warna hijau pada area drop sebagai tanda file sudah masuk
+            document.getElementById('dropZone').style.borderColor = "#28a745";
+        }
+    }
+
     $(document).ready(function() {
         // 1. Inisialisasi Dasar
         $('.select2').select2();
         $('#durationRow').hide();
 
-        // 2. Setting Kalender (Satu Pintu Agar Konsisten)
         var dateConfig = {
-            format: 'YYYY-MM-DD HH:mm:ss', // PAKAI DETIK DI SINI
+            format: 'YYYY-MM-DD HH:mm:ss',
             sideBySide: true,
             allowInputToggle: true,
             icons: {
@@ -193,11 +213,10 @@
             }
         };
 
-        // Pasang Kalender
         $('#strDate').datetimepicker(dateConfig);
         $('#edDate').datetimepicker(dateConfig);
 
-        // 3. LOGIKA GANTI TYPE CONTENT
+        // 2. LOGIKA GANTI TYPE CONTENT
         $('#typeFile').on('change', function() {
             let val = $(this).val();
             if (val == "youtube") {
@@ -209,18 +228,17 @@
                 $('#youtubeWrapper').hide();
                 $('#durationRow').toggle(val == "images");
             }
-
-            // Re-inisialisasi pakai config yang sama
-            $('#strDate').datetimepicker(dateConfig);
-            $('#edDate').datetimepicker(dateConfig);
         });
 
-        // 4. LOGIKA DRAG & DROP (Tetap Sama)
+        // 3. LOGIKA DRAG & DROP
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('file');
 
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eName => {
-            dropZone.addEventListener(eName, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
+            dropZone.addEventListener(eName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
         });
 
         dropZone.addEventListener('dragover', (e) => {
@@ -228,18 +246,21 @@
             e.dataTransfer.dropEffect = 'copy';
         });
 
-        dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('dragover'); });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
 
         dropZone.addEventListener('drop', (e) => {
             dropZone.classList.remove('dragover');
             const files = e.dataTransfer.files;
             if (files.length > 0) {
+                // SINKRONISASI: Masukkan file drop ke input asli
                 fileInput.files = files;
                 renderFileList(files);
             }
         });
 
-        // 5. LOGIKA CHECKBOX HARI
+        // 4. LOGIKA CHECKBOX HARI
         $('#checkAll').change(function() {
             $('.day-chk').prop('checked', $(this).prop('checked')).trigger('change');
         });
@@ -254,7 +275,7 @@
             $('#checkAll').prop('checked', $('.day-chk').length === $('.day-chk:checked').length);
         });
 
-        // 6. LOGIKA SUBMIT FORM
+        // 5. LOGIKA SUBMIT FORM (AXIOS)
         $('#formUpload').on('submit', function (e) {
             let typeFile = $('#typeFile').val();
             if (typeFile === 'youtube') return true;
@@ -263,7 +284,6 @@
             let formData = new FormData(this);
             $('#progressContainer').show();
 
-            // Beri ID 'btnSimpan' pada button di HTML atau gunakan class
             let btn = $(this).find('button[type="submit"]');
             btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Menyimpan...');
 
@@ -276,20 +296,10 @@
                 window.location.href = "{{ route('datafile') }}";
             }).catch((err) => {
                 console.error(err);
-                alert('Gagal upload! Periksa ukuran file (max 100MB) atau koneksi.');
+                alert('Gagal upload! Periksa ukuran file atau koneksi.');
                 btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Simpan Data');
             });
         });
     });
-
-    function renderFileList(files) {
-        let d = document.getElementById('fileNameDisplay');
-        if (d) {
-            d.style.display = 'block'; d.innerHTML = "";
-            for (let i = 0; i < files.length; i++) {
-                d.innerHTML += `<div><i class="fas fa-check-circle"></i> ${files[i].name}</div>`;
-            }
-        }
-    }
 </script>
 @endsection
