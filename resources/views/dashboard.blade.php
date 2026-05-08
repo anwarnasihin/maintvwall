@@ -1,246 +1,302 @@
 @extends('layouts.master')
-@section('title.home')
+@section('title.home', 'Dashboard TV Wall')
 @section('content')
 
-{{-- Gaya jam keren dengan Orbitron + efek glow --}}
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;700&display=swap');
+
+    .dashboard-container {
+        background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), url('assets/dist/img/virtual background - bekasi-04.png');
+        background-size: cover;
+        min-height: 90vh;
+        border-radius: 15px;
+        padding: 20px;
+    }
+
+    /* Jam & Tanggal Mini (Atas) */
+    .top-info-bar {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        background: rgba(139, 0, 0, 0.1);
+        padding: 10px;
+        border-radius: 50px;
+        backdrop-filter: blur(5px);
+        margin-bottom: 20px;
+    }
 
     #clock-digital {
-        margin-top: 20px;
-        font-size: 64px;
-        font-weight: 700;
         font-family: 'Orbitron', sans-serif;
-        color:rgb(99, 0, 0);
+        font-size: 24px;
+        font-weight: 700;
+        color: #8B0000;
     }
 
     #date-digital {
-        font-weight: 700;
         font-family: 'Orbitron', sans-serif;
-        color: rgb(99, 0, 0);
+        font-size: 18px;
+        color: #333;
+        padding-top: 5px;
+    }
+
+    /* Preview Area (Tengah) */
+    .preview-container {
+        background: rgba(0, 0, 0, 0.05);
+        border: 2px dashed rgba(139, 0, 0, 0.3);
+        border-radius: 20px;
+        /* Tambah tinggi agar lebih puas melihat konten */
+        height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin-bottom: 10px; /* Perkecil jarak bawah agar mepet ke icon */
+        position: relative;
+        backdrop-filter: blur(5px);
+    }
+
+    /* 2. Sesuaikan Statistik agar Mepet ke Bawah */
+    .row.mt-3 {
+        margin-top: 5px !important; /* Kurangi jarak antara preview dan box */
+    }
+
+    .preview-label {
+        position: absolute;
+        top: 10px;
+        left: 20px;
+        background: #8B0000;
+        color: white;
+        padding: 2px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    /* Modern Glassmorphism Stats Box */
+    .col-5ths {
+        flex: 0 0 20%;
+        max-width: 20%;
+        padding: 10px;
+    }
+
+    .small-box {
+        border-radius: 12px !important;
+        position: relative;
+        display: block;
+        margin-bottom: 5px; /* Perkecil margin antar box */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+        overflow: hidden;
+        color: #fff !important;
+        min-height: 100px; /* Perkecil tinggi box sedikit agar hemat ruang */
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* INI EFEK SHADOW HITAM GRADASI DI DALAM BOX */
+    .small-box::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 30%;
+        background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
+        z-index: 1;
+    }
+
+    .small-box .inner h4 {
+        font-size: 1.8rem; /* Ukuran angka disesuaikan */
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .small-box .inner p {
+        font-size: 14px; /* Ukuran teks keterangan diperkecil */
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .small-box .inner {
+        padding: 12px 15px; /* Perkecil padding dalam box */
+        position: relative;
+        z-index: 5;
+    }
+
+    /* MODIFIKASI IKON AGAR LEBIH KEREN */
+    .small-box .icon {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        z-index: 2;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        opacity: 0.25;
+    }
+
+    .small-box .icon > i {
+        font-size: 60px !important; /* Ukuran ikon disesuaikan dengan box yang lebih kecil */
+        filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
+    }
+
+    /* EFEK SAAT DI-HOVER */
+    .small-box:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.5) !important;
+    }
+
+    .small-box:hover .icon {
+        top: -15px; /* Ikon naik lebih tinggi */
+        opacity: 0.5;
+        transform: rotate(-10deg); /* Kasih efek miring dikit biar dinamis */
     }
 </style>
 
 <section class="content">
-    <section class="content-header">
-        <div class="container-fluid"></div>
-    </section>
+    <div class="container-fluid pt-2">
+        <div class="card-body dashboard-container text-center">
 
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title"></h3>
-            <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                    <i class="fas fa-minus"></i>
-                </button>
-                <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                    <i class="fas fa-times"></i>
-                </button>
+            <div class="top-info-bar mx-auto" style="max-width: 500px;">
+                <div id="clock-digital">00:00:00</div>
+                <div id="date-digital"></div>
             </div>
+
+           <div class="preview-container shadow-inner">
+    <span class="preview-label">LIVE PREVIEW CONTENT</span>
+
+    @if(count($files) > 0)
+        @foreach($files as $key => $file)
+            <div class="mySlides fade-animation" style="display: {{ $key == 0 ? 'block' : 'none' }}; height: 100%; width: 100%;">
+                @if($file->typeFile == 'images')
+                    <img src="{{ asset($file->direktori) }}" style="height: 100%; width: 100%; object-fit: contain;">
+                @elseif($file->typeFile == 'video')
+                    <video src="{{ asset($file->direktori) }}" autoplay muted loop style="height: 100%; width: 100%; object-fit: contain;"></video>
+                @endif
+            </div>
+        @endforeach
+    @else
+        <div class="text-center text-muted">
+            <i class="fas fa-tv fa-4x mb-3" style="opacity: 0.2;"></i>
+            <p>Standby: Tidak ada jadwal tayang saat ini.</p>
         </div>
+    @endif
+</div>
 
-        <div class="card-body" style="position: relative; background-image: url('assets/dist/img/virtual background - bekasi-04.png'); background-size: cover; background-repeat: no-repeat; min-height: 45em; text-align: center;">
-
-            {{-- Teks Welcome --}}
-            <h2 style="font-size: 30px; font-weight: bold; color: #007BFF; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
-                <span style="color: #007BFF; opacity: 0.8;">Welcome to the </span>
-                <span style="color: #FF5733;">BINUS @Bekasi TV Wall</span>
-                <span style="opacity: 0.8;">Application</span>
-            </h2>
-
-            {{-- Logo --}}
-            <img src="assets/dist/img/Road-To-45.png" alt="Logo Road To 45" style="display: block; margin: 0 auto;" width="175" height="185">
-
-            {{-- JAM DIGITAL --}}
-            <div id="clock-digital">00:00:00 AM</div>
-            <div id="date-digital" style="font-size: 30px;"></div>
-
-            <style>
-    /* Box dengan background transparan */
-    .small-box.bg-info {
-        background-color: rgba(23, 162, 184, 0.8) !important;
-    }
-    .small-box.bg-success {
-        background-color: rgba(40, 167, 69, 0.8) !important;
-    }
-    .small-box.bg-warning {
-        background-color: rgba(255, 193, 7, 0.8) !important;
-    }
-    .small-box.bg-danger {
-        background-color: rgba(220, 53, 69, 0.8) !important;
-    }
-    .small-box.bg-primary {
-        background-color: rgba(0, 123, 255, 0.8) !important;
+{{-- CSS Tambahan untuk Animasi Fade --}}
+<style>
+    .fade-animation {
+        animation: fadeEffect 1.5s;
     }
 
-
-    /* Teks angka besar */
-.small-box .inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.small-box .inner h3 {
-    color: #fff !important;   /* putih */
-    margin: 0;
-    font-size: 40px;
-    font-weight: bold;
-}
-
-/* Teks keterangan lebih kecil */
-.small-box .inner p {
-    color: #fff !important;   /* putih */
-    margin: 0;
-    font-size: 16px;
-}
-
-
-    /* Icon per box → warna bisa beda */
-    .small-box.bg-info .icon i {
-        color: #198b9e; /* warna box */
-        font-size: 60px !important; /*size icon di box*/
+    @keyframes fadeEffect {
+        from {opacity: .4}
+        to {opacity: 1}
     }
-    .small-box.bg-success .icon i {
-        color: #278f42; /* warna box */
-        font-size: 60px !important; /*size icon di box*/
-    }
-    .small-box.bg-warning .icon i {
-        color: #d3a311; /* warna box */
-        font-size: 60px !important; /*size icon di box*/
-    }
-    .small-box.bg-danger .icon i {
-        color: #920616; /* warna box */
-        font-size: 60px !important; /*size icon di box*/
-    }
-    .small-box.bg-primary .icon i {
-        color: #04478f; /* warna box */
-        font-size: 60px !important; /*size icon di box*/
-    }
-
-    /* Style posisi & ukuran icon */
-    .small-box .icon {
-    position: static !important; /* hilangkan absolute */
-    font-size: 50px;
-    opacity: 0.55; /* biar agak soft seperti contoh */
-    }
-
-    /* bikin col custom 1/5 */
-    .col-5ths {
-    flex: 0 0 20%;
-    max-width: 20%;
-    padding: 0 10px; /* kiri kanan */
-    }
-
-    .row {
-    margin-left: -10px;
-    margin-right: -10px;
-    }
-
 </style>
 
-            {{-- STATISTIK --}}
+<script>
+    let slideIndex = 0;
+    const slides = document.getElementsByClassName("mySlides");
 
-                <div class="row mt-5">
+    if (slides.length > 0) {
+        showSlides();
+    }
+
+    function showSlides() {
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+        }
+        slideIndex++;
+        if (slideIndex > slides.length) {slideIndex = 1}
+
+        let currentSlide = slides[slideIndex-1];
+        currentSlide.style.display = "block";
+
+        // --- LOGIKA DURASI DINAMIS ---
+        let duration = 5000; // Default 5 detik untuk gambar
+
+        // Cek apakah di dalam slide ini ada elemen video
+        let video = currentSlide.querySelector('video');
+
+        if (video) {
+            video.currentTime = 0; // Ulang video dari awal setiap slide muncul
+            video.play();
+
+            // Atur durasi slide show sesuai durasi video (dalam milidetik)
+            // Kita kasih limit maksimal misal 30 detik supaya tidak kelamaan kalau videonya panjang banget
+            duration = video.duration ? (video.duration * 1000) : 15000;
+        }
+
+        setTimeout(showSlides, duration);
+    }
+</script>
+
+            <div class="row mt-3">
+                @php
+                    $stats = [
+                        [
+                            'count' => $totalUsers,
+                            'label' => 'Users',
+                            'icon' => 'fas fa-users',
+                            'bg' => 'bg-info',
+                            'url' => route('admin.users.index') // Sesuaikan nama route user kamu
+                        ],
+                        [
+                            'count' => $totalImages,
+                            'label' => 'Images',
+                            'icon' => 'fas fa-image',
+                            'bg' => 'bg-success',
+                            'url' => route('datafile') // Di sini kamu bisa arahkan ke halaman filter image jika ada
+                        ],
+                        [
+                            'count' => $totalVideos,
+                            'label' => 'Videos',
+                            'icon' => 'fas fa-video',
+                            'bg' => 'bg-warning',
+                            'url' => route('datafile') // Arahkan ke menu Data Video
+                        ],
+                        [
+                            'count' => $totalTexts,
+                            'label' => 'Texts',
+                            'icon' => 'fas fa-font',
+                            'bg' => 'bg-danger',
+                            'url' => route('datatext') // Arahkan ke menu Add Text
+                        ],
+                        [
+                            'count' => $totalGroups,
+                            'label' => 'Groups',
+                            'icon' => 'fas fa-layer-group',
+                            'bg' => 'bg-primary',
+                            'url' => route('datagroup') // Arahkan ke menu Add Group
+                        ],
+                    ];
+                @endphp
+
+                @foreach($stats as $stat)
                     <div class="col-5ths">
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <div>
-                                    <h3>{{ $totalUsers }}</h3>
-                                    <p>Total Users</p>
+                        <a href="{{ $stat['url'] }}" style="text-decoration: none; display: block;">
+                            <div class="small-box {{ $stat['bg'] }}">
+                                <div class="inner">
+                                    <h4>{{ $stat['count'] }}</h4>
+                                    <p>{{ $stat['label'] }}</p>
                                 </div>
                                 <div class="icon">
-                                    <i class="fas fa-users"></i>
+                                    <i class="{{ $stat['icon'] }}"></i>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
+                    @endforeach
+            </div>
 
-                    <div class="col-5ths">
-                        <div class="small-box bg-success">
-                            <div class="inner">
-                                <div>
-                                    <h3>{{ $totalImages }}</h3>
-                                    <p>Total Images</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fas fa-image"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-5ths">
-                        <div class="small-box bg-warning">
-                            <div class="inner">
-                                <div>
-                                    <h3>{{ $totalVideos }}</h3>
-                                    <p>Total Videos</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fas fa-video"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-5ths">
-                        <div class="small-box bg-danger">
-                            <div class="inner">
-                                <div>
-                                    <h3>{{ $totalTexts }}</h3>
-                                    <p>Total Texts</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fas fa-font"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-5ths">
-                        <div class="small-box bg-primary">
-                            <div class="inner">
-                                <div>
-                                    <h3>{{ $totalGroups }}</h3>
-                                    <p>Total Groups</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fas fa-layer-group"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
         </div>
     </div>
 </section>
 
-{{-- SCRIPT JAM DIGITAL --}}
 <script>
     function updateClock() {
         const now = new Date();
-        let hours = now.getHours();
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-
-        hours = hours % 12;
-        hours = hours ? hours : 12;
-
-        document.getElementById('clock-digital').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
-
-        const day = String(now.getDate()).padStart(2, '0');
-        const monthNames = [
-            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        ];
-        const month = monthNames[now.getMonth()];
-        const year = now.getFullYear();
-
-        document.getElementById('date-digital').textContent = `${day} ${month} ${year}`;
+        document.getElementById('clock-digital').textContent = now.toLocaleTimeString('id-ID');
+        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+        document.getElementById('date-digital').textContent = now.toLocaleDateString('id-ID', options);
     }
-
     setInterval(updateClock, 1000);
     updateClock();
 </script>
