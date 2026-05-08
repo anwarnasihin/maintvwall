@@ -187,7 +187,7 @@
   <!-- Bagian Bawah (Copyright) -->
     <div class="sidebar-custom-footer p-3 text-center" style="border-top: 1px solid rgba(255,255,255,0.1); background: #001a33;">
       <p class="mb-0" style="color: #b9b9b9; font-size: 15px; font-weight: 700;">
-          Version 6.5.2 <br>
+          Version 6.5.3 <br>
       </p>
   </div>
 </aside>

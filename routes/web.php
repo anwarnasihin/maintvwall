@@ -103,26 +103,12 @@ Route::match(['get', 'post'], '/shutdown', [ShutdownController::class, 'shutdown
 
 Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
+    // KITA GANTI ISI DASHBOARD ADMIN:
     Route::get('/dashboard', function () {
-        // 1. Hitung User
-        $totalUsers = \App\Models\User::count();
-
-        // 2. Hitung Group (Pakai model 'group' huruf kecil sesuai kodingan Mas)
-        $totalGroups = \App\Models\group::count();
-
-        // 3. Hitung Text (Pakai model 'text')
-        $totalTexts  = \App\Models\text::count();
-
-        // 4. Hitung File Upload (Pakai model 'source')
-        // Karena saya belum tau cara bedakan video/gambar di database Mas,
-        // kita hitung total file yang ada di tabel source saja.
-        $totalImages = \App\Models\source::count();
-        $totalVideos = 0; // Sementara 0 dulu, atau mau disamakan dengan source juga boleh
-
-        // Kirim semua variabel angka ini ke tampilan
-        return view('admin.dashboard', compact('totalUsers', 'totalImages', 'totalVideos', 'totalTexts', 'totalGroups'));
+        // Alihkan (Redirect) ke route dashboard utama yang ada Live Preview-nya
+        return redirect()->route('dashboard');
     })->name('dashboard');
 
-    // Route Resource Users (JANGAN DIHAPUS)
+    // INI TETAP AKTIF: Supaya Admin tetap bisa kelola user (Multi-user tetap jalan)
     Route::resource('users', \App\Http\Controllers\AdminUserController::class);
 });
