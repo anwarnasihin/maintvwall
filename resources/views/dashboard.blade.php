@@ -41,24 +41,40 @@
 
     /* Preview Area (Tengah) */
     .preview-container {
-        background: rgba(0, 0, 0, 0.05);
-        border: 2px dashed rgba(139, 0, 0, 0.3);
-        border-radius: 20px;
-        /* Tambah tinggi agar lebih puas melihat konten */
-        height: 500px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        margin-bottom: 10px; /* Perkecil jarak bawah agar mepet ke icon */
-        position: relative;
-        backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.05);
+    border: 2px dashed rgba(139, 0, 0, 0.3);
+    border-radius: 20px;
+    width: 65% !important; /* Perkecil sedikit lagi dari 65% ke 60% */
+    margin: 0 auto 25px auto !important; /* Kurangi margin bawah dari 15px ke 5px */
+    aspect-ratio: 16 / 9;
+    /* HAPUS baris height: 500px di sini! */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    backdrop-filter: blur(5px);
+}
+    /* Pastikan gambar/video di dalamnya mengikuti ukuran container baru */
+    .preview-container img,
+    .preview-container video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* Agar konten tidak terpotong saat diperkecil */
+    }
+
+    /* Mengurangi padding di area dashboard agar icon lebih rapat ke atas */
+    .content-wrapper {
+        padding-top: 10px !important;
     }
 
     /* 2. Sesuaikan Statistik agar Mepet ke Bawah */
     .row.mt-3 {
-        margin-top: 5px !important; /* Kurangi jarak antara preview dan box */
-    }
+    /* Dari -40px atau -50px, kita coba turunkan ke -15px atau -20px saja */
+    margin-top: -20px !important;
+    position: relative;
+    z-index: 10;
+}
 
     .preview-label {
         position: absolute;
@@ -79,16 +95,35 @@
         padding: 10px;
     }
 
+    .content {
+        padding-top: 0 !important;
+    }
+
     .small-box {
         border-radius: 12px !important;
         position: relative;
         display: block;
-        margin-bottom: 5px; /* Perkecil margin antar box */
+        margin-bottom: 10px !important; /* Perkecil margin antar box */
+        padding: 5px 0 !important;
         box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
         overflow: hidden;
         color: #fff !important;
         min-height: 100px; /* Perkecil tinggi box sedikit agar hemat ruang */
         transition: all 0.3s ease-in-out;
+    }
+
+    /* Memperkecil ukuran angka (h3) */
+    .small-box h3 {
+        font-size: 1.5rem !important; /* Dari ukuran default yang besar */
+        font-weight: 700;
+        margin: 0 0 5px 0 !important;
+    }
+
+    /* Memperkecil teks keterangan di bawah angka */
+    .small-box p {
+        font-size: 0.8rem !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     /* INI EFEK SHADOW HITAM GRADASI DI DALAM BOX */
@@ -116,10 +151,10 @@
     }
 
     .small-box .inner {
-        padding: 12px 15px; /* Perkecil padding dalam box */
-        position: relative;
-        z-index: 5;
-    }
+    padding: 8px 12px; /* Lebih kecil dari 12px 15px */
+    position: relative;
+    z-index: 5;
+}
 
     /* MODIFIKASI IKON AGAR LEBIH KEREN */
     .small-box .icon {
@@ -132,8 +167,9 @@
     }
 
     .small-box .icon > i {
-        font-size: 60px !important; /* Ukuran ikon disesuaikan dengan box yang lebih kecil */
+        font-size: 40px !important; /* Ukuran ikon disesuaikan dengan box yang lebih kecil */
         filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
+        top: 10px !important;
     }
 
     /* EFEK SAAT DI-HOVER */
