@@ -48,9 +48,31 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'LINUX') {
             $usedRamGB  = round($memoryUsed / (1024 * 1024 * 1024), 1);
         }
     }
+    // Gunakan PHP_OS_FAMILY agar lebih akurat (tersedia di PHP 7.2+)
+if (PHP_OS_FAMILY === 'Linux') {
+    $free = shell_exec('free -b');
+    if ($free) {
+        $free = (string)trim($free);
+        $free_arr = explode("\n", $free);
+        if (isset($free_arr[1])) {
+            $mem = explode(" ", $free_arr[1]);
+            $mem = array_filter($mem);
+            $mem = array_merge($mem);
+
+            $memoryTotal = $mem[1];
+            $memoryUsed  = $mem[2];
+
+            $memoryPercent = round($memoryUsed / $memoryTotal * 100);
+
+            // Konversi ke GB asli server
+            $totalRamGB = round($memoryTotal / (1024 * 1024 * 1024), 1);
+            $usedRamGB  = round($memoryUsed / (1024 * 1024 * 1024), 1);
+        }
+    }
 } else {
+    // Ini HANYA jalan kalau kamu buka di Laptop Windows (buat testing)
     $memoryPercent = rand(20, 40);
-    $totalRamGB = 16; // Dummy untuk Windows
+    $totalRamGB = 16;
     $usedRamGB = 4;
 }
 
