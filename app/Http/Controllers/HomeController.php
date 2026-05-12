@@ -19,28 +19,40 @@ class HomeController extends Controller
         $diskUsed    = $diskTotal - $diskFree;
         $diskPercent = round(($diskUsed / $diskTotal) * 100);
 
+        // Konversi ke GB (dibagi 1024 pangkat 3)
+        $totalDiskGB = round($diskTotal / (1024 * 1024 * 1024), 1);
+        $usedDiskGB  = round($diskUsed / (1024 * 1024 * 1024), 1);
+
         // --- AMBIL PENGGUNAAN RAM (Kasih Pengaman untuk Windows) ---
-        $memoryPercent = 0; // Default
+       $totalRamGB = 0;
+$usedRamGB  = 0;
+$memoryPercent = 0;
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'LINUX') {
-            $free = shell_exec('free');
-            if ($free) {
-                $free = (string)trim($free);
-                $free_arr = explode("\n", $free);
-                if (isset($free_arr[1])) {
-                    $mem = explode(" ", $free_arr[1]);
-                    $mem = array_filter($mem);
-                    $mem = array_merge($mem);
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'LINUX') {
+    $free = shell_exec('free -b'); // Pakai flag -b agar hitungannya dalam bytes
+    if ($free) {
+        $free = (string)trim($free);
+        $free_arr = explode("\n", $free);
+        if (isset($free_arr[1])) {
+            $mem = explode(" ", $free_arr[1]);
+            $mem = array_filter($mem);
+            $mem = array_merge($mem);
 
-                    $memoryUsed    = $mem[2];
-                    $memoryTotal   = $mem[1];
-                    $memoryPercent = round($memoryUsed / $memoryTotal * 100);
-                }
-            }
-        } else {
-            // Jika di Windows (untuk development), kasih angka random biar grafik ada isinya
-            $memoryPercent = rand(20, 45);
+            $memoryTotal = $mem[1];
+            $memoryUsed  = $mem[2];
+
+            $memoryPercent = round($memoryUsed / $memoryTotal * 100);
+
+            // Konversi ke GB
+            $totalRamGB = round($memoryTotal / (1024 * 1024 * 1024), 1);
+            $usedRamGB  = round($memoryUsed / (1024 * 1024 * 1024), 1);
         }
+    }
+} else {
+    $memoryPercent = rand(20, 40);
+    $totalRamGB = 16; // Dummy untuk Windows
+    $usedRamGB = 4;
+}
 
         // 1. Ambil data statistik dasar
         $totalUsers  = User::count();
@@ -63,16 +75,10 @@ class HomeController extends Controller
         $latestContent = source::latest()->first();
 
         // 5. KEMBALIKAN VIEW (Pastikan diskPercent dan memoryPercent dibawa!)
-        return view('dashboard', compact(
-            'files',
-            'totalUsers',
-            'totalImages',
-            'totalVideos',
-            'totalTexts',
-            'totalGroups',
-            'latestContent',
-            'diskPercent',   // Tambahkan ini
-            'memoryPercent'  // Tambahkan ini
+       return view('dashboard', compact(
+            'diskPercent', 'totalDiskGB', 'usedDiskGB',
+            'memoryPercent', 'totalRamGB', 'usedRamGB',
+            'files', 'totalUsers', 'totalImages', 'totalVideos', 'totalTexts', 'totalGroups', 'latestContent'
         ));
     }
 }

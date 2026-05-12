@@ -100,7 +100,9 @@
                         <div style="width: 160px; margin: 0 auto;">
                             <canvas id="diskChart"></canvas>
                         </div>
-                        <p class="mt-2 mb-0" style="font-weight: bold; color: #333;">Used: {{ $diskPercent }}%</p>
+                        <p class="mt-2 mb-0" style="font-weight: bold; color: #333;">
+                            Used: {{ $usedDiskGB }}GB / {{ $totalDiskGB }}GB ({{ $diskPercent }}%)
+                        </p>
                     </div>
                 </div>
 
@@ -110,7 +112,9 @@
                         <div style="height: 160px;">
                             <canvas id="ramChart"></canvas>
                         </div>
-                        <p class="mt-2 mb-0" style="font-weight: bold; color: #333;">Current Load: {{ $memoryPercent }}%</p>
+                        <p class="mt-2 mb-0" style="font-weight: bold; color: #333;">
+                            Load: {{ $usedRamGB }}GB / {{ $totalRamGB }}GB ({{ $memoryPercent }}%)
+                        </p>
                     </div>
                 </div>
             </div>
