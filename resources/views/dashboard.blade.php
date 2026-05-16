@@ -41,11 +41,16 @@
 
     /* Glassmorphism untuk Card Chart */
     .bg-light-glass {
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-        transition: transform 0.3s ease;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        /* Tambahkan transisi yang sama */
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
     .bg-light-glass:hover {
-        transform: scale(1.02);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.25);
+        background: rgba(255, 255, 255, 0.3) !important; /* Sedikit lebih terang saat hover */
     }
 
     .small-box {
@@ -54,11 +59,12 @@
         display: block;
         margin-bottom: 10px !important;
         padding: 5px 0 !important;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important; /* Shadow awal lebih soft */
         overflow: hidden;
         color: #fff !important;
         min-height: 100px;
-        transition: all 0.3s ease-in-out;
+        /* KUNCI SMOOTH: Tambahkan durasi lebih lama dan timing function bezier */
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .small-box h4 { font-size: 1.8rem; font-weight: 800; margin: 0; }
@@ -69,19 +75,40 @@
     .small-box .icon {
         position: absolute;
         top: 5px;
-        right: 10px;
+        right: 15px;
         z-index: 2;
-        opacity: 0.25;
+        opacity: 0.5;
     }
 
-    .small-box .icon > i { font-size: 40px !important; }
+    .small-box .icon > i {
+        font-size: 50px !important; /* Perbesar sedikit jika dirasa kurang jelas */
+        color: rgba(255, 255, 255, 0.8); /* Warna putih transparan yang solid */
+        filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.3)); /* Shadow agar lebih timbul */
+        top: 10px !important;
+    }
 
     .small-box:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.5) !important;
+        transform: translateY(-10px); /* Naik sedikit lebih tinggi */
+        box-shadow: 0 15px 35px rgba(0,0,0,0.4) !important; /* Shadow memanjang ke bawah */
+    }
+
+    .small-box:hover .icon {
+        top: -10px;
+        opacity: 0.9; /* Hampir 100% jelas saat kursor di atasnya */
+        transform: scale(1.2) rotate(-15deg); /* Perbesar sedikit dan miringkan */
     }
 
     .col-5ths { flex: 0 0 20%; max-width: 20%; padding: 10px; }
+
+    .small-box .icon {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        z-index: 2;
+        opacity: 0.25;
+        /* KUNCI SMOOTH ICON: Transisi khusus untuk icon */
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 </style>
 
 <section class="content">
