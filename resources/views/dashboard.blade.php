@@ -158,19 +158,82 @@
                 @endphp
 
                 @foreach($stats as $stat)
-                <div class="col-5ths">
-                    <a href="{{ $stat['url'] }}" style="text-decoration: none;">
-                        <div class="small-box {{ $stat['bg'] }}">
-                            <div class="inner">
-                                <h4>{{ $stat['count'] }}</h4>
-                                <p>{{ $stat['label'] }}</p>
-                            </div>
-                            <div class="icon"><i class="{{ $stat['icon'] }}"></i></div>
-                        </div>
-                    </a>
+<div class="col-5ths">
+    @if(strpos(strtolower($stat['label']), 'user') !== false && auth()->user()->role !== 'admin')
+        <a href="javascript:void(0)"
+           onclick="Swal.fire({
+               icon: 'error',
+               title: 'Akses Ditolak!',
+               text: 'Maaf, Anda bukan sebagai admin. Fitur ini dikunci.',
+               confirmButtonColor: '#8B0000',
+               confirmButtonText: 'OK, Saya Mengerti'
+           })"
+           style="text-decoration: none; cursor: not-allowed;">
+            <div class="small-box {{ $stat['bg'] }}" style="opacity: 0.7; position: relative;">
+                <div class="inner">
+                    <h4>{{ $stat['count'] }}</h4>
+                    <p>{{ $stat['label'] }}</p>
                 </div>
-                @endforeach
+                <div class="icon"><i class="fas fa-lock" style="font-size: 30px; opacity: 0.5;"></i></div>
             </div>
+        </a>
+    @else
+        <a href="{{ $stat['url'] }}" style="text-decoration: none;">
+            <div class="small-box {{ $stat['bg'] }}">
+                <div class="inner">
+                    <h4>{{ $stat['count'] }}</h4>
+                    <p>{{ $stat['label'] }}</p>
+                </div>
+                <div class="icon"><i class="{{ $stat['icon'] }}"></i></div>
+            </div>
+        </a>
+    @endif
+</div>
+@endforeach
+            </div>
+
+            {{-- //--pembuka Baru 16/05/2026 --}}
+            <div class="row mt-4 text-left">
+                <div class="col-md-12">
+                    <div class="card p-3 shadow-sm" style="border-radius: 15px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border: 1px solid rgba(139,0,0,0.15);">
+                        <h5 class="text-bold mb-3" style="color: #8B0000; font-size: 16px;">
+                            <i class="fas fa-history mr-2"></i> LOG AKTIVITAS TERAKHIR
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0" style="color: #333;">
+                                <thead>
+                                    <tr style="border-bottom: 2px solid rgba(139,0,0,0.2); background: rgba(139,0,0,0.05);">
+                                        <th style="width: 25%; padding: 10px;">Waktu</th>
+                                        <th style="width: 25%; padding: 10px;">User</th>
+                                        <th style="width: 50%; padding: 10px;">Aktivitas</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($recentLogs as $log)
+                                        <tr style="border-bottom: 1px solid rgba(0,0,0,0.05);">
+                                            <td class="text-muted" style="padding: 10px;">
+                                                <i class="far fa-clock mr-1"></i>
+                                                {{ \Carbon\Carbon::parse($log->created_at)->timezone('Asia/Jakarta')->translatedFormat('d M Y - H:i') }} WIB
+                                            </td>
+                                            <td style="padding: 10px;">
+                                                <span class="badge bg-secondary text-white p-1" style="border-radius: 5px;">{{ $log->user->name ?? 'System' }}</span>
+                                            </td>
+                                            <td class="font-weight-600" style="padding: 10px; color: #444;">{{ $log->activity }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted py-4">
+                                                <i class="fas fa-info-circle mr-1"></i> Belum ada aktivitas tercatat hari ini.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- //--penutup baru 16/05/2026 --}}
 
         </div>
     </div>
@@ -217,5 +280,7 @@
         options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
     });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @endsection

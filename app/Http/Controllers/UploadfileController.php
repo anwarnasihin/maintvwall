@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\group;
 use App\Models\source;
+use App\Models\ActivityLog; // TAMBAHAN: Import Model Log Baru
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -50,6 +51,12 @@ class UploadfileController extends Controller
         // 2. Jika tipenya YouTube (Hanya satu link, tidak perlu looping file)
         if ($request->typeFile == "youtube") {
             $this->saveEntry($request, $request->linkYoutube);
+
+            // TAMBAHAN LOG: Catat aktivitas upload link YouTube
+            ActivityLog::create([
+                'user_id'  => Auth::id(),
+                'activity' => 'mengunggah konten YouTube baru ke TV Wall'
+            ]);
         }
         // 3. Jika upload file (Bisa banyak sekaligus)
         else if ($request->hasFile('file')) {
@@ -66,6 +73,12 @@ class UploadfileController extends Controller
                 // Simpan ke database satu per satu
                 $this->saveEntry($request, $fileInput);
             }
+
+            // TAMBAHAN LOG: Catat aktivitas upload file media (gambar/video)
+            ActivityLog::create([
+                'user_id'  => Auth::id(),
+                'activity' => 'mengunggah ' . count($files) . ' file media baru (' . $request->typeFile . ')'
+            ]);
         }
 
         return redirect()->route('datafile')->with('toast_success', 'Semua data berhasil disimpan!');
@@ -122,6 +135,12 @@ class UploadfileController extends Controller
 
     $dt->update($input);
 
+    // TAMBAHAN LOG: Catat saat melakukan update data via edit form
+        ActivityLog::create([
+            'user_id'  => Auth::id(),
+            'activity' => 'memperbarui detail data konten media ID: ' . $id
+        ]);
+
     return redirect('datafile')->with('toast_success', 'Data berhasil di update dengan jam yang benar!');
 }
 
@@ -164,6 +183,12 @@ class UploadfileController extends Controller
 
     $dt->save();
 
+    // TAMBAHAN LOG: Catat saat mengubah durasi/settingan cepat di tabel dashboard
+        ActivityLog::create([
+            'user_id'  => Auth::id(),
+            'activity' => 'mengubah pengaturan durasi/jadwal tayang media'
+        ]);
+
     return redirect('datafile')->with('toast_success', 'Media settings updated successfully!');
 }
 
@@ -185,6 +210,12 @@ class UploadfileController extends Controller
 
             // Hapus data dari database
             $dt->forceDelete();
+
+            // 🔴 TAMBAHKAN BACKSLASH (\) DI DEPAN ActivityLog
+            \App\Models\ActivityLog::create([
+                'user_id'  => Auth::id(),
+                'activity' => 'menghapus permanen satu file konten'
+            ]);
         }
 
         return back()->with('toast_success', 'Data dan File berhasil dihapus permanen!');
@@ -226,6 +257,12 @@ class UploadfileController extends Controller
                 // Baru hapus datanya
                 $item->forceDelete();
             }
+
+            // 🔴 TAMBAHKAN BACKSLASH (\) DI DEPAN ActivityLog JUGA DI SINI
+            \App\Models\ActivityLog::create([
+                'user_id'  => Auth::id(),
+                'activity' => 'melakukan hapus massal sebanyak ' . count($items) . ' konten sekaligus'
+            ]);
 
             return response()->json(['success' => "Konten masal berhasil dibersihkan!"]);
         }

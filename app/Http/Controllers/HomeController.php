@@ -8,6 +8,7 @@ use App\Models\source;
 use App\Models\User;
 use App\Models\text;
 use App\Models\group;
+use App\Models\ActivityLog;  // --- Baru 16/05/2026 ---
 
 class HomeController extends Controller
 {
@@ -71,11 +72,18 @@ class HomeController extends Controller
 
         $latestContent = source::latest()->first();
 
-        // --- 5. KEMBALIKAN VIEW ---
+        // --- 5. AMBIL 5 LOG AKTIVITAS TERAKHIR (FITUR BARU) ---
+        $recentLogs = ActivityLog::with('user') // Ambil data beserta nama usernya
+                                  ->latest()     // Urutkan dari yang paling baru
+                                  ->take(5)      // Batasi hanya 5 data saja biar ringan
+                                  ->get();
+
+        // --- 6. KEMBALIKAN VIEW ---
         return view('dashboard', compact(
             'diskPercent', 'totalDiskGB', 'usedDiskGB',
             'memoryPercent', 'totalRamGB', 'usedRamGB',
-            'files', 'totalUsers', 'totalImages', 'totalVideos', 'totalTexts', 'totalGroups', 'latestContent'
+            'files', 'totalUsers', 'totalImages', 'totalVideos', 'totalTexts', 'totalGroups', 'latestContent',
+            'recentLogs'
         ));
     }
 }
