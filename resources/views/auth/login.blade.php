@@ -161,8 +161,14 @@
 
   <div class="glass-card">
 
-      <img src="{{ asset('assets/dist/img/Road-To-45.png') }}" alt="Logo Binus" class="login-logo-img">
-
+     <!-- Menggunakan Tag Video untuk Animasi Transparan WebM -->
+<!-- Ukuran dinaikkan ke 420px dan margin-bottom disesuaikan agar logo terlihat jauh lebih besar -->
+<div style="width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: -35px; margin-top: -20px; background: transparent; overflow: hidden;">
+    <video autoplay loop muted playsinline disablePictureInPicture controlslist="nodownload nofullscreen noremoteplayback" style="background: transparent; width: 420px; height: auto; display: block; border: none; outline: none;">
+        <source src="{{ asset('assets/dist/img/WARNA_TANPA_Road_To.webm') }}" type="video/webm">
+        Browser Anda tidak mendukung video HTML5.
+    </video>
+</div>
       <h2>Welcome </h2>
       <p class="subtitle">Please enter your details to sign in.</p>
 
