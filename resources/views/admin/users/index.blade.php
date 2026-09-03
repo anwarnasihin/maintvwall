@@ -105,19 +105,21 @@
                               <i class="fas fa-edit"></i>
                           </a>
 
-                          <form action="{{ route('admin.users.destroy', $user->id) }}"
-                                method="POST"
-                                class="d-inline"
-                                id="delete-form-{{ $user->id }}">
-                              @csrf
-                              @method('DELETE')
-                              <button type="button"
-                                      class="icon-btn delete"
-                                      title="Hapus User"
-                                      onclick="hapusData({{ $user->id }})">
-                                  <i class="fas fa-trash-alt"></i>
-                              </button>
-                          </form>
+                          @if (auth()->id() != $user->id)
+                                <form action="{{ route('admin.users.destroy', $user->id) }}"
+                                    method="POST"
+                                    class="d-inline"
+                                    id="delete-form-{{ $user->id }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button"
+                                            class="icon-btn delete"
+                                            title="Hapus User"
+                                            onclick="hapusData({{ $user->id }})">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            @endif
 
                       </div>
                   </td>

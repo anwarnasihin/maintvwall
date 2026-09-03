@@ -148,6 +148,10 @@
               <input type="text" name="name" class="custom-input" placeholder="Enter your name" value="{{ old('name') }}" required autofocus>
           </div>
           <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" class="custom-input" placeholder="contoh: anwar" value="{{ old('username') }}" required>
+          </div>
+          <div class="form-group">
               <label>Email Address</label>
               <input type="email" name="email" class="custom-input" placeholder="example@binus.edu" value="{{ old('email') }}" required>
           </div>

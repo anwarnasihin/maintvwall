@@ -174,7 +174,7 @@
 
       @if ($errors->any())
         <div class="alert alert-danger p-2 mb-3 text-left" style="font-size: 13px; background: rgba(231, 76, 60, 0.9); border:none; color: white; border-radius: 8px;">
-             <i class="fas fa-exclamation-circle mr-1"></i> Email atau Password salah.
+             <i class="fas fa-exclamation-circle mr-1"></i> Username atau Password salah.
         </div>
       @endif
 
@@ -182,8 +182,8 @@
         @csrf
 
         <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" name="email" class="custom-input" placeholder="example@binus.edu" value="{{ old('email') }}" required autofocus>
+            <label>Username atau Email</label>
+            <input type="text" name="username" class="custom-input" value="{{ old('username') }}" required autofocus autocomplete="username">
         </div>
 
         <div class="form-group" style="margin-bottom: 25px;">

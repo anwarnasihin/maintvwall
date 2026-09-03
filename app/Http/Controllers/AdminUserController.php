@@ -11,8 +11,9 @@ class AdminUserController extends Controller
     // 1. Menampilkan Daftar User
     public function index()
     {
-        // Ambil semua user, kecuali diri sendiri
-        $users = User::where('id', '!=', auth()->id())->get();
+        // Ambil semua user, termasuk akun yang sedang login
+        $users = User::all();
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -27,6 +28,7 @@ class AdminUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'username' => 'required|string|min:3|max:30|alpha_dash|unique:users,username',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
             'role' => 'required|in:admin,user',
@@ -34,6 +36,7 @@ class AdminUserController extends Controller
 
         User::create([
             'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
@@ -56,11 +59,13 @@ class AdminUserController extends Controller
 
         $request->validate([
             'name' => 'required',
+            'username' => 'required|string|min:3|max:30|alpha_dash|unique:users,username,'.$user->id,
             'email' => 'required|email|unique:users,email,'.$user->id,
             'role' => 'required|in:admin,user',
         ]);
 
         $user->name = $request->name;
+        $user->username = $request->username;
         $user->email = $request->email;
         $user->role = $request->role;
 
