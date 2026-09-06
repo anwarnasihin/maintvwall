@@ -14,20 +14,87 @@
                     <div class="card-body">
                         <form action="{{ url('updatetext', $txt->id) }}" method="POST" enctype="multipart/form-data">
                             {{ csrf_field() }}
+
                             <label for="judul">Judul</label>
-                            <input type="text" name="judul" class="form-control" value="{{ $txt->judul}}">
+                            <input
+                                type="text"
+                                name="judul"
+                                class="form-control"
+                                value="{{ $txt->judul }}"
+                            >
+
                             <label for="deskripsi">Deskripsi</label>
-                            <textarea name="deskripsi" id="content" class="form-control" cols="30" rows="5">{{ $txt->deskripsi}}</textarea>
+                            <textarea
+                                name="deskripsi"
+                                id="content"
+                                class="form-control"
+                                cols="30"
+                                rows="5"
+                            >{{ $txt->deskripsi }}</textarea>
+
+                            {{-- STATUS --}}
                             <label for="status">Status</label>
                             <select class="form-control" name="status" id="status">
-                                <option value="1">Publish</option>
-                                <option value="0">Tidak Publish</option>
+
+                                <option value="1" {{ $txt->status == 1 ? 'selected' : '' }}>
+                                    Publish
+                                </option>
+
+                                <option value="0" {{ $txt->status == 0 ? 'selected' : '' }}>
+                                    Tidak Publish
+                                </option>
+
                             </select>
+
                             <br>
+
+                            {{-- GROUP --}}
                             <div class="form-group">
-                                <button type="submit" class="btn btn-success">Update Data</button>
+                                <label>Ditampilkan pada Group</label>
+
+                                <div class="border rounded p-3">
+
+                                    @foreach ($groups as $group)
+
+                                        <div class="form-check">
+
+                                            <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="groups[]"
+                                                value="{{ $group->id }}"
+                                                id="group_{{ $group->id }}"
+
+                                                {{ $txt->groups->contains('id', $group->id) ? 'checked' : '' }}
+                                            >
+
+                                            <label
+                                                class="form-check-label"
+                                                for="group_{{ $group->id }}"
+                                            >
+                                                {{ $group->name }}
+                                            </label>
+
+                                        </div>
+
+                                    @endforeach
+
+                                </div>
+
+                                <small class="text-muted">
+                                    Pilih satu atau beberapa group yang akan menggunakan running text ini.
+                                </small>
                             </div>
-                            
+
+                            <br>
+
+                            {{-- TOMBOL UPDATE --}}
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success">
+                                    Update Data
+                                </button>
+                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -36,7 +103,7 @@
         </div>
         <!-- /.row -->
     </div><!-- /.container-fluid -->
-    
+
 </section>
 @endsection
 

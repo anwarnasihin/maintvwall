@@ -37,7 +37,31 @@
                   <td>{{ $loop->iteration }}</td>
                   <td>{{ $item->judul}}</td>
                   <td>{{ $item->deskripsi}}</td>
-                  <td>{{ ($item->status == 1) ? "publish" : "tidak publish"}}</td>
+                  <td class="text-center">
+                        @if ($item->status == 1)
+
+                            <span class="badge badge-success">
+                                Publish
+                            </span>
+
+                            <br>
+
+                            <small class="text-muted">
+                                @if ($item->groups->count() > 0)
+                                    {{ $item->groups->pluck('name')->implode(', ') }}
+                                @else
+                                    Belum ditentukan
+                                @endif
+                            </small>
+
+                        @else
+
+                            <span class="badge badge-danger">
+                                Tidak Publish
+                            </span>
+
+                        @endif
+                    </td>
                   <td>
                     <a href="{{ url('edittext',$item->id) }}" data-toggle="tooltip" title="Edit">
                       <i class="fas fa-edit" style="color: #e7b100"></i>
@@ -86,7 +110,7 @@
     <!-- /.row -->
   </div><!-- /.container-fluid -->
 
-  
+
 
   <!-- jQuery -->
   <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
@@ -120,9 +144,9 @@
       document.querySelectorAll('.delete-item').forEach(function (link) {
           link.addEventListener('click', function (e) {
               e.preventDefault();
-              
+
               var itemId = this.dataset.id;
-              
+
               // Tampilkan SweetAlert untuk konfirmasi hapus
               Swal.fire({
                   title: 'Apakah Anda yakin?',

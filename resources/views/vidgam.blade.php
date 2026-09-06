@@ -194,13 +194,13 @@
 
    /* Animasi Marquee - Perbaikan Jarak Tempuh */
 @keyframes marquee-animation {
-    0%   {
+    0% {
         left: 100%;
         transform: skewX(30deg);
     }
+
     100% {
-        /* settingan supaya teks sepanjang apapun pasti hilang dulu */
-        left: -210%;
+        left: calc(-1 * var(--text-width));
         transform: skewX(30deg);
     }
 }
@@ -259,6 +259,12 @@
         $(document).ready(function() {
             updateDateTime();
             setInterval(updateDateTime, 1000); // Jam jalan terus
+
+            // Cek perubahan konten dan running text secara berkala
+            // Berguna terutama untuk YouTube Live yang tidak pernah memanggil onended
+            setInterval(function() {
+                refreshContent(false);
+            }, 30000); // 30 detik
 
             // Start Player
             if (data && data.length > 0) {
@@ -447,39 +453,75 @@
 
        // --- ANIMASI RUNNING TEXT (VERSI STABIL) ---
 function updateRunningText(texts) {
+
     var textContainer = $('#running-text');
     var fullString = "";
 
-    // 1. Gabung teks
+    // 1. Gabungkan semua running text
     texts.forEach(function(item) {
         fullString += item.deskripsi + " &nbsp; | &nbsp; ";
     });
 
-    if(fullString === "") fullString = "Selamat Datang di BINUS University @Bekasi";
+    // 2. Kalau tidak ada running text
+    if (fullString === "") {
+        fullString = "Selamat Datang di BINUS University @Bekasi";
+    }
 
-    // 2. Hanya update jika benar-benar ada perubahan isi
+    // 3. Hanya update kalau isi benar-benar berubah
     if (textContainer.html().trim() !== fullString.trim()) {
 
         // Pasang teks baru
         textContainer.html(fullString);
 
-        // Beri waktu 100ms agar browser selesai menghitung lebar teks
         setTimeout(function() {
-            var textWidth = textContainer.width();
+
+            // ==========================================
+            // KECEPATAN RUNNING TEXT
+            // ==========================================
+            var speed = 60; // pixel per detik
+
+            // Lebar teks sebenarnya
+            var textWidth = textContainer[0].scrollWidth;
+
+            // Lebar area running text
             var wrapperWidth = $('.marquee-wrapper').width();
 
-            // Rumus: (Lebar Layar + Lebar Teks) / KECEPATAN
-            var duration = (textWidth + wrapperWidth) / 60;
+            // Total jarak yang harus ditempuh:
+            // dari sisi kanan layar sampai seluruh teks
+            // keluar dari sisi kiri layar
+            var distance = wrapperWidth + textWidth;
 
-            // Matikan dan nyalakan lagi secara instan
+            // Durasi = jarak / kecepatan
+            var duration = distance / speed;
+
+            // Simpan lebar teks ke CSS variable
+            textContainer[0].style.setProperty(
+                '--text-width',
+                textWidth + 'px'
+            );
+
+            // Reset animation
             textContainer.css('animation', 'none');
 
-            // Trigger reflow agar 'animation: none' benar-benar tereksekusi
+            // Trigger reflow
             void textContainer[0].offsetWidth;
 
+            // Jalankan kembali animasi
             textContainer.css({
                 'animation': `marquee-animation ${duration}s linear infinite`
             });
+
+            console.log(
+                'Running Text:',
+                textWidth + 'px',
+                '| Jarak:',
+                distance + 'px',
+                '| Durasi:',
+                duration.toFixed(2) + ' detik',
+                '| Kecepatan:',
+                speed + ' px/s'
+            );
+
         }, 100);
     }
 }

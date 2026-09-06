@@ -40,23 +40,27 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 Route::get('/show/{group}', [UploadfileController::class, 'show'])->name('showGroup');
 
 Route::post('/getContent', function (Request $request) {
-    // 1. Ambil Group ID
+    // 1. Cari Group berdasarkan nama
     $idGroup = group::where('name', $request->group)->first();
 
-    // Pastikan group ketemu biar tidak error
+    // Kalau group tidak ditemukan
     if(!$idGroup) return response()->json([[], [], csrf_token()]);
 
-    // 2. Query Data - ABAIKAN JAM MULAI (STR_DATE)
+    // 2. Waktu sekarang
     $now = Carbon::now('Asia/Jakarta');
     $todayday = $now->dayOfWeekIso;
 
+    // 3. Ambil media berdasarkan group
     $data = source::where('group', $idGroup->id)
         ->where('ed_date', '>=', $now) // Cukup cek apakah belum melewati waktu berakhir
         ->whereRaw("JSON_CONTAINS(selected_days, '\"$todayday\"')")
         ->get();
 
     $token = csrf_token();
-    $texts = Text::where('status', 1)->get();
+    $texts = Text::where('status', 1)
+    ->whereHas('groups', function ($query) use ($idGroup) {
+        $query->where('groups.id', $idGroup->id);
+    })->get();
 
     // Kembalikan Data
     return response()->json([$data, $texts, $token]);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\text;
+use App\Models\group;
 use App\Models\source;
 use Illuminate\Http\Request;
 
@@ -13,14 +14,9 @@ class UploadtextController extends Controller
      */
     public function index()
     {
-        $dtText = text::all(); // Mengambil semua data teks dari database
-        // if ($request->ajax())
-        //     // Jika permintaan merupakan permintaan AJAX, kembalikan sebagai JSON
-        //     return response()->json($dtText);
-        // } else {
-            // Jika bukan permintaan AJAX, kembalikan sebagai view
-            return view('Uploadtext.Datatext', compact('dtText'));
-        // }
+        $dtText = text::with('groups')->get();
+
+        return view('Uploadtext.Datatext', compact('dtText'));
     }
 
     public function getTexts()
@@ -36,7 +32,9 @@ class UploadtextController extends Controller
      */
     public function create()
     {
-        return view('Uploadtext.Createtext');
+        $groups = group::orderBy('name')->get();
+
+        return view('Uploadtext.Createtext', compact('groups'));
     }
 
     /**
@@ -48,15 +46,21 @@ class UploadtextController extends Controller
             'judul' => 'required|string',
             'deskripsi' => 'required|string',
             'status' => 'required|string',
+            'groups' => 'nullable|array',
+            'groups.*' => 'exists:groups,id',
         ]);
 
-        text::create([
+        $txt = text::create([
             'judul' => $validatedData['judul'],
             'deskripsi' => $validatedData['deskripsi'],
             'status' => $validatedData['status'],
         ]);
 
-        return redirect('datatext');
+        // Hubungkan running text dengan group yang dipilih
+        $txt->groups()->sync($request->input('groups', []));
+
+        return redirect('datatext')
+            ->with('toast_success', 'Running text berhasil disimpan!');
     }
 
     /**
@@ -72,8 +76,10 @@ class UploadtextController extends Controller
      */
     public function edit($id)
     {
-        $txt = text::findorfail($id);
-        return view('Uploadtext.Edittext',compact('txt'));
+        $txt = text::with('groups')->findOrFail($id);
+        $groups = group::orderBy('name')->get();
+
+        return view('Uploadtext.Edittext', compact('txt', 'groups'));
     }
 
     /**
@@ -81,9 +87,27 @@ class UploadtextController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $txt = text::findorfail($id);
-        $txt->update($request->all());
-        return redirect('datatext')->with('toast_success', 'Data berhasil di update');
+        $validatedData = $request->validate([
+            'judul' => 'required|string',
+            'deskripsi' => 'required|string',
+            'status' => 'required|string',
+            'groups' => 'nullable|array',
+            'groups.*' => 'exists:groups,id',
+        ]);
+
+        $txt = text::findOrFail($id);
+
+        $txt->update([
+            'judul' => $validatedData['judul'],
+            'deskripsi' => $validatedData['deskripsi'],
+            'status' => $validatedData['status'],
+        ]);
+
+        // Sinkronkan group
+        $txt->groups()->sync($request->input('groups', []));
+
+        return redirect('datatext')
+            ->with('toast_success', 'Data berhasil di update');
     }
 
     /**

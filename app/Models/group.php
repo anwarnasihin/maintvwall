@@ -14,4 +14,14 @@ class group extends Model
         'name',
         'keterangan'
     ];
+
+    public function texts()
+    {
+        return $this->belongsToMany(
+            text::class,
+            'group_text',
+            'group_id',
+            'text_id'
+        )->withTimestamps();
+    }
 }

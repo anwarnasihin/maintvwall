@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-// use Illuminate\Database\Eloquent\SoftDeletes;
 
 class text extends Model
 {
@@ -13,4 +12,14 @@ class text extends Model
         'deskripsi',
         'status'
     ];
+
+    public function groups()
+    {
+        return $this->belongsToMany(
+            group::class,
+            'group_text',
+            'text_id',
+            'group_id'
+        )->withTimestamps();
+    }
 }
