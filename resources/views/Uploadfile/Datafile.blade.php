@@ -281,7 +281,7 @@ $('body').on('click', '.edit-btn', function(e) {
     // Tampilkan input sesuai tipe file
     if (typeFile === "youtube") {
         // Ambil link youtube dari data-attribute tombol edit
-        // Catatan: Pastikan tombol edit di baris tabel sudah punya data-konten="{{ $item->direktori }}"
+        // Pastikan tombol edit memiliki data-konten yang sesuai.
         var linkYt = $(this).data('konten');
 
         $('#youtube_group').show();
