@@ -9,7 +9,7 @@
       {{-- Menampilkan nama sesuai user yg login --}}
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{{ route('dashboard')}}" class="nav-link" style="font-size: 20px; font-weight: bold;">
-            Hi, {{ auth()->user()->name }}
+            Hi, {{ auth()->user()->name ?? 'Guest' }}
         </a>
       </li>
 

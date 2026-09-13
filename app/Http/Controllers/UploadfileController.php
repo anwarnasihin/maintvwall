@@ -197,28 +197,52 @@ class UploadfileController extends Controller
      */
     public function destroy(string $id)
     {
-        $dt = source::find($id);
+        $dt = source::findOrFail($id);
 
-        if ($dt) {
-            // Path lengkap ke file di folder public
+        // Simpan informasi siapa yang menghapus
+        $dt->deleted_by = Auth::id();
+
+        // Jika konten berupa file lokal, pindahkan ke Recycle Bin
+        if ($dt->typeFile !== 'youtube') {
+
             $filePath = public_path($dt->direktori);
 
-            // Cek apakah file benar-benar ada di folder assets, lalu hapus
             if (file_exists($filePath) && is_file($filePath)) {
-                unlink($filePath);
+
+                // Tentukan folder trash berdasarkan tipe file
+                $trashFolder = public_path(
+                    'trash/' . $dt->typeFile
+                );
+
+                // Pastikan folder trash tersedia
+                if (!is_dir($trashFolder)) {
+                    mkdir($trashFolder, 0755, true);
+                }
+
+                // Nama file tetap dipertahankan
+                $filename = basename($dt->direktori);
+
+                $trashPath = $trashFolder . DIRECTORY_SEPARATOR . $filename;
+
+                // Pindahkan file ke Recycle Bin
+                rename($filePath, $trashPath);
             }
-
-            // Hapus data dari database
-            $dt->forceDelete();
-
-            // 🔴 TAMBAHKAN BACKSLASH (\) DI DEPAN ActivityLog
-            \App\Models\ActivityLog::create([
-                'user_id'  => Auth::id(),
-                'activity' => 'menghapus permanen satu file konten'
-            ]);
         }
 
-        return back()->with('toast_success', 'Data dan File berhasil dihapus permanen!');
+        // Soft delete database
+        $dt->save();
+        $dt->delete();
+
+        // Catat aktivitas
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'activity' => 'memindahkan konten ke Recycle Bin: ' . basename($dt->direktori)
+        ]);
+
+        return back()->with(
+            'toast_success',
+            'Konten berhasil dipindahkan ke Recycle Bin!'
+        );
     }
 
     /**
@@ -246,24 +270,76 @@ class UploadfileController extends Controller
     public function bulkDelete(Request $request)
         {
             $ids = $request->ids;
-            $items = source::whereIn('id', explode(",", $ids))->get();
 
-            foreach ($items as $item) {
-                $filePath = public_path($item->direktori);
-                // Hapus file fisik dulu Boss
-                if (file_exists($filePath) && is_file($filePath)) {
-                    unlink($filePath);
-                }
-                // Baru hapus datanya
-                $item->forceDelete();
+            if (is_string($ids)) {
+                $ids = explode(',', $ids);
             }
 
-            // 🔴 TAMBAHKAN BACKSLASH (\) DI DEPAN ActivityLog JUGA DI SINI
-            \App\Models\ActivityLog::create([
-                'user_id'  => Auth::id(),
-                'activity' => 'melakukan hapus massal sebanyak ' . count($items) . ' konten sekaligus'
+            if (!is_array($ids) || empty($ids)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada konten yang dipilih.'
+                ], 422);
+            }
+
+            $items = source::whereIn('id', $ids)->get();
+
+            if ($items->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konten yang dipilih tidak ditemukan.'
+                ], 404);
+            }
+
+            $deletedCount = 0;
+
+            foreach ($items as $item) {
+
+                // Untuk YouTube tidak ada file fisik yang perlu dipindahkan
+                if ($item->typeFile !== 'youtube') {
+
+                    $filePath = public_path($item->direktori);
+
+                    if (file_exists($filePath) && is_file($filePath)) {
+
+                        $filename = basename($item->direktori);
+
+                        $trashPath = public_path(
+                            'trash/' . $item->typeFile . '/' . $filename
+                        );
+
+                        // Pastikan folder Recycle Bin tersedia
+                        $trashDirectory = dirname($trashPath);
+
+                        if (!is_dir($trashDirectory)) {
+                            mkdir($trashDirectory, 0755, true);
+                        }
+
+                        // Pindahkan file ke Recycle Bin
+                        if (!rename($filePath, $trashPath)) {
+                            continue;
+                        }
+                    }
+                }
+
+                // Simpan siapa yang menghapus
+                $item->deleted_by = Auth::id();
+                $item->save();
+
+                // Soft delete
+                $item->delete();
+
+                $deletedCount++;
+            }
+
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'activity' => 'memindahkan ' . $deletedCount . ' konten ke Recycle Bin'
             ]);
 
-            return response()->json(['success' => "Konten masal berhasil dibersihkan!"]);
+            return response()->json([
+                'success' => true,
+                'message' => $deletedCount . ' konten berhasil dipindahkan ke Recycle Bin.'
+            ]);
         }
 }

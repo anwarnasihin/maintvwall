@@ -68,7 +68,7 @@
                 <tr style="{{ $isExpired ? 'background-color: #FFE4EF;' : '' }}">
                   <td class="text-center">
                         <div class="d-flex align-items-center justify-content-center" style="gap: 10px;">
-                            <input type="checkbox" class="sub_chk" data-id="{{$item->id}}">
+                            <input type="checkbox" class="sub_chk" data-id="{{$item->id}}" autocomplete="off">
                             <span class="ml-1">{{ $loop->iteration }}</span>
                         </div>
                   </td>
@@ -259,15 +259,80 @@ window.addEventListener('load', function() {
     }
 
     // 3. Hapus Masal
-    $('#deleteAll').on('click', function() {
-        var ids = [];
-        table.$('input.sub_chk:checked').each(function() { ids.push($(this).attr('data-id')); });
-        Swal.fire({ title: 'Hapus '+ids.length+' data?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Hapus!' }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({ url: "{{ route('hapusmasal') }}", type: 'DELETE', data: { _token: "{{ csrf_token() }}", ids: ids.join(",") }, success: function() { location.reload(); } });
-            }
-        });
+
+$('#deleteAll').on('click', function() {
+
+    var ids = [];
+
+    table.$('input.sub_chk:checked').each(function() {
+        ids.push($(this).attr('data-id'));
     });
+
+    if (ids.length === 0) {
+        return;
+    }
+
+    Swal.fire({
+        title: 'Hapus ' + ids.length + ' data?',
+        text: 'Konten akan dipindahkan ke Recycle Bin.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+
+            $.ajax({
+                url: "{{ route('hapusmasal') }}",
+                type: 'DELETE',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    ids: ids.join(",")
+                },
+
+                success: function(response) {
+
+                    // Hilangkan semua centang
+                    $('input.sub_chk').prop('checked', false);
+
+                    // Reset status Pilih Semua
+                    isAllSelected = false;
+
+                    $('#btnSelectAll').html(
+                        '<i class="far fa-check-square"></i> Pilih Semua'
+                    );
+
+                    // Reset jumlah pilihan
+                    $('#countSelected').text('0');
+
+                    // Sembunyikan tombol hapus
+                    $('#deleteAll').hide();
+
+                    // Refresh halaman setelah checkbox di-reset
+                    setTimeout(function() {
+                        location.reload();
+                    }, 100);
+
+                },
+
+                error: function(xhr) {
+
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Konten gagal dipindahkan ke Recycle Bin.',
+                        icon: 'error'
+                    });
+
+                }
+
+            });
+
+        }
+
+    });
+
+});
 
     // 4. Fungsi Edit (DIPERBAIKI UNTUK YOUTUBE)
 $('body').on('click', '.edit-btn', function(e) {

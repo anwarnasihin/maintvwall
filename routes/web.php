@@ -8,6 +8,7 @@ use App\Http\Controllers\UploadfileController;
 use App\Http\Controllers\UploadgroupController;
 use App\Http\Controllers\UploadtextController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\RecycleBinController;
 use App\Models\group;
 use App\Models\text;
 use Illuminate\Http\Request;
@@ -107,12 +108,35 @@ Route::match(['get', 'post'], '/shutdown', [ShutdownController::class, 'shutdown
 
 Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
-    // KITA GANTI ISI DASHBOARD ADMIN:
+    // Dashboard Admin
     Route::get('/dashboard', function () {
-        // Alihkan (Redirect) ke route dashboard utama yang ada Live Preview-nya
         return redirect()->route('dashboard');
     })->name('dashboard');
 
-    // INI TETAP AKTIF: Supaya Admin tetap bisa kelola user (Multi-user tetap jalan)
+    // Kelola User
     Route::resource('users', \App\Http\Controllers\AdminUserController::class);
+
+    // =========================
+    // RECYCLE BIN
+    // =========================
+
+    // Halaman Recycle Bin
+    Route::get('/recycle-bin', [RecycleBinController::class, 'index'])
+        ->name('recyclebin');
+
+    // Bulk Restore
+    Route::post('/recycle-bin/restore-selected', [RecycleBinController::class, 'restoreSelected'])
+        ->name('recyclebin.restoreSelected');
+
+    // Bulk Hapus Permanen
+    Route::delete('/recycle-bin/force-delete-selected', [RecycleBinController::class, 'forceDeleteSelected'])
+        ->name('recyclebin.forceDeleteSelected');
+
+    // Restore satu konten
+    Route::post('/recycle-bin/{id}/restore', [RecycleBinController::class, 'restore'])
+        ->name('recyclebin.restore');
+
+    // Hapus permanen satu konten
+    Route::delete('/recycle-bin/{id}', [RecycleBinController::class, 'forceDelete'])
+        ->name('recyclebin.forceDelete');
 });
