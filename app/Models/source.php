@@ -19,7 +19,8 @@ class source extends Model
         'duration',
         'str_date',
         'ed_date',
-        'users'
+        'users',
+        'deleted_by'
     ];
 
     public function groups()
@@ -29,5 +30,10 @@ class source extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'users', 'id');
+    }
+
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by', 'id');
     }
 }
