@@ -656,8 +656,7 @@
 
                                                     <button
                                                         type="submit"
-                                                        class="btn btn-success btn-sm"
-                                                        onclick="return confirm('Yakin ingin mengembalikan konten ini ke Data Source?')"
+                                                        class="btn btn-success btn-sm individual-restore-btn"
                                                     >
                                                         <i class="fas fa-undo"></i>
                                                         Restore
@@ -675,8 +674,7 @@
 
                                                     <button
                                                         type="submit"
-                                                        class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('PERINGATAN! Konten ini akan DIHAPUS PERMANEN dan tidak dapat dikembalikan. Yakin ingin melanjutkan?')"
+                                                        class="btn btn-danger btn-sm individual-delete-btn"
                                                     >
                                                         <i class="fas fa-trash"></i>
                                                         Hapus
@@ -959,7 +957,6 @@ $(document).ready(function () {
                     muted
                     playsinline
                     preload="auto"
-                    controls
                     style="
                         display:block;
                         width:auto;
@@ -1376,6 +1373,65 @@ $(document).ready(function () {
         $('#recycleConfirmModal').modal('show');
     }
 
+    /* =========================================================
+   KONFIRMASI RESTORE INDIVIDUAL
+   ========================================================= */
+
+    $(document).on('click', '.individual-restore-btn', function (event) {
+        event.preventDefault();
+
+        var form = $(this).closest('form')[0];
+
+        showRecycleConfirm({
+            type: 'restore',
+            title: 'Konfirmasi Restore',
+            headerIcon: 'fas fa-undo',
+            bigIcon: 'fas fa-undo',
+            heading: 'Kembalikan konten?',
+            message:
+                'Konten ini akan dikembalikan ke <strong>Data Source</strong>.',
+            buttonClass: 'btn-success',
+            buttonIcon: 'fas fa-check',
+            buttonText: 'Ya, Restore',
+            action: function () {
+                $('#recycleConfirmModal').modal('hide');
+
+                HTMLFormElement.prototype.submit.call(form);
+            }
+        });
+    });
+
+
+/* =========================================================
+   KONFIRMASI HAPUS PERMANEN INDIVIDUAL
+   ========================================================= */
+
+    $(document).on('click', '.individual-delete-btn', function (event) {
+        event.preventDefault();
+
+        var form = $(this).closest('form')[0];
+
+        showRecycleConfirm({
+            type: 'delete',
+            title: 'Peringatan Hapus Permanen',
+            headerIcon: 'fas fa-exclamation-triangle',
+            bigIcon: 'fas fa-trash-alt',
+            heading: 'Hapus konten secara permanen?',
+            message:
+                '<strong>Konten ini</strong> akan dihapus secara permanen.<br>' +
+                '<span class="text-danger">' +
+                'Data dan file tidak dapat dikembalikan lagi.' +
+                '</span>',
+            buttonClass: 'btn-danger',
+            buttonIcon: 'fas fa-trash',
+            buttonText: 'Ya, Hapus Permanen',
+            action: function () {
+                $('#recycleConfirmModal').modal('hide');
+
+                HTMLFormElement.prototype.submit.call(form);
+            }
+        });
+    });
 
     /* =========================================================
        TOMBOL YA, LANJUTKAN
