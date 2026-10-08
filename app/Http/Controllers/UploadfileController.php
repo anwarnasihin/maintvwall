@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\group;
 use App\Models\source;
 use App\Models\ActivityLog; // TAMBAHAN: Import Model Log Baru
+use App\Models\DisplayPlaylist;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -85,30 +86,86 @@ class UploadfileController extends Controller
     }
 
 
-    public function show($group) // Nama parameter kita balikin jadi $group
-    {
-        // 1. Cari Group ID berdasarkan Nama (misal "test")
-        $groupData = group::where('name', $group)->first();
+    public function show($group)
+        {
+            // 1. Cari Group berdasarkan nama
+            $groupData = group::where('name', $group)->first();
 
-        // Fallback: Kalau tidak ketemu by Name, cari by ID
-        if(!$groupData) {
-             $groupData = group::find($group);
+            // Fallback: jika parameter ternyata berupa ID
+            if (!$groupData) {
+                $groupData = group::find($group);
+            }
+
+            abort_if(!$groupData, 404);
+
+            $groupId = $groupData->id;
+
+            // 2. Waktu sekarang Jakarta
+            $now = Carbon::now('Asia/Jakarta');
+            $today = $now->dayOfWeekIso;
+
+            // 3. Ambil playlist untuk group ini
+            $playlist = DisplayPlaylist::with('items.source')
+                ->where('group_id', $groupId)
+                ->first();
+
+            /*
+            * =========================================================
+            * JIKA PLAYLIST SUDAH ADA
+            * =========================================================
+            *
+            * Gunakan urutan display_items.position.
+            *
+            * Jadwal aktif tetap menjadi filter utama.
+            * Source yang sudah tidak aktif tidak ditampilkan.
+            *
+            * Duplicate source tetap dipertahankan.
+            */
+
+            if ($playlist && $playlist->items->count() > 0) {
+
+                // Ambil semua source aktif untuk group ini
+                $activeSources = source::where('group', $groupId)
+                    ->where('ed_date', '>=', $now)
+                    ->whereRaw("JSON_CONTAINS(selected_days, '\"$today\"')")
+                    ->get()
+                    ->keyBy('id');
+
+                // Susun berdasarkan urutan playlist
+                $files = $playlist->items
+                    ->sortBy('position')
+                    ->map(function ($item) use ($activeSources) {
+
+                        // Ambil source berdasarkan ID
+                        // dari source yang masih aktif
+                        return $activeSources->get($item->source_id);
+
+                    })
+                    ->filter()
+                    ->values();
+
+            }
+
+            /*
+            * =========================================================
+            * JIKA BELUM ADA PLAYLIST
+            * =========================================================
+            *
+            * Pertahankan perilaku Display lama.
+            *
+            * Jadi fitur lama tidak rusak.
+            */
+
+            else {
+
+                $files = source::where('group', $groupId)
+                    ->where('ed_date', '>=', $now)
+                    ->whereRaw("JSON_CONTAINS(selected_days, '\"$today\"')")
+                    ->get();
+            }
+
+            return view('vidgam', compact('files', 'group'));
         }
-
-        $groupId = $groupData ? $groupData->id : null;
-
-        // 2. Filter Waktu (Jam & Menit)
-        $now = Carbon::now('Asia/Jakarta');
-        $today = $now->dayOfWeekIso; // 1 = Senin...
-
-        // --- LOGIKA BARU: HANYA CEK ED_DATE (WAKTU BERAKHIR) ---
-        $files = source::where('group', $groupId)
-            ->where('ed_date', '>=', $now) // Selama waktu sekarang belum melewati batas END, tampilkan!
-            ->whereRaw("JSON_CONTAINS(selected_days, '\"$today\"')")
-            ->get();
-
-        return view('vidgam', compact('files', 'group'));
-    }
 
     /**
      * Show the form for editing the specified resource.

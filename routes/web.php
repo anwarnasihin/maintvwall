@@ -9,6 +9,7 @@ use App\Http\Controllers\UploadgroupController;
 use App\Http\Controllers\UploadtextController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RecycleBinController;
+use App\Http\Controllers\DisplayPlaylistController;
 use App\Models\group;
 use App\Models\text;
 use Illuminate\Http\Request;
@@ -40,6 +41,14 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
 Route::get('/show/{group}', [UploadfileController::class, 'show'])->name('showGroup');
 
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])
+    ->get('/display-playlist/{group}', [DisplayPlaylistController::class, 'index'])
+    ->name('displayPlaylist');
+
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])
+    ->post('/display-playlist/{group}/save', [DisplayPlaylistController::class, 'save'])
+    ->name('displayPlaylist.save');
+
 Route::post('/getContent', function (Request $request) {
     // 1. Cari Group berdasarkan nama
     $idGroup = group::where('name', $request->group)->first();
@@ -51,11 +60,37 @@ Route::post('/getContent', function (Request $request) {
     $now = Carbon::now('Asia/Jakarta');
     $todayday = $now->dayOfWeekIso;
 
-    // 3. Ambil media berdasarkan group
-    $data = source::where('group', $idGroup->id)
-        ->where('ed_date', '>=', $now) // Cukup cek apakah belum melewati waktu berakhir
-        ->whereRaw("JSON_CONTAINS(selected_days, '\"$todayday\"')")
-        ->get();
+    // 3. Ambil media berdasarkan playlist jika tersedia
+    $playlist = \App\Models\DisplayPlaylist::with('items')
+        ->where('group_id', $idGroup->id)
+        ->first();
+
+    if ($playlist && $playlist->items->isNotEmpty()) {
+
+        // Ambil source yang masih aktif sesuai jadwal
+        $activeSources = source::where('group', $idGroup->id)
+            ->where('ed_date', '>=', $now)
+            ->whereRaw("JSON_CONTAINS(selected_days, '\"$todayday\"')")
+            ->get()
+            ->keyBy('id');
+
+        // Ikuti urutan playlist, termasuk source yang muncul lebih dari sekali
+        $data = $playlist->items
+            ->sortBy('position')
+            ->map(function ($item) use ($activeSources) {
+                return $activeSources->get($item->source_id);
+            })
+            ->filter()
+            ->values();
+
+    } else {
+
+        // Tidak ada playlist → gunakan perilaku lama
+        $data = source::where('group', $idGroup->id)
+            ->where('ed_date', '>=', $now)
+            ->whereRaw("JSON_CONTAINS(selected_days, '\"$todayday\"')")
+            ->get();
+    }
 
     $token = csrf_token();
     $texts = Text::where('status', 1)
