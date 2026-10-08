@@ -109,10 +109,10 @@
 
                                     <div class="media-info">
 
-                                        <div class="media-title">
-
+                                        <div class="media-title media-preview-trigger"
+                                            data-source-id="{{ $source->id }}"
+                                            title="Klik untuk melihat preview">
                                             {{ basename($source->direktori) }}
-
                                         </div>
 
 
@@ -934,10 +934,188 @@ document.addEventListener('DOMContentLoaded', function () {
      * - duplicate source tetap bisa preview
      */
 
+     function showMediaPreview(media) {
+
+    if (!media) {
+        return;
+    }
+
+    const previewBody =
+        document.getElementById('playlistPreviewBody');
+
+    const previewTitle =
+        document.getElementById('playlistPreviewTitle');
+
+    const direktori =
+        media.direktori;
+
+    const type =
+        media.typeFile;
+
+    previewTitle.textContent =
+        direktori.split('/').pop();
+
+    previewBody.innerHTML = '';
+
+    // ==========================================
+    // GAMBAR
+    // ==========================================
+
+    if (type === 'images') {
+
+        const img =
+            document.createElement('img');
+
+        img.src =
+            "{{ asset('') }}" + direktori;
+
+        img.alt =
+            'Preview konten';
+
+        img.style.display = 'block';
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '75vh';
+        img.style.width = 'auto';
+        img.style.height = 'auto';
+        img.style.margin = '0 auto';
+
+        previewBody.appendChild(img);
+
+    }
+
+    // ==========================================
+    // VIDEO
+    // ==========================================
+
+    else if (type === 'video') {
+
+        const video =
+            document.createElement('video');
+
+        video.src =
+            "{{ asset('') }}" + direktori;
+
+        video.autoplay = true;
+        video.loop = true;
+        video.muted = true;
+        video.playsInline = true;
+        video.controls = false;
+
+        video.style.display = 'block';
+        video.style.maxWidth = '100%';
+        video.style.maxHeight = '75vh';
+        video.style.width = 'auto';
+        video.style.height = 'auto';
+        video.style.margin = '0 auto';
+        video.style.background = '#000';
+
+        previewBody.appendChild(video);
+
+    }
+
+    // ==========================================
+    // YOUTUBE
+    // ==========================================
+
+    else if (type === 'youtube') {
+
+        const videoId =
+            extractPlaylistYouTubeId(direktori);
+
+        if (!videoId) {
+
+            previewBody.innerHTML =
+                '<div class="alert alert-danger">' +
+                'Link YouTube tidak valid.' +
+                '</div>';
+
+        } else {
+
+            const iframe =
+                document.createElement('iframe');
+
+            iframe.src =
+                'https://www.youtube.com/embed/' +
+                videoId +
+                '?autoplay=1&mute=1&playsinline=1&rel=0';
+
+            iframe.title =
+                'Preview YouTube';
+
+            iframe.frameBorder = '0';
+
+            iframe.allow =
+                'autoplay; encrypted-media; picture-in-picture';
+
+            iframe.allowFullscreen = true;
+
+            iframe.style.width = '100%';
+            iframe.style.height = '70vh';
+
+            previewBody.appendChild(iframe);
+
+        }
+
+    }
+
+    // ==========================================
+    // TIPE TIDAK DIKENAL
+    // ==========================================
+
+    else {
+
+        previewBody.innerHTML =
+            '<div class="alert alert-warning">' +
+            'Jenis konten tidak dikenali.' +
+            '</div>';
+
+    }
+
+    $('#playlistPreviewModal').modal('show');
+}
+
     playlistItems.addEventListener('click', function (event) {
 
+    const mediaTitle =
+        event.target.closest('.media-title');
+
+    if (!mediaTitle) {
+        return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const item =
+        mediaTitle.closest('.playlist-card');
+
+    if (!item) {
+        return;
+    }
+
+    const sourceId =
+        Number(item.dataset.sourceId);
+
+    const media =
+        getMedia(sourceId);
+
+    if (!media) {
+        return;
+    }
+
+    showMediaPreview(media);
+
+});
+
+const availableMedia =
+    document.getElementById('availableMedia');
+
+if (availableMedia) {
+
+    availableMedia.addEventListener('click', function (event) {
+
         const mediaTitle =
-            event.target.closest('.media-title');
+            event.target.closest('.media-preview-trigger');
 
         if (!mediaTitle) {
             return;
@@ -946,15 +1124,8 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         event.stopPropagation();
 
-        const item =
-            mediaTitle.closest('.playlist-card');
-
-        if (!item) {
-            return;
-        }
-
         const sourceId =
-            Number(item.dataset.sourceId);
+            Number(mediaTitle.dataset.sourceId);
 
         const media =
             getMedia(sourceId);
@@ -963,141 +1134,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const previewBody =
-            document.getElementById('playlistPreviewBody');
-
-        const previewTitle =
-            document.getElementById('playlistPreviewTitle');
-
-        const direktori =
-            media.direktori;
-
-        const type =
-            media.typeFile;
-
-        previewTitle.textContent =
-            direktori.split('/').pop();
-
-        previewBody.innerHTML = '';
-
-        // ==========================================
-        // GAMBAR
-        // ==========================================
-
-        if (type === 'images') {
-
-            const img =
-                document.createElement('img');
-
-            img.src =
-                "{{ asset('') }}" + direktori;
-
-            img.alt =
-                'Preview konten';
-
-            img.style.display = 'block';
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '75vh';
-            img.style.width = 'auto';
-            img.style.height = 'auto';
-            img.style.margin = '0 auto';
-
-            previewBody.appendChild(img);
-
-        }
-
-        // ==========================================
-        // VIDEO
-        // ==========================================
-
-        else if (type === 'video') {
-
-            const video =
-                document.createElement('video');
-
-            video.src =
-                "{{ asset('') }}" + direktori;
-
-            video.autoplay = true;
-            video.loop = true;
-            video.muted = true;
-            video.playsInline = true;
-            video.controls = false;
-
-            video.style.display = 'block';
-            video.style.maxWidth = '100%';
-            video.style.maxHeight = '75vh';
-            video.style.width = 'auto';
-            video.style.height = 'auto';
-            video.style.margin = '0 auto';
-            video.style.background = '#000';
-
-            previewBody.appendChild(video);
-
-        }
-
-        // ==========================================
-        // YOUTUBE
-        // ==========================================
-
-        else if (type === 'youtube') {
-
-            const videoId =
-                extractPlaylistYouTubeId(direktori);
-
-            if (!videoId) {
-
-                previewBody.innerHTML =
-                    '<div class="alert alert-danger">' +
-                    'Link YouTube tidak valid.' +
-                    '</div>';
-
-            } else {
-
-                const iframe =
-                    document.createElement('iframe');
-
-                iframe.src =
-                    'https://www.youtube.com/embed/' +
-                    videoId +
-                    '?autoplay=1&mute=1&playsinline=1&rel=0';
-
-                iframe.title =
-                    'Preview YouTube';
-
-                iframe.frameBorder = '0';
-
-                iframe.allow =
-                    'autoplay; encrypted-media; picture-in-picture';
-
-                iframe.allowFullscreen = true;
-
-                iframe.style.width = '100%';
-                iframe.style.height = '70vh';
-
-                previewBody.appendChild(iframe);
-
-            }
-
-        }
-
-        // ==========================================
-        // TIPE TIDAK DIKENAL
-        // ==========================================
-
-        else {
-
-            previewBody.innerHTML =
-                '<div class="alert alert-warning">' +
-                'Jenis konten tidak dikenali.' +
-                '</div>';
-
-        }
-
-        $('#playlistPreviewModal').modal('show');
+        showMediaPreview(media);
 
     });
 
+}
 
     /*
      * Drag & drop playlist.
