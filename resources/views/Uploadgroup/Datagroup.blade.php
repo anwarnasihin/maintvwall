@@ -37,7 +37,11 @@
                   <td>{{ $item->name}}</td>
                   <td>{{ $item->keterangan}}</td>
                   <td>
-                    <button class="btn btn-primary mr-2"><a href="/show/{{ $item->name}}" target="_blank" style="color: white;">Display</a></button>
+                    <button class="btn btn-primary mr-2">
+                        <a href="{{ route('displayPlaylist', $item->name) }}" style="color: white;">
+                            <i class="fas fa-list-ol mr-1"></i> Playlist
+                        </a>
+                    </button>
                     <a href="{{ url('editgroup',$item->id) }}" data-toggle="tooltip" title="Edit"><i class="fas fa-edit" style="color: #d8d102"></i></a>
                     &nbsp;
                     <a href="#" class="text-danger delete-item" data-id="{{ $item->id }}" data-toggle="tooltip" title="Hapus">
@@ -82,7 +86,7 @@
     </div>
     <!-- /.row -->
   </div><!-- /.container-fluid -->
-  
+
 
   <!-- jQuery -->
   <script src="{{asset ('assets/plugins/jquery/jquery.min.js')}}"></script>
@@ -115,9 +119,9 @@
       document.querySelectorAll('.delete-item').forEach(function (link) {
           link.addEventListener('click', function (e) {
               e.preventDefault();
-              
+
               var itemId = this.dataset.id;
-              
+
               // Tampilkan SweetAlert untuk konfirmasi hapus
               Swal.fire({
                   title: 'Apakah Anda yakin?',
