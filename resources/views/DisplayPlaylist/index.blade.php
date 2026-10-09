@@ -217,6 +217,55 @@
 
                     </div>
 
+                {{-- PINDAH POSISI PLAYLIST --}}
+                <div class="border rounded p-3 mb-3">
+                    <div class="font-weight-bold mb-2">
+                        <i class="fas fa-exchange-alt mr-1"></i>
+                        Pindahkan Posisi Konten
+                    </div>
+
+                    <div class="form-row align-items-end">
+                        <div class="col-5 col-md-4 mb-2">
+                            <label for="moveFromPosition" class="small mb-1">
+                                Urutan asal
+                            </label>
+                            <input
+                                type="number"
+                                id="moveFromPosition"
+                                class="form-control form-control-sm"
+                                min="1"
+                                placeholder="Mis. 90">
+                        </div>
+
+                        <div class="col-5 col-md-4 mb-2">
+                            <label for="moveToPosition" class="small mb-1">
+                                Urutan tujuan
+                            </label>
+                            <input
+                                type="number"
+                                id="moveToPosition"
+                                class="form-control form-control-sm"
+                                min="1"
+                                placeholder="Mis. 10">
+                        </div>
+
+                        <div class="col-12 col-md-4 mb-2">
+                            <button
+                                type="button"
+                                id="movePositionBtn"
+                                class="btn btn-sm btn-outline-primary btn-block">
+                                <i class="fas fa-arrows-alt mr-1"></i>
+                                Pindahkan
+                            </button>
+                        </div>
+                    </div>
+
+                    <small class="text-muted">
+                        Masukkan nomor urutan asal dan tujuan. Perubahan disimpan
+                        setelah menekan tombol Simpan Urutan.
+                    </small>
+                </div>
+
 
                     {{-- PLAYLIST ITEMS --}}
 
@@ -310,23 +359,16 @@
                     <div id="emptyPlaylist"
                          class="empty-playlist"
                          style="{{ ($playlist && $playlist->items->count() > 0) ? 'display:none;' : '' }}">
-
                         <i class="fas fa-list-ol fa-3x mb-3"></i>
-
                         <h5>
                             Playlist belum dibuat
                         </h5>
-
                         <p class="text-muted mb-0">
-
                             Klik
                             <strong>Tambah</strong>
                             pada media di sebelah kiri.
-
                         </p>
-
                     </div>
-
 
                     <hr>
 
@@ -335,14 +377,10 @@
 
                     <div class="d-flex justify-content-between align-items-center">
 
-                        <div class="text-muted small">
-
+                        <div id="playlistSaveStatus" class="text-muted small">
                             <i class="fas fa-info-circle mr-1"></i>
-
-                            Perubahan belum disimpan ke database.
-
+                            Urutan playlist tersimpan.
                         </div>
-
 
                         <button type="button"
                                 id="savePlaylistBtn"
@@ -848,11 +886,70 @@ document.addEventListener('DOMContentLoaded', function () {
      * Belum dikirim ke server.
      */
 
-    function markChanged() {
 
+    function markChanged() {
         saveButton.disabled = false;
 
+        const status = document.getElementById('playlistSaveStatus');
+
+        if (status) {
+            status.className = 'text-muted small';
+            status.innerHTML =
+                '<i class="fas fa-info-circle mr-1"></i> ' +
+                'Perubahan belum disimpan ke database.';
+        }
     }
+
+
+    // Pindahkan item ke nomor urutan yang ditentukan.
+    const movePositionButton = document.getElementById('movePositionBtn');
+    const moveFromInput = document.getElementById('moveFromPosition');
+    const moveToInput = document.getElementById('moveToPosition');
+
+    movePositionButton.addEventListener('click', function () {
+        const items = Array.from(
+            playlistItems.querySelectorAll('.playlist-card')
+        );
+
+        const total = items.length;
+        const from = Number(moveFromInput.value);
+        const to = Number(moveToInput.value);
+
+        if (
+            !Number.isInteger(from) ||
+            !Number.isInteger(to) ||
+            from < 1 ||
+            to < 1 ||
+            from > total ||
+            to > total
+        ) {
+            alert('Nomor urutan harus antara 1 dan ' + total + '.');
+            return;
+        }
+
+        if (from === to) {
+            alert('Urutan asal dan tujuan sama.');
+            return;
+        }
+
+        // Ambil item dari posisi asal.
+        const movingItem = items.splice(from - 1, 1)[0];
+
+        // Masukkan item ke posisi tujuan.
+        items.splice(to - 1, 0, movingItem);
+
+        // Terapkan urutan baru ke tampilan playlist.
+        items.forEach(function (item) {
+            playlistItems.appendChild(item);
+        });
+
+        // Perbarui nomor dan tandai perubahan belum disimpan.
+        updatePlaylistNumbers();
+        markChanged();
+
+        moveFromInput.value = '';
+        moveToInput.value = '';
+    });
 
 
     /*
@@ -1267,8 +1364,16 @@ if (availableMedia) {
                 document.getElementById('playlistResultMessage').textContent =
                     result.message || 'Urutan playlist berhasil disimpan.';
 
-
                 saveButton.disabled = true;
+
+                const saveStatus = document.getElementById('playlistSaveStatus');
+
+                if (saveStatus) {
+                    saveStatus.className = 'text-success small';
+                    saveStatus.innerHTML =
+                        '<i class="fas fa-check-circle mr-1"></i> ' +
+                        'Urutan playlist tersimpan.';
+                }
 
                 saveButton.innerHTML =
                     '<i class="fas fa-save mr-1"></i> Simpan Urutan';
