@@ -41,12 +41,13 @@
         Klik tombol
         <strong>Tambah</strong>
         untuk memasukkan media ke playlist.
-
         Media yang sama
-        <strong>boleh ditambahkan berkali-kali</strong>.
-
-        Setelah masuk playlist, urutannya dapat diubah dengan
-        <strong>drag & drop</strong>.
+        <strong>dapat ditambahkan lebih dari satu kali</strong>.
+        Atur urutan konten dengan
+        <strong>drag &amp; drop</strong>
+        atau gunakan fitur
+        <strong>Pindahkan Posisi Konten</strong>
+        untuk memindahkan konten ke nomor urutan yang diinginkan.
 
     </div>
 
@@ -100,62 +101,67 @@
 
                                 <div class="media-card">
 
-                                    <div class="drag-handle">
-
-                                        <i class="fas fa-photo-video"></i>
-
+                                    <div class="playlist-thumb media-preview-trigger"
+                                         data-source-id="{{ $source->id }}"
+                                         data-preview-source-id="{{ $source->id }}"
+                                         data-thumb-type="{{ $source->typeFile }}"
+                                         data-thumb-url="{{ asset('') . $source->direktori }}"
+                                         data-thumb-path="{{ $source->direktori }}"
+                                         role="button"
+                                         tabindex="0"
+                                         title="Klik untuk melihat preview">
+                                        <div class="playlist-thumb-content">
+                                            <i class="fas fa-photo-video playlist-thumb-fallback"></i>
+                                        </div>
+                                        <div class="playlist-thumb-play">
+                                            <i class="fas fa-play"></i>
+                                        </div>
                                     </div>
 
+                                    <div class="media-card-details">
+                                        <div class="media-info">
+                                            <div class="media-title media-preview-trigger"
+                                                 data-source-id="{{ $source->id }}"
+                                                 title="{{ basename($source->direktori) }}">
+                                                {{ basename($source->direktori) }}
+                                            </div>
 
-                                    <div class="media-info">
-
-                                        <div class="media-title media-preview-trigger"
-                                            data-source-id="{{ $source->id }}"
-                                            title="Klik untuk melihat preview">
-                                            {{ basename($source->direktori) }}
-                                        </div>
-
-
-                                        <div class="media-meta">
-
-                                            <span>
-                                                <i class="fas fa-hashtag"></i>
-                                                ID {{ $source->id }}
-                                            </span>
-
-
-                                            @if($source->typeFile)
-
+                                            <div class="media-meta">
                                                 <span>
-                                                    <i class="fas fa-file"></i>
-                                                    {{ $source->typeFile }}
+                                                    <i class="fas fa-hashtag"></i>
+                                                    ID {{ $source->id }}
                                                 </span>
 
-                                            @endif
+                                                @if($source->typeFile)
+                                                    <span>
+                                                        <i class="fas fa-file"></i>
+                                                        {{ $source->typeFile }}
+                                                    </span>
+                                                @endif
 
+                                                @if($source->duration)
+                                                    <span>
+                                                        <i class="fas fa-clock"></i>
+                                                        {{ $source->duration }} detik
+                                                    </span>
+                                                @endif
 
-                                            @if($source->duration)
-
-                                                <span>
-                                                    <i class="fas fa-clock"></i>
-                                                    {{ $source->duration }} detik
-                                                </span>
-
-                                            @endif
-
+                                                @if($source->ed_date)
+                                                    <span class="media-end-date">
+                                                        <i class="fas fa-calendar-times"></i>
+                                                        Berakhir: {{ \Carbon\Carbon::parse($source->ed_date)->timezone('Asia/Jakarta')->format('d/m/Y H:i') }}
+                                                    </span>
+                                                @endif
+                                            </div>
                                         </div>
 
+                                        <button type="button"
+                                                class="btn btn-sm btn-primary add-media"
+                                                data-source-id="{{ $source->id }}">
+                                            <i class="fas fa-plus"></i>
+                                            Tambah
+                                        </button>
                                     </div>
-
-
-                                    <button type="button"
-                                            class="btn btn-sm btn-primary add-media"
-                                            data-source-id="{{ $source->id }}">
-
-                                        <i class="fas fa-plus"></i>
-                                        Tambah
-
-                                    </button>
 
                                 </div>
 
@@ -280,21 +286,29 @@
                                     <div class="playlist-card"
                                          data-source-id="{{ $item->source->id }}">
 
-                                        <div class="playlist-number">
-
-                                            {{ $index + 1 }}
-
+                                        <div class="playlist-thumb"
+                                             data-preview-source-id="{{ $item->source->id }}"
+                                             data-thumb-type="{{ $item->source->typeFile }}"
+                                             data-thumb-url="{{ asset('') . $item->source->direktori }}"
+                                             data-thumb-path="{{ $item->source->direktori }}"
+                                             role="button"
+                                             tabindex="0"
+                                             title="Klik untuk melihat preview">
+                                            <div class="playlist-number">{{ $index + 1 }}</div>
+                                            <div class="playlist-thumb-content">
+                                                <i class="fas fa-photo-video playlist-thumb-fallback"></i>
+                                            </div>
+                                            <div class="playlist-thumb-play">
+                                                <i class="fas fa-play"></i>
+                                            </div>
                                         </div>
 
+                                        <div class="playlist-card-details">
+                                            <div class="drag-handle" title="Geser untuk mengubah urutan">
+                                                <i class="fas fa-grip-vertical"></i>
+                                            </div>
 
-                                        <div class="drag-handle">
-
-                                            <i class="fas fa-grip-vertical"></i>
-
-                                        </div>
-
-
-                                        <div class="media-info">
+                                            <div class="media-info">
 
                                             <div class="media-title">
 
@@ -330,18 +344,24 @@
 
                                                 @endif
 
+                                                @if($item->source->ed_date)
+                                                    <span class="media-end-date">
+                                                        <i class="fas fa-calendar-times"></i>
+                                                        Berakhir: {{ \Carbon\Carbon::parse($item->source->ed_date)->timezone('Asia/Jakarta')->format('d/m/Y H:i') }}
+                                                    </span>
+                                                @endif
+
                                             </div>
 
                                         </div>
 
 
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-danger remove-media"
-                                                title="Hapus dari playlist">
-
-                                            <i class="fas fa-trash"></i>
-
-                                        </button>
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-danger remove-media"
+                                                    title="Hapus dari playlist">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
 
                                     </div>
 
@@ -443,6 +463,52 @@
 
 }
 
+/* Galeri visual Media Aktif */
+#availableMedia {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    align-items: stretch;
+}
+
+#availableMedia .media-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 0;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.media-card-details {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 9px;
+    min-width: 0;
+    flex: 1;
+    box-sizing: border-box;
+}
+
+.media-card-details .media-info {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.media-card-details .add-media {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 5px 7px;
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+.media-card .playlist-thumb {
+    flex: 0 0 auto;
+}
+
 
 .drag-handle {
 
@@ -489,6 +555,21 @@
 
 }
 
+/* Judul kartu dibuat ringkas agar metadata dan tombol tetap mendapat ruang */
+#availableMedia .media-title,
+#playlistItems .media-title {
+    font-size: 12px;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    min-height: calc(1.35em * 2);
+}
+
 
 .media-meta {
 
@@ -504,6 +585,11 @@
 
     color: #6c757d;
 
+}
+
+.media-end-date {
+    color: #b45309;
+    font-weight: 600;
 }
 
 
@@ -534,10 +620,147 @@
 }
 
 
+/* Galeri visual playlist: kartu tetap menjadi item SortableJS. */
+#playlistItems {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 14px;
+    align-items: stretch;
+}
+
 .playlist-card {
-
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+    overflow: hidden;
     cursor: default;
+}
 
+.playlist-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #e9ecef;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.playlist-thumb-content,
+.playlist-thumb-content img,
+.playlist-thumb-content video {
+    width: 100%;
+    height: 100%;
+}
+
+.playlist-thumb-content img,
+.playlist-thumb-content video {
+    display: block;
+    object-fit: cover;
+}
+
+.playlist-thumb-fallback {
+    color: #6c757d;
+    font-size: 32px;
+}
+
+.playlist-number {
+    position: absolute;
+    z-index: 2;
+    top: 8px;
+    left: 8px;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    background: rgba(255,255,255,.94);
+    box-shadow: 0 1px 4px rgba(0,0,0,.15);
+}
+
+.playlist-thumb-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 28px;
+    text-shadow: 0 2px 6px rgba(0,0,0,.7);
+    background: rgba(0,0,0,.08);
+    pointer-events: none;
+}
+
+.playlist-card-details {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
+.playlist-card-details .drag-handle {
+    flex: 0 0 26px;
+    width: 26px;
+}
+
+.playlist-card-details .media-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.playlist-card-details .media-title {
+    cursor: pointer;
+}
+
+.playlist-card .remove-media {
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 575.98px) {
+    #availableMedia {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    #availableMedia .media-card-details {
+        padding: 7px;
+        gap: 5px;
+        flex-direction: column;
+    }
+
+    #availableMedia .media-card-details .add-media {
+        width: 100%;
+        margin-top: 4px;
+    }
+
+    #playlistItems {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .playlist-card-details {
+        padding: 7px;
+        align-items: flex-start;
+    }
+
+    .playlist-card-details .drag-handle {
+        flex-basis: 20px;
+        width: 20px;
+        font-size: 13px;
+    }
+
+    .playlist-card-details .media-meta {
+        gap: 6px;
+        font-size: 11px;
+    }
+
+    .playlist-card-details .remove-media {
+        padding: 4px 7px;
+    }
 }
 
 
@@ -743,39 +966,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
         item.innerHTML = `
 
-            <div class="playlist-number"></div>
-
-            <div class="drag-handle">
-
-                <i class="fas fa-grip-vertical"></i>
-
+            <div class="playlist-thumb"
+                 data-preview-source-id="${media.id}"
+                 data-thumb-type="${media.typeFile || ''}"
+                 data-thumb-url="{{ asset('') }}${media.direktori}"
+                 data-thumb-path="${media.direktori}"
+                 role="button"
+                 tabindex="0"
+                 title="Klik untuk melihat preview">
+                <div class="playlist-number"></div>
+                <div class="playlist-thumb-content">
+                    <i class="fas fa-photo-video playlist-thumb-fallback"></i>
+                </div>
+                <div class="playlist-thumb-play"><i class="fas fa-play"></i></div>
             </div>
 
-
-            <div class="media-info">
-
-                <div class="media-title"></div>
-
-                <div class="media-meta">
-
-                    <span class="media-id"></span>
-
-                    <span class="media-type"></span>
-
-                    <span class="media-duration"></span>
-
+            <div class="playlist-card-details">
+                <div class="drag-handle" title="Geser untuk mengubah urutan">
+                    <i class="fas fa-grip-vertical"></i>
                 </div>
 
+                <div class="media-info">
+                    <div class="media-title"></div>
+                    <div class="media-meta">
+                        <span class="media-id"></span>
+                        <span class="media-type"></span>
+                        <span class="media-duration"></span>
+                        <span class="media-end-date"></span>
+                    </div>
+                </div>
+
+                <button type="button"
+                        class="btn btn-sm btn-outline-danger remove-media"
+                        title="Hapus dari playlist">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
-
-
-            <button type="button"
-                    class="btn btn-sm btn-outline-danger remove-media"
-                    title="Hapus dari playlist">
-
-                <i class="fas fa-times"></i>
-
-            </button>
 
         `;
 
@@ -819,7 +1045,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
+        const endDateElement = item.querySelector('.media-end-date');
+        if (media.ed_date) {
+            const parsedEndDate = new Date(String(media.ed_date).replace(' ', 'T'));
+            if (!Number.isNaN(parsedEndDate.getTime())) {
+                const formattedEndDate = new Intl.DateTimeFormat('id-ID', {
+                    timeZone: 'Asia/Jakarta',
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hourCycle: 'h23'
+                }).format(parsedEndDate);
 
+                endDateElement.innerHTML =
+                    '<i class="fas fa-calendar-times"></i> Berakhir: ' +
+                    formattedEndDate;
+            } else {
+                endDateElement.remove();
+            }
+        } else {
+            endDateElement.remove();
+        }
 
         return item;
 
@@ -841,6 +1089,112 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /*
+     * Isi thumbnail galeri secara bertahap.
+     * Foto memakai file asli, YouTube memakai thumbnail resmi,
+     * dan video lokal mencoba mengambil satu frame tanpa memutar videonya.
+     */
+    function renderPlaylistThumbnail(thumb) {
+        if (!thumb || thumb.dataset.thumbLoaded === '1') return;
+        thumb.dataset.thumbLoaded = '1';
+
+        const content = thumb.querySelector('.playlist-thumb-content');
+        const type = String(thumb.dataset.thumbType || '').toLowerCase();
+        const url = thumb.dataset.thumbUrl || '';
+        const path = thumb.dataset.thumbPath || '';
+
+        function showImage(src, alt) {
+            const image = document.createElement('img');
+            image.loading = 'lazy';
+            image.alt = alt || 'Thumbnail konten';
+            image.src = src;
+            image.onerror = function () {
+                image.remove();
+                thumb.dataset.thumbLoaded = '0';
+            };
+            content.innerHTML = '';
+            content.appendChild(image);
+        }
+
+        if (type === 'images') {
+            showImage(url, 'Preview gambar');
+            return;
+        }
+
+        if (type === 'youtube') {
+            const videoId = extractPlaylistYouTubeId(path);
+            if (videoId) {
+                showImage('https://i.ytimg.com/vi/' + videoId + '/hqdefault.jpg', 'Thumbnail YouTube');
+            }
+            return;
+        }
+
+        if (type === 'video') {
+            const video = document.createElement('video');
+            video.muted = true;
+            video.playsInline = true;
+            video.preload = 'metadata';
+            video.src = url;
+
+            video.addEventListener('loadedmetadata', function () {
+                try {
+                    video.currentTime = video.duration > 1 ? 1 : 0;
+                } catch (error) {
+                    // Jika frame tidak dapat dicari, biarkan ikon fallback.
+                }
+            }, { once: true });
+
+            video.addEventListener('seeked', function () {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth || 320;
+                    canvas.height = video.videoHeight || 180;
+                    const context = canvas.getContext('2d');
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const image = document.createElement('img');
+                    image.alt = 'Thumbnail video';
+                    image.src = canvas.toDataURL('image/jpeg', 0.78);
+                    content.innerHTML = '';
+                    content.appendChild(image);
+                } catch (error) {
+                    // Tetap tampilkan fallback bila browser tidak mengizinkan capture.
+                } finally {
+                    video.removeAttribute('src');
+                    video.load();
+                }
+            }, { once: true });
+
+            video.addEventListener('error', function () {
+                video.removeAttribute('src');
+                video.load();
+            }, { once: true });
+
+            // Metadata/frame hanya diminta untuk item yang terlihat di layar.
+            content.appendChild(video);
+            return;
+        }
+    }
+
+    function initializePlaylistThumbnails() {
+        const thumbs = document.querySelectorAll('#playlistItems .playlist-thumb, #availableMedia .playlist-thumb');
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        renderPlaylistThumbnail(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: '150px' });
+
+            thumbs.forEach(function (thumb) {
+                observer.observe(thumb);
+            });
+        } else {
+            thumbs.forEach(renderPlaylistThumbnail);
+        }
+    }
+
+    /*
      * Update nomor urutan.
      */
 
@@ -859,6 +1213,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         });
 
+        initializePlaylistThumbnails();
 
         const total = items.length;
 
@@ -1173,10 +1528,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     playlistItems.addEventListener('click', function (event) {
 
-    const mediaTitle =
-        event.target.closest('.media-title');
+    const previewTarget =
+        event.target.closest('.media-title, .playlist-thumb');
 
-    if (!mediaTitle) {
+    if (!previewTarget) {
         return;
     }
 
@@ -1184,7 +1539,7 @@ document.addEventListener('DOMContentLoaded', function () {
     event.stopPropagation();
 
     const item =
-        mediaTitle.closest('.playlist-card');
+        previewTarget.closest('.playlist-card');
 
     if (!item) {
         return;
@@ -1233,6 +1588,15 @@ if (availableMedia) {
 
         showMediaPreview(media);
 
+    });
+
+    availableMedia.addEventListener('keydown', function (event) {
+        const thumb = event.target.closest('.playlist-thumb');
+        if (!thumb || (event.key !== 'Enter' && event.key !== ' ')) return;
+        event.preventDefault();
+        const sourceId = Number(thumb.dataset.sourceId || thumb.dataset.previewSourceId);
+        const media = getMedia(sourceId);
+        if (media) showMediaPreview(media);
     });
 
 }
@@ -1448,6 +1812,7 @@ if (availableMedia) {
      */
 
     updatePlaylistNumbers();
+    initializePlaylistThumbnails();
 
 });
 

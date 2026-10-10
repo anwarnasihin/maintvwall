@@ -53,6 +53,23 @@ class DisplayPlaylistController extends Controller
             ->whereRaw("JSON_CONTAINS(selected_days, '\"$today\"')")
             ->get();
 
+        // Sembunyikan item playlist yang sumbernya tidak lagi aktif.
+        // Data source dan file asli tidak dihapus dari database.
+        if ($playlist) {
+            $activeSourceIds = $sources->pluck('id')
+                ->map(fn ($id) => (int) $id)
+                ->all();
+
+            $visibleItems = $playlist->items
+                ->filter(function ($item) use ($activeSourceIds) {
+                    return $item->source
+                        && in_array((int) $item->source_id, $activeSourceIds, true);
+                })
+                ->values();
+
+            $playlist->setRelation('items', $visibleItems);
+        }
+
         return view('DisplayPlaylist.index', [
             'group' => $groupData,
             'playlist' => $playlist,
