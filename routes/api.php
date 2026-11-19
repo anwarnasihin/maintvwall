@@ -2,20 +2,21 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\Api\DisplayApiController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-// Route::get('/api/getTexts', 'TextController@getTexts');
 
+// API khusus perangkat TV Wall
+Route::middleware('display.auth')->prefix('display')->group(function () {
+    Route::post('/heartbeat', [DisplayApiController::class, 'heartbeat'])
+        ->name('display.heartbeat');
+
+    Route::post('/manifest', [DisplayApiController::class, 'manifest'])
+    ->name('display.manifest');
+
+    Route::get('/media/{sourceId}/download', [DisplayApiController::class, 'downloadMedia'])
+    ->whereNumber('sourceId')
+    ->name('display.media.download');
+});

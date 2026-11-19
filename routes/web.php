@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\DisplayMonitoringController;
 use App\Models\source;
 use GuzzleHttp\RetryMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -174,4 +174,26 @@ Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(functi
     // Hapus permanen satu konten
     Route::delete('/recycle-bin/{id}', [RecycleBinController::class, 'forceDelete'])
         ->name('recyclebin.forceDelete');
+});
+
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+    'role:admin',
+])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/display-monitoring',
+        [DisplayMonitoringController::class, 'index']
+    )->name('displayMonitoring');
+
+    Route::get('/display-monitoring/status',
+        [DisplayMonitoringController::class, 'status']
+    )->name('displayMonitoring.status');
+
+    Route::patch(
+        '/display-monitoring/{display}/active-group',
+        [DisplayMonitoringController::class, 'changeActiveGroup']
+    )->name('displayMonitoring.changeActiveGroup');
 });

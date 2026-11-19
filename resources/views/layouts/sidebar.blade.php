@@ -250,7 +250,16 @@
                 @auth
 
                     @if (auth()->user()->role == 'admin')
-
+                        <!-- DISPLAY MONITORING -->
+                        <li class="nav-item">
+                            <a
+                                href="{{ route('admin.displayMonitoring') }}"
+                                class="nav-link {{ request()->routeIs('admin.displayMonitoring*') ? 'active' : '' }}"
+                            >
+                                <i class="nav-icon fas fa-desktop"></i>
+                                <p>Display Monitoring</p>
+                            </a>
+                        </li>
 
                         <!-- USERS -->
                         <li class="nav-item">

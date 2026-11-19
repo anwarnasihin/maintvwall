@@ -24,4 +24,17 @@ class group extends Model
             'text_id'
         )->withTimestamps();
     }
+
+    public function displays()
+    {
+        return $this->belongsToMany(
+            Display::class,
+            'display_group',
+            'group_id',
+            'display_id'
+        )->withTimestamps();
+    }
+
+
+
 }
